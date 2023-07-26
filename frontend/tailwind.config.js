@@ -16,6 +16,7 @@ export const theme = {
       texts: "var(--textS-color)",
       textg: "var(--textG-color)",
       bgclr: "var(--bg-color)",
+      'disabled-color': '#ff0000',
     },
   },
 };
