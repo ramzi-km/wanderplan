@@ -1,1 +1,33 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  --primary-color: #03af48;
+  --secondary-color: #ffffff;
+  --accent-color: #1d7643;
+  --textP-color: #000000;
+  --textS-color: #400000;
+  --textG-color: #6c757d;
+  --bg-color: #e1e1e1;
+}
+body {
+  background-color: var(--bg-color);
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.dark-mode {
+  /* Primary color for dark mode */
+  --primary-color: #03af48;
+  --secondary-color: #222222;
+  --accent-color: #1d7643;
+  --textP-color: #ffffff;
+  --textS-color: #F5F5DC;
+  --textG-color: #6c757d;
+  --bg-color: #263238;
+}

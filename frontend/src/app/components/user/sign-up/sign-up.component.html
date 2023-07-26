@@ -1,0 +1,106 @@
+<div class="mt-28 md:mt-40 mb-20 flex justify-center">
+  <section id="signup" class="mb- w-3/4 rounded-lg bg-secondary py-10 shadow-[0px_5px_15px_-3px_rgba(3,175,2,0.2)]">
+    <div class="flex w-full flex-col md:flex-row">
+      <div class="flex min-w-[50%] items-center justify-center">
+        <div class="flex min-w-[80%] flex-col items-center text-start">
+          <h1 class="p-3 text-4xl font-bold text-textp">Sign Up</h1>
+          <div class="min-w-[75%]">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Name</span>
+              </label>
+              <input
+                type="text"
+                placeholder="full name"
+                class="input input-bordered h-8"
+              />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Username</span>
+              </label>
+              <input
+                type="text"
+                placeholder="username"
+                class="input input-bordered h-8"
+              />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Email</span>
+              </label>
+              <input
+                type="text"
+                placeholder="email"
+                class="input input-bordered h-8"
+              />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Mobile</span>
+              </label>
+              <input
+                type="tel"
+                placeholder="+91"
+                class="input input-bordered h-8"
+              />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Password</span>
+              </label>
+              <input
+                type="password"
+                placeholder="password"
+                class="input input-bordered h-8"
+              />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Confirm Password</span>
+              </label>
+              <input
+                type="password"
+                placeholder="repeat your password"
+                class="input input-bordered h-8"
+              />
+            </div>
+            <div class="form-control mt-3 md:hidden">
+              <a
+                class="link self-center text-textp hover:text-blue-500"
+                routerLink="/login"
+                >I am already a member</a
+              >
+            </div>
+
+            <div class="form-control mt-6">
+              <button class="btn btn-primary text-textp">Sign Up</button>
+            </div>
+            <div class="divider">OR</div>
+            <div class="form-control mt-6">
+              <button class="btn btn-success btn-outline text-textp">
+                <img
+                  src="../../../../assets/images/google-logo-6278331_640.png"
+                  alt=""
+                  width="25px"
+                />Sign Up with google
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hidden flex-col md:flex">
+        <img
+          class="grow"
+          src="../../../../assets/images/Study abroad-rafiki.png"
+          alt=""
+        />
+        <a
+          class="link mb-5 self-center text-textp hover:text-blue-500"
+          routerLink="/login"
+          >I am already a member</a
+        >
+      </div>
+    </div>
+  </section>
+</div>
