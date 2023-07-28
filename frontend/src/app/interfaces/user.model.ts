@@ -5,4 +5,5 @@ export interface User {
     email?: string;
     password?: string
     mobile?: string;
+    notifications?: Array<any>;
 }

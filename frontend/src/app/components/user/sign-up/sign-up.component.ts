@@ -1,13 +1,17 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
   FormControl,
   FormGroup,
+  NgForm,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { UserAuthService } from 'src/app/services/user-auth.service';
+
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
@@ -16,9 +20,15 @@ import { Route, Router } from '@angular/router';
 export class SignUpComponent implements OnInit {
   signupForm!: FormGroup;
   pass: string = '';
-  conf:string = '';
+  conf: string = '';
+  errMessage: string | null = null;
+  loading: boolean = false;
 
-  constructor(private router:Router) {
+  constructor(
+    private router: Router,
+    private userAuthService: UserAuthService,
+    private http: HttpClient,
+  ) {
     this.signupForm = new FormGroup({
       fullName: new FormControl('', [
         Validators.required,
@@ -78,7 +88,18 @@ export class SignUpComponent implements OnInit {
   }
 
   submitForm() {
-    this.router.navigate(['/emailVerification']);
+    this.loading = true;
+    this.userAuthService.userRegister(this.signupForm.value).subscribe({
+      next: (res) => {
+        this.errMessage = null;
+        this.loading = false;
+        this.router.navigate(['/emailVerification']);
+      },
+      error: (err) => {
+        this.errMessage = err.error.message;
+        this.loading = false;
+      },
+    });
   }
   ngOnInit(): void {}
 }

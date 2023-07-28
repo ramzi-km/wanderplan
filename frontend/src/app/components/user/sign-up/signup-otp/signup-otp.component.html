@@ -17,27 +17,38 @@
       </div>
 
       <div>
-        <form>
+        <form #otpForm="ngForm" (ngSubmit)="onSubmit(otpForm)">
           <div class="flex flex-col space-y-10">
-            <div class="flex w-full h-16 flex-row justify-center">
-              <div class="">
+            <div class="flex h-16 w-full flex-row justify-center">
+              <div class="mb-2">
                 <input
+                  ngModel
                   class="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-200 bg-bgclr px-5 text-center text-lg text-textp outline-none ring-primary focus:ring-1"
                   type="text"
+                  #otp="ngModel"
                   maxlength="6"
-                  name=""
-                  pattern="[0-9]"
+                  minlength="6"
+                  name="otp"
+                  required
                 />
+                <div class="mt-2 flex items-center justify-center">
+                  <label class="text-lg text-red-500">{{ errMessage }}</label>
+                </div>
               </div>
             </div>
 
             <div class="flex flex-col space-y-5">
               <div>
                 <button
-                type="submit"
-                  class="flex w-full flex-row items-center justify-center btn btn-primary"
+                  type="submit"
+                  class="btn btn-primary flex w-full flex-row items-center justify-center"
+                  [disabled]="otpForm.invalid"
                 >
                   Verify Account
+                  <span
+                    *ngIf="loading"
+                    class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+                  ></span>
                 </button>
               </div>
 
@@ -46,9 +57,14 @@
               >
                 <p>Didn't recieve code?</p>
                 <a
+                  (click)="resendOtp()"
                   class="flex flex-row items-center text-blue-600"
                   >Resend</a
                 >
+                <span
+                  *ngIf="resendLoading"
+                  class="loading loading-spinner loading-xs mb-1 text-textp"
+                ></span>
               </div>
             </div>
           </div>

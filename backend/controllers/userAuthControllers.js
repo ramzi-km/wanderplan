@@ -7,7 +7,7 @@ import userModel from '../models/userModel.js';
 
 export async function postSignup(req, res) {
   try {
-    const { name, email, username, mobile, password } = req.body;
+    const { fullName:name, email, username, mobile, password } = req.body;
     if (!email || !password || !name || !mobile || !username) {
       return res.status(401).json({ message: 'provide necessary information' });
     }
@@ -38,7 +38,6 @@ export async function postSignup(req, res) {
           },
           expirationTime: Date.now() + 3 * 60 * 1000, // 3 minutes expiration time
         };
-        console.log(req.session);
         sentOtp(email, otp);
         return res.json({ message: 'otp sented successfully' });
       }
@@ -51,6 +50,7 @@ export async function postSignup(req, res) {
 export async function signupVerify(req, res) {
   try {
     const otp = req.body.otp;
+    console.log(req.session);
     const tempUser = req.session.tempUser;
     if (otp == tempUser?.otp && Date.now() < tempUser.expirationTime) {
       const user = new userModel(tempUser.userData);
@@ -84,6 +84,7 @@ export async function signupVerify(req, res) {
 export async function resendOtp(req, res) {
   try {
     const tempUser = req.session.tempUser;
+    console.log(req.session);
     if (tempUser) {
       const otp = otpGenerator.generate(6, {
         upperCaseAlphabets: false,
@@ -94,11 +95,12 @@ export async function resendOtp(req, res) {
       tempUser.otp = otp;
       tempUser.expirationTime = Date.now() + 3 * 60 * 1000; // 3 minutes expiration time
       sentOtp(tempUser.userData.email, otp);
+      return res.status(200).json({ message: 'otp resent successfull' });
     } else {
-      res.status(400).json({ message: 'invalid request' });
+      return res.status(400).json({ message: 'invalid request' });
     }
   } catch (error) {
-    res.status(500).json({ message: 'internal server error' });
+    return res.status(500).json({ message: 'internal server error' });
   }
 }
 
