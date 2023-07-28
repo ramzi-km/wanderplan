@@ -5,6 +5,7 @@ import { LandingPageComponent } from './components/user/landing-page/landing-pag
 import { LoginComponent } from './components/user/login/login.component';
 import { NavComponent } from './components/user/nav/nav.component';
 import { SignUpComponent } from './components/user/sign-up/sign-up.component';
+import { SignupOtpComponent } from './components/user/sign-up/signup-otp/signup-otp.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,7 @@ const routes: Routes = [
       { path: 'signup', component: SignUpComponent },
       { path:'login', component: LoginComponent},
       { path:'home', component: HomeComponent},
+      { path:'emailVerification', component: SignupOtpComponent}
     ],
   },
 ];

@@ -1,0 +1,59 @@
+<div
+  class="relative flex min-h-screen flex-col justify-center overflow-hidden py-12"
+>
+  <div
+    class="relative mx-auto w-full max-w-xs rounded-2xl bg-secondary px-6 pb-9 pt-10 shadow-xl md:max-w-lg"
+  >
+    <div class="mx-auto flex w-full max-w-md flex-col space-y-16">
+      <div
+        class="flex flex-col items-center justify-center space-y-2 text-center"
+      >
+        <div class="text-3xl font-semibold">
+          <p>Email Verification</p>
+        </div>
+        <div class="flex flex-row text-sm font-medium text-gray-400">
+          <p>We have sent a code to your email</p>
+        </div>
+      </div>
+
+      <div>
+        <form>
+          <div class="flex flex-col space-y-10">
+            <div class="flex w-full h-16 flex-row justify-center">
+              <div class="">
+                <input
+                  class="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-200 bg-bgclr px-5 text-center text-lg text-textp outline-none ring-primary focus:ring-1"
+                  type="text"
+                  maxlength="6"
+                  name=""
+                  pattern="[0-9]"
+                />
+              </div>
+            </div>
+
+            <div class="flex flex-col space-y-5">
+              <div>
+                <button
+                type="submit"
+                  class="flex w-full flex-row items-center justify-center btn btn-primary"
+                >
+                  Verify Account
+                </button>
+              </div>
+
+              <div
+                class="flex flex-row items-center justify-center space-x-1 text-center text-sm font-medium text-gray-500"
+              >
+                <p>Didn't recieve code?</p>
+                <a
+                  class="flex flex-row items-center text-blue-600"
+                  >Resend</a
+                >
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

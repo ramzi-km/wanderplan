@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { environment } from '../../environment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -10,11 +11,22 @@ import { LandingPageComponent } from './components/user/landing-page/landing-pag
 import { LoginComponent } from './components/user/login/login.component';
 import { NavComponent } from './components/user/nav/nav.component';
 import { SignUpComponent } from './components/user/sign-up/sign-up.component';
+import { SignupOtpComponent } from './components/user/sign-up/signup-otp/signup-otp.component';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 
 @NgModule({
-  declarations: [AppComponent, NavComponent, AdminNavComponent, SignUpComponent, LoginComponent, LandingPageComponent, HomeComponent, ClickOutsideDirective],
-  imports: [BrowserModule, AppRoutingModule,ReactiveFormsModule,FormsModule],
+  declarations: [
+    AppComponent,
+    NavComponent,
+    AdminNavComponent,
+    SignUpComponent,
+    LoginComponent,
+    LandingPageComponent,
+    HomeComponent,
+    ClickOutsideDirective,
+    SignupOtpComponent,
+  ],
+  imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule, FormsModule],
   providers: [],
   bootstrap: [AppComponent],
 })

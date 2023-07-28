@@ -7,7 +7,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-
+import { Route, Router } from '@angular/router';
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
@@ -16,7 +16,9 @@ import {
 export class SignUpComponent implements OnInit {
   signupForm!: FormGroup;
   pass: string = '';
-  constructor() {
+  conf:string = '';
+
+  constructor(private router:Router) {
     this.signupForm = new FormGroup({
       fullName: new FormControl('', [
         Validators.required,
@@ -73,6 +75,10 @@ export class SignUpComponent implements OnInit {
       }
       return null;
     };
+  }
+
+  submitForm() {
+    this.router.navigate(['/emailVerification']);
   }
   ngOnInit(): void {}
 }
