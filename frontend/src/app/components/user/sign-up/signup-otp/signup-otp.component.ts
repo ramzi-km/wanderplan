@@ -8,7 +8,9 @@ import {
   NgModel,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserAuthService } from 'src/app/services/user-auth.service';
+import { Store } from '@ngrx/store';
+import { UserAuthService } from 'src/app/services/user/user-auth.service';
+import * as UserActions from '../../../../store/user/user.actions';
 
 @Component({
   selector: 'app-signup-otp',
@@ -24,14 +26,16 @@ export class SignupOtpComponent {
     private http: HttpClient,
     private router: Router,
     private userAuthService: UserAuthService,
+    private store:Store
   ) {}
 
   onSubmit(form: NgForm): void {
     this.loading = true;
     this.userAuthService.emailVerify(form.value).subscribe({
-      next: (res) => {
+      next: (res:any) => {
         this.errMessage = null;
         this.loading = false;
+        this.store.dispatch(UserActions.userLogin({user:res.user}));
         this.router.navigate(['/home']);
       },
       error: (err) => {

@@ -3,7 +3,6 @@ export interface User {
     name?: string;
     username?: string;
     email?: string;
-    password?: string
     mobile?: string;
     notifications?: Array<any>;
 }

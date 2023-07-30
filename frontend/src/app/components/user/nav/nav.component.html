@@ -8,7 +8,7 @@
         routerLink="/"
       />
       <div class="hidden flex-row space-x-10 md:flex">
-        <a class="text-texts" routerLink="/">Home</a>
+        <a class="text-texts" routerLink="/home">Home</a>
         <a class="text-texts" routerLink="signup">Travel guides</a>
       </div>
     </div>
@@ -93,8 +93,9 @@
             >
           </li>
           <li>
-            <a class="text-lg font-medium text-textp"
-              ><i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> Logout</a
+            <a class="text-lg font-medium text-textp" (click)="logout()"
+              ><i class="fa-solid fa-arrow-right-from-bracket mr-2"></i>
+              Logout</a
             >
           </li>
         </ul>
@@ -108,7 +109,7 @@
       >
         <label
           tabindex="0"
-          class="swap-rotate btn btn-circle swap m-1 bg-base-100 text-textp"
+          class="swap-rotate btn btn-circle btn-ghost swap m-1 text-textp"
         >
           <!-- this hidden checkbox controls the state -->
 
@@ -150,7 +151,7 @@
             class="menu dropdown-content rounded-box z-[1] w-52 bg-secondary p-2 text-textp shadow"
           >
             <li>
-              <a routerLink="/"
+              <a routerLink="/home"
                 ><i class="fa-solid fa-house ml-1 mr-2 text-textp"></i>Home</a
               >
             </li>
@@ -228,7 +229,7 @@
               >
             </li>
             <li>
-              <a
+              <a (click)="logout()"
                 ><i
                   class="fa-solid fa-arrow-right-from-bracket ml-1 mr-2 text-textp"
                 ></i
@@ -243,3 +244,4 @@
   </div>
 </nav>
 <router-outlet></router-outlet>
+<app-footer></app-footer>

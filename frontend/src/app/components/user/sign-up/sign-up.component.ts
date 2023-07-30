@@ -10,7 +10,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserAuthService } from 'src/app/services/user-auth.service';
+import { UserAuthService } from 'src/app/services/user/user-auth.service';
+import { noSpace } from 'src/app/validators/noSpace.validators';
 
 @Component({
   selector: 'app-sign-up',
@@ -37,7 +38,8 @@ export class SignUpComponent implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       username: new FormControl('', [
         Validators.required,
-        this.noEmptySpacesValidator(),
+        Validators.minLength(5),
+        noSpace.noSpaceValidation,
       ]),
       mobile: new FormControl('', [
         Validators.required,

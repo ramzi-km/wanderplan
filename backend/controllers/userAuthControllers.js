@@ -7,7 +7,7 @@ import userModel from '../models/userModel.js';
 
 export async function postSignup(req, res) {
   try {
-    const { fullName:name, email, username, mobile, password } = req.body;
+    const { fullName: name, email, username, mobile, password } = req.body;
     if (!email || !password || !name || !mobile || !username) {
       return res.status(401).json({ message: 'provide necessary information' });
     }
@@ -61,6 +61,8 @@ export async function signupVerify(req, res) {
         {
           _id: 0,
           password: 0,
+          __v: 0,
+          ban:0,
         }
       );
       req.session.tempUser = null;
@@ -72,7 +74,7 @@ export async function signupVerify(req, res) {
         sameSite: 'none',
         maxAge: 3 * 24 * 1000 * 60 * 60, // 7 day
       });
-      return res.status(200).json(result);
+      return res.status(200).json({ user: result });
     } else {
       return res.status(400).json({ message: 'Invalid otp' });
     }
@@ -113,30 +115,61 @@ export async function forgotPassword(req, res) {
 
 export async function postLogin(req, res) {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { username, password } = req.body;
+    if (!username || !password) {
       return res.status(401).json({ message: 'provide necessary information' });
     }
-    const user = await userModel.findOne({ email }, { password: 0, ban: 0 });
+    const user = await userModel.findOne(
+      {
+        $or: [{ email: username }, { username: username }],
+      },
+      { ban: 0 }
+    );
     if (user) {
-      const comparison = await bcrypt.compare(password, user.password);
-      if (comparison) {
-        const secret = process.env.JWT_SECRET_KEY;
-        const token = jwt.sign({ _id: user._id }, secret);
-        res.cookie('jwt', token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'none',
-          maxAge: 3 * 24 * 1000 * 60 * 60, // 3 day
-        });
-        return res.json(user);
+      if (!user.ban) {
+        const comparison = await bcrypt.compare(password, user.password);
+        if (comparison) {
+          const secret = process.env.JWT_SECRET_KEY;
+          const token = jwt.sign({ _id: user._id }, secret);
+          res.cookie('userToken', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 3 * 24 * 1000 * 60 * 60, // 7 day
+          });
+          const resUser = await userModel.findOne(
+            {
+              email: user.email,
+            },
+            { ban: 0, password: 0, __v: 0 }
+          );
+          return res.json({ user: resUser });
+        } else {
+          res.status(400).json({ message: 'Incorrect Password' });
+        }
       } else {
-        res.status(400).json({ message: 'Incorrect Password' });
+        res.status(403).json({ message: 'user is banned' });
       }
     } else {
       res.status(404).json({ message: 'user not found' });
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: 'internal server error' });
   }
+}
+
+
+export async function getUser (req, res) {
+  try {
+    res.status(200).json(req.user)
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+
+export async function logout(req, res) {
+  res.cookie('userToken', '', { maxAge: 0 });
+  res.send({ message: 'success' });
 }

@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { UserAuthService } from 'src/app/services/user/user-auth.service';
+import * as UserActions from '../../../store/user/user.actions';
 
 @Component({
   selector: 'app-nav',
@@ -7,7 +11,23 @@ import { Component } from '@angular/core';
 })
 export class NavComponent {
   theme = 'light';
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll() {
+    // You can leave this empty; it's just to disable scrolling during navigation.
+  }
+  constructor(
+    private router: Router,
+    private userAuthService: UserAuthService,
+    private store: Store,
+  ) {}
   ngOnInit() {
+    // Subscribe to the NavigationEnd event of the Router.
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        // Scroll to the top of the page on each navigation end.
+        window.scrollTo(0, 0);
+      }
+    });
     if (localStorage.getItem('theme')) {
       this.theme = localStorage.getItem('theme')!;
       if (this.theme == 'dark') {
@@ -38,13 +58,22 @@ export class NavComponent {
 
   toggleDropdown(): void {
     this.isOpen = !this.isOpen;
-    console.log(this.isOpen);
   }
 
   closeDropdown(): void {
     if (this.isOpen) {
       this.isOpen = false;
-      console.log(this.isOpen);
     }
+  }
+  logout(): void {
+    this.userAuthService.userLogout().subscribe({
+      next: (res) => {
+        this.store.dispatch(UserActions.userLogout());
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
   }
 }

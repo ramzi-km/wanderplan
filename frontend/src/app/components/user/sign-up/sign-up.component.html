@@ -80,9 +80,18 @@
                     >username is required </label
                   ><label
                     *ngIf="
-                      signupForm.controls['username'].errors?.['noEmptySpaces']
+                      signupForm.controls['username'].errors?.[
+                        'noSpaceValidator'
+                      ]
                     "
-                    >username must be atleast five characters</label
+                    >username must not contain empty spaces</label
+                  ><label
+                    *ngIf="
+                      !signupForm.controls['username'].errors?.[
+                        'noSpaceValidator'
+                      ] && signupForm.controls['username'].errors?.['minlength']
+                    "
+                    >username must be atleast 5 characters</label
                   >
                 </div>
               </div>
@@ -244,7 +253,10 @@
                   class="btn btn-primary text-textp"
                 >
                   Sign Up
-                   <span *ngIf="loading" class="loading loading-spinner loading-sm ml-5 mb-1 text-textp"></span>
+                  <span
+                    *ngIf="loading"
+                    class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+                  ></span> 
                 </button>
               </div>
               <div class="divider">OR</div>
@@ -275,5 +287,4 @@
       </div>
     </div>
   </section>
-  
 </div>
