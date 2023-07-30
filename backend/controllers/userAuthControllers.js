@@ -62,7 +62,7 @@ export async function signupVerify(req, res) {
           _id: 0,
           password: 0,
           __v: 0,
-          ban:0,
+          ban: 0,
         }
       );
       req.session.tempUser = null;
@@ -72,7 +72,7 @@ export async function signupVerify(req, res) {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        maxAge: 3 * 24 * 1000 * 60 * 60, // 7 day
+        maxAge: 3 * 24 * 1000 * 60 * 60, // 3 day
       });
       return res.status(200).json({ user: result });
     } else {
@@ -135,7 +135,7 @@ export async function postLogin(req, res) {
             httpOnly: true,
             secure: true,
             sameSite: 'none',
-            maxAge: 3 * 24 * 1000 * 60 * 60, // 7 day
+            maxAge: 3 * 24 * 1000 * 60 * 60, // 3 day
           });
           const resUser = await userModel.findOne(
             {
@@ -159,17 +159,15 @@ export async function postLogin(req, res) {
   }
 }
 
-
-export async function getUser (req, res) {
+export async function getUser(req, res) {
   try {
-    res.status(200).json(req.user)
+    res.status(200).json(req.user);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
 
-
 export async function logout(req, res) {
   res.cookie('userToken', '', { maxAge: 0 });
-  res.send({ message: 'success' });
+  res.status(200).json({ message: 'success' });
 }

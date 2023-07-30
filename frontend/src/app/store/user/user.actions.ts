@@ -1,7 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { User } from 'src/app/interfaces/user.model';
 
-// load users
+// load user
 export const getUser = createAction('[App Component] getUser');
 export const getUserSuccess = createAction(
   '[App Component] getUserSuccess',

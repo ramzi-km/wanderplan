@@ -7,18 +7,45 @@ import { NavComponent } from './components/user/nav/nav.component';
 import { SignUpComponent } from './components/user/sign-up/sign-up.component';
 import { SignupOtpComponent } from './components/user/sign-up/signup-otp/signup-otp.component';
 
+import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { AdminLoginComponent } from './components/admin/admin-login/admin-login.component';
+import { AdminNavComponent } from './components/admin/admin-nav/admin-nav.component';
+import { ErrorComponent } from './components/error/error.component';
+import { ListGuidesComponent } from './components/user/list-guides/list-guides.component';
+import { adminAuthGuard } from './guards/admin-auth.guard';
+import { adminLoginGuard } from './guards/admin-login.guard';
+import { guestGuard } from './guards/guest.guard';
+import { userAuthGuard } from './guards/user-auth.guard';
+
 const routes: Routes = [
   {
     path: '',
     component: NavComponent,
     children: [
-      { path: '', component: LandingPageComponent},
-      { path: 'signup', component: SignUpComponent },
-      { path:'login', component: LoginComponent},
-      { path:'home', component: HomeComponent},
-      { path:'emailVerification', component: SignupOtpComponent}
+      { path: '', component: LandingPageComponent, canActivate: [guestGuard] },
+      { path: 'signup', component: SignUpComponent, canActivate: [guestGuard] },
+      { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
+      { path: 'home', component: HomeComponent, canActivate: [userAuthGuard] },
+      { path: 'guides', component: ListGuidesComponent },
+      {
+        path: 'emailVerification',
+        component: SignupOtpComponent,
+        canActivate: [guestGuard],
+      },
     ],
   },
+  {
+    path: 'admin/login',
+    component: AdminLoginComponent,
+    canActivate: [adminLoginGuard],
+  },
+  {
+    path: 'admin',
+    component: AdminNavComponent,
+    children: [{ path: '', component: AdminDashboardComponent }],
+    canActivate: [adminAuthGuard],
+  },
+  { path: '**', component: ErrorComponent },
 ];
 
 @NgModule({

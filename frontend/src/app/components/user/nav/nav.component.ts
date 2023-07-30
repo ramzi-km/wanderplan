@@ -3,6 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { UserAuthService } from 'src/app/services/user/user-auth.service';
 import * as UserActions from '../../../store/user/user.actions';
+import * as UserSelector from '../../../store/user/user.selectors';
 
 @Component({
   selector: 'app-nav',
@@ -13,13 +14,17 @@ export class NavComponent {
   theme = 'light';
   @HostListener('window:scroll', ['$event'])
   onWindowScroll() {
-    // You can leave this empty; it's just to disable scrolling during navigation.
+    //  this is  just to disable scrolling during navigation.
   }
   constructor(
     private router: Router,
     private userAuthService: UserAuthService,
     private store: Store,
   ) {}
+
+  user$ = this.store.select(UserSelector.selectUser);
+  isLoggedIn$ = this.store.select(UserSelector.selectIsLoggedIn);
+
   ngOnInit() {
     // Subscribe to the NavigationEnd event of the Router.
     this.router.events.subscribe((event) => {

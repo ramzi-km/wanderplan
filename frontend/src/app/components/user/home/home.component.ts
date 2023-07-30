@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as UserActions from '../../../store/user/user.actions';
-import * as UserSelecter from '../../../store/user/user.selectors';
+import * as UserSelector from '../../../store/user/user.selectors';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +10,7 @@ import * as UserSelecter from '../../../store/user/user.selectors';
 })
 export class HomeComponent {
   constructor(private store: Store) {}
-  user$ = this.store.select(UserSelecter.selectUser);
-  isLoggedIn$ = this.store.select(UserSelecter.selectIsLoggedIn);
+  user$ = this.store.select(UserSelector.selectUser);
+  isLoggedIn$ = this.store.select(UserSelector.selectIsLoggedIn);
   
 }

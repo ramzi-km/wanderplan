@@ -1,10 +1,11 @@
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule, isDevMode } from '@angular/core';
+import { APP_INITIALIZER, NgModule, isDevMode } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { AppInitializerService } from './app-intializer.service';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
@@ -21,6 +22,13 @@ import { ClickOutsideDirective } from './directives/click-outside.directive';
 
 import { environment } from '../../environment';
 
+import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { AdminLoginComponent } from './components/admin/admin-login/admin-login.component';
+import { UserManagementComponent } from './components/admin/user-management/user-management.component';
+import { ErrorComponent } from './components/error/error.component';
+import { ListGuidesComponent } from './components/user/list-guides/list-guides.component';
+import { adminEffects } from './store/admin/admin.effects';
+import { adminReducer } from './store/admin/admin.reducers';
 import { userEffects } from './store/user/user.effects';
 import { userReducer } from './store/user/user.reducers';
 
@@ -36,6 +44,11 @@ import { userReducer } from './store/user/user.reducers';
     ClickOutsideDirective,
     SignupOtpComponent,
     FooterComponent,
+    ListGuidesComponent,
+    ErrorComponent,
+    AdminLoginComponent,
+    AdminDashboardComponent,
+    UserManagementComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,11 +58,21 @@ import { userReducer } from './store/user/user.reducers';
     HttpClientModule,
     StoreModule.forRoot({
       userState: userReducer,
+      adminState: adminReducer,
     }),
-    EffectsModule.forRoot([userEffects]),
+    EffectsModule.forRoot([userEffects, adminEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
   ],
-  providers: [],
+  providers: [
+    AppInitializerService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (appInitializerService: AppInitializerService) => () =>
+        appInitializerService.initializeApp(),
+      deps: [AppInitializerService],
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
