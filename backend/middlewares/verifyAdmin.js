@@ -24,7 +24,6 @@ export default async function verifyAdmin(req, res, next) {
     req.admin = admin;
     next();
   } catch (err) {
-    console.log(err);
     return res.status(500).json({ message: 'Internal server error.' });
   }
 }
