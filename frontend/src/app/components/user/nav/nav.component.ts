@@ -49,12 +49,12 @@ export class NavComponent {
     if (this.theme == 'light') {
       this.theme = 'dark';
       localStorage.setItem('theme', 'dark');
-      document.documentElement.classList.add('dark-mode');
+      // document.documentElement.classList.add('dark-mode');
       document.documentElement.setAttribute('data-theme', 'dark');
     } else {
       this.theme = 'light';
       localStorage.setItem('theme', 'light');
-      document.documentElement.classList.remove('dark-mode');
+      // document.documentElement.classList.remove('dark-mode');
       document.documentElement.setAttribute('data-theme', 'light');
     }
   }

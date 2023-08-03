@@ -10,6 +10,7 @@ import { SignupOtpComponent } from './components/user/sign-up/signup-otp/signup-
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import { AdminLoginComponent } from './components/admin/admin-login/admin-login.component';
 import { AdminNavComponent } from './components/admin/admin-nav/admin-nav.component';
+import { UserManagementComponent } from './components/admin/user-management/user-management.component';
 import { ErrorComponent } from './components/error/error.component';
 import { ListGuidesComponent } from './components/user/list-guides/list-guides.component';
 import { adminAuthGuard } from './guards/admin-auth.guard';
@@ -42,7 +43,10 @@ const routes: Routes = [
   {
     path: 'admin',
     component: AdminNavComponent,
-    children: [{ path: '', component: AdminDashboardComponent }],
+    children: [
+      { path: '', component: AdminDashboardComponent },
+      { path: 'user-management', component: UserManagementComponent },
+    ],
     canActivate: [adminAuthGuard],
   },
   { path: '**', component: ErrorComponent },

@@ -35,20 +35,5 @@ export class AppInitializerService {
     // Both actions and effects are completed, resolve the Promise
     return Promise.resolve();
 
-    // // Listen for the completion of the action and its effects
-    // await this.actions$
-    //   .pipe(
-    //     ofType(UserActions.getUserSuccess, UserActions.getUserFailure),
-    //     take(1),
-    //   )
-    //   .toPromise();
-    // // Listen for the completion of the getAdmin action and its effects
-    // await this.actions$
-    //   .pipe(
-    //     ofType(AdminActions.getAdminSuccess, AdminActions.getAdminFailure),
-    //     take(1),
-    //   )
-    //   .toPromise();
-    // return Promise.resolve();
   }
 }

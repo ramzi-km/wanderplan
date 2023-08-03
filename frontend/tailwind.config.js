@@ -1,5 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-export const content = ["./src/**/*.{html,ts}"];
+export const content = [
+  "./src/**/*.{html,ts}",
+  "./node_modules/flowbite/**/*.js",
+];
 export const theme = {
   screens: {
     sm: "480px",
@@ -16,7 +19,7 @@ export const theme = {
       texts: "var(--textS-color)",
       textg: "var(--textG-color)",
       bgclr: "var(--bg-color)",
-      'disabled-color': '#ff0000',
+      "disabled-color": "#ff0000",
     },
   },
 };
@@ -46,4 +49,4 @@ export const daisyui = {
     },
   ],
 };
-export const plugins = [require("daisyui")];
+export const plugins = [require("daisyui"), require("flowbite/plugin")];

@@ -38,7 +38,8 @@ export async function postAdminLogin(req, res) {
 }
 export async function postAdminLogout(req, res) {
   try {
-    res.status(200).json(req.admin);
+    res.cookie('adminToken', '', { maxAge: 0 });
+    res.status(200).send({ message: 'success'})
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -46,8 +47,7 @@ export async function postAdminLogout(req, res) {
 
 export async function getAdminData(req, res) {
   try {
-    res.cookie('adminToken', '', { maxAge: 0 });
-    res.status(200).json({ message: 'success' });
+    res.status(200).json(req.admin);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
