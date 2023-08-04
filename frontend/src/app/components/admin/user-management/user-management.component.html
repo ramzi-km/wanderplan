@@ -14,8 +14,8 @@
       </thead>
       <tbody>
         <!-- row 1 -->
-        <tr>
-          <td>1</td>
+        <tr *ngFor="let user of users$ | async; let i = index">
+          <td>{{ i + 1 }}</td>
           <td>
             <div class="flex items-center space-x-3">
               <div class="avatar">
@@ -27,24 +27,28 @@
                 </div>
               </div>
               <div>
-                <div class="font-medium">Hart Hagerty</div>
+                <div class="font-medium">{{ user.name }}</div>
               </div>
             </div>
           </td>
-          <td>ramzikm3@gmail.com</td>
-          <td>ramzi</td>
-          <td>8921637648</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.mobile }}</td>
           <th>
-            <button
-              class="btn btn-sm bg-red-600 text-gray-100 hover:bg-gray-200 hover:text-red-600"
-            >
-              <i class="fa-solid fa-ban"></i> Block
-            </button>
-            <button
-              class="btn btn-sm bg-primary text-gray-100 hover:bg-gray-200 hover:text-primary"
-            >
-              <i class="fa-solid fa-unlock"></i> Unblock
-            </button>
+            <ng-container *ngIf="user.ban">
+              <button
+                class="btn btn-sm bg-primary text-gray-100 hover:bg-gray-200 hover:text-primary"
+              >
+                <i class="fa-solid fa-unlock"></i> Unblock
+              </button>
+            </ng-container>
+            <ng-container *ngIf="!user.ban">
+              <button
+                class="btn btn-sm bg-red-600 text-gray-100 hover:bg-gray-200 hover:text-red-600"
+              >
+                <i class="fa-solid fa-ban"></i> Block
+              </button>
+            </ng-container>
           </th>
         </tr>
       </tbody>
@@ -60,5 +64,8 @@
         </tr>
       </tfoot>
     </table>
+  </div>
+  <div *ngIf="loading$ | async">
+    <button class="btn btn-primary btn-lg">hellow</button>
   </div>
 </div>

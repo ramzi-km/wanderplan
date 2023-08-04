@@ -4,11 +4,13 @@ import {
     postAdminLogin,
     postAdminLogout,
 } from '../controllers/adminAuthControllers.js';
+import { getAllUsers } from '../controllers/adminControllers.js';
 import verifyAdmin from '../middlewares/verifyAdmin.js';
 const router = express.Router();
 
 router.post('/login', postAdminLogin);
 router.post('/logout', postAdminLogout);
 router.get('/data', verifyAdmin, getAdminData);
+router.get('/allUsers', verifyAdmin, getAllUsers);
 
 export default router;

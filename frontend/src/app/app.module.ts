@@ -29,6 +29,8 @@ import { ErrorComponent } from './components/error/error.component';
 import { ListGuidesComponent } from './components/user/list-guides/list-guides.component';
 import { adminEffects } from './store/admin/admin.effects';
 import { adminReducer } from './store/admin/admin.reducers';
+import { usersEffects } from './store/admin/users/users.effects';
+import { usersReducer } from './store/admin/users/users.reducers';
 import { userEffects } from './store/user/user.effects';
 import { userReducer } from './store/user/user.reducers';
 
@@ -59,8 +61,9 @@ import { userReducer } from './store/user/user.reducers';
     StoreModule.forRoot({
       userState: userReducer,
       adminState: adminReducer,
+      usersState: usersReducer,
     }),
-    EffectsModule.forRoot([userEffects, adminEffects]),
+    EffectsModule.forRoot([userEffects, adminEffects, usersEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
   ],
   providers: [
