@@ -3,6 +3,8 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+// regular style toast
+@import "ngx-toastr/toastr";
 
 :root {
   --primary-color: #03af48;
@@ -11,7 +13,7 @@
   --textP-color: #000000;
   --textS-color: #400000;
   --textG-color: #6c757d;
-  --bg-color: #e1e1e1;
+  --bg-color: #e6e6e6;
 }
 [data-theme="dark"] {
   /* Primary color for dark mode */

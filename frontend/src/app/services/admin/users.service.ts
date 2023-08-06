@@ -14,4 +14,11 @@ export class UsersService {
       withCredentials: true,
     });
   }
+  blockUser(id: string) {
+    return this.http.patch(
+      `${this.baseUrl}/admin/blockUser/${id}`,
+      {},
+      { withCredentials: true },
+    );
+  }
 }

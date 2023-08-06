@@ -1,9 +1,9 @@
 <div class="mt-44">
-    <p>home works!</p>
-<div *ngIf="user$ | async as user">
-    <p>{{user.name}}</p>
-</div>
-<div *ngIf="isLoggedIn$ |async">
+  <p>home works!</p>
+  <div *ngIf="user$ | async as user">
+    <p>{{ user.name }}</p>
+  </div>
+  <div *ngIf="isLoggedIn$ | async">
     <p>user is logged in</p>
-</div>
+  </div>
 </div>

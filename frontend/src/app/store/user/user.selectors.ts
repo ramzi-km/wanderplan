@@ -25,6 +25,6 @@ export const selectIsLoggedIn = createSelector(
 // lets fetch the error here
 
 export const selectError = createSelector(
-    selectUserState,
-    (state) => state.error
-  );
+  selectUserState,
+  (state) => state.error,
+);

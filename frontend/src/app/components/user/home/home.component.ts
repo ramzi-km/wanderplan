@@ -12,5 +12,4 @@ export class HomeComponent {
   constructor(private store: Store) {}
   user$ = this.store.select(UserSelector.selectUser);
   isLoggedIn$ = this.store.select(UserSelector.selectIsLoggedIn);
-  
 }

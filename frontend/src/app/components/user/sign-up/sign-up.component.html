@@ -1,290 +1,311 @@
-<div class="mb-20 mt-28 flex justify-center md:mt-40">
-  <section
-    id="signup"
-    class="mb-20 w-3/4 rounded-lg bg-secondary py-10 shadow-[0px_5px_15px_-3px_rgba(3,175,2,0.2)]"
-  >
-    <div class="flex w-full flex-col md:flex-row">
-      <div class="flex min-w-[50%] items-center justify-center">
-        <div class="flex min-w-[65%] flex-col">
-          <h1 class="p-3 text-center text-4xl font-bold text-textp">Sign Up</h1>
-          <form
-            class="signupForm"
-            [formGroup]="signupForm"
-            (ngSubmit)="submitForm()"
-          >
-            <div class="min-w-[75%]">
-              <div class="alert alert-error mt-3 flex h-10" *ngIf="errMessage">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6 shrink-0 stroke-current"
-                  fill="none"
-                  viewBox="0 0 24 24"
+<div class="mt-20 mb-20">
+  <div class="flex justify-center pt-10 md:pt-20">
+    <section
+      id="signup"
+      class="w-3/4 rounded-lg bg-secondary py-10 shadow-[0px_5px_15px_-3px_rgba(3,175,2,0.2)]"
+    >
+      <div class="flex w-full flex-col md:flex-row">
+        <div class="flex min-w-[50%] items-center justify-center">
+          <div class="flex min-w-[65%] flex-col">
+            <h1 class="p-3 text-center text-4xl font-bold text-textp">
+              Sign Up
+            </h1>
+            <form
+              class="signupForm"
+              [formGroup]="signupForm"
+              (ngSubmit)="submitForm()"
+            >
+              <div class="min-w-[75%]">
+                <div
+                  class="alert alert-error mt-3 flex h-10"
+                  *ngIf="errMessage"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 shrink-0 stroke-current"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>{{ errMessage }}</span>
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">Name</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="full name"
+                    class="input input-bordered h-8"
+                    formControlName="fullName"
                   />
-                </svg>
-                <span>{{ errMessage }}</span>
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-medium">Name</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="full name"
-                  class="input input-bordered h-8"
-                  formControlName="fullName"
-                />
-                <div
-                  class="text-sm text-red-500"
-                  *ngIf="
-                    signupForm.controls['fullName'].touched &&
-                    signupForm.controls['fullName'].invalid
-                  "
-                >
-                  <label
-                    *ngIf="signupForm.controls['fullName'].errors?.['required']"
-                    >name is required </label
-                  ><label
+                  <div
+                    class="text-sm text-red-500"
                     *ngIf="
-                      signupForm.controls['fullName'].errors?.['noEmptySpaces']
+                      signupForm.controls['fullName'].touched &&
+                      signupForm.controls['fullName'].invalid
                     "
-                    >name must be atleast five characters</label
+                  >
+                    <label
+                      *ngIf="
+                        signupForm.controls['fullName'].errors?.['required']
+                      "
+                      >name is required </label
+                    ><label
+                      *ngIf="
+                        signupForm.controls['fullName'].errors?.[
+                          'noEmptySpaces'
+                        ]
+                      "
+                      >name must be atleast five characters</label
+                    >
+                  </div>
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">Username</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="username"
+                    class="input input-bordered h-8"
+                    name="username"
+                    formControlName="username"
+                  />
+                  <div
+                    class="text-sm text-red-500"
+                    *ngIf="
+                      signupForm.controls['username'].touched &&
+                      signupForm.controls['username'].invalid
+                    "
+                  >
+                    <label
+                      *ngIf="
+                        signupForm.controls['username'].errors?.['required']
+                      "
+                      >username is required </label
+                    ><label
+                      *ngIf="
+                        signupForm.controls['username'].errors?.[
+                          'noSpaceValidator'
+                        ]
+                      "
+                      >username must not contain empty spaces</label
+                    ><label
+                      *ngIf="
+                        !signupForm.controls['username'].errors?.[
+                          'noSpaceValidator'
+                        ] &&
+                        signupForm.controls['username'].errors?.['minlength']
+                      "
+                      >username must be atleast 5 characters</label
+                    >
+                  </div>
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">Email</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="email"
+                    class="input input-bordered h-8"
+                    name="email"
+                    formControlName="email"
+                  />
+                  <div
+                    class="text-sm text-red-500"
+                    *ngIf="
+                      signupForm.controls['email'].touched &&
+                      signupForm.controls['email'].invalid
+                    "
+                  >
+                    <label
+                      *ngIf="signupForm.controls['email'].errors?.['required']"
+                      >email is required </label
+                    ><label
+                      *ngIf="signupForm.controls['email'].errors?.['email']"
+                      >provide a valid email</label
+                    >
+                  </div>
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">Mobile</span>
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="+91"
+                    class="input input-bordered h-8"
+                    name="mobile"
+                    formControlName="mobile"
+                  />
+                  <div
+                    class="text-sm text-red-500"
+                    *ngIf="
+                      signupForm.controls['mobile'].touched &&
+                      signupForm.controls['mobile'].invalid
+                    "
+                  >
+                    <label
+                      *ngIf="signupForm.controls['mobile'].errors?.['required']"
+                      >mobile is required </label
+                    ><label
+                      *ngIf="signupForm.controls['mobile'].errors?.['pattern']"
+                      >not a valid mobile</label
+                    >
+                  </div>
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">Password</span>
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="password"
+                    class="input input-bordered h-8"
+                    name="password"
+                    formControlName="password"
+                    [(ngModel)]="pass"
+                  />
+                  <div
+                    class="text-sm text-red-500"
+                    *ngIf="
+                      signupForm.controls['password'].touched &&
+                      signupForm.controls['password'].invalid
+                    "
+                  >
+                    <label
+                      *ngIf="
+                        signupForm.controls['password'].errors?.['required']
+                      "
+                      >password is required </label
+                    ><label
+                      *ngIf="
+                        signupForm.controls['password'].errors?.[
+                          'containsSpaces'
+                        ]
+                      "
+                      >password should not contain spaces</label
+                    >
+                    <label
+                      *ngIf="
+                        signupForm.controls['password'].errors?.['minlength'] &&
+                        !signupForm.controls['password'].errors?.[
+                          'containsSpaces'
+                        ]
+                      "
+                      >password should contain atleast 6 characters</label
+                    >
+                    <label
+                      *ngIf="
+                        signupForm.controls['password'].errors?.[
+                          'invalidPassword'
+                        ] &&
+                        !signupForm.controls['password'].errors?.[
+                          'containsSpaces'
+                        ] &&
+                        !signupForm.controls['password'].errors?.[
+                          'minlength'
+                        ] &&
+                        !signupForm.controls['password'].errors?.['required']
+                      "
+                      >password should contain a number and a character</label
+                    >
+                  </div>
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">Confirm Password</span>
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="repeat your password"
+                    class="input input-bordered h-8"
+                    name="confirmPassword"
+                    formControlName="confirmPassword"
+                    [(ngModel)]="conf"
+                  />
+                  <div
+                    class="text-sm text-red-500"
+                    *ngIf="
+                      signupForm.controls['confirmPassword'].touched &&
+                      signupForm.controls['confirmPassword'].invalid
+                    "
+                  >
+                    <label
+                      *ngIf="
+                        signupForm.controls['confirmPassword'].errors?.[
+                          'required'
+                        ]
+                      "
+                      >this field is required </label
+                    ><label
+                      *ngIf="
+                        signupForm.controls['confirmPassword'].errors?.[
+                          'mismatch'
+                        ] &&
+                        !signupForm.controls['confirmPassword'].errors?.[
+                          'required'
+                        ]
+                      "
+                      >passwords do not match</label
+                    >
+                  </div>
+                </div>
+                <div class="form-control mt-3 md:hidden">
+                  <a
+                    class="link self-center text-textp hover:text-blue-500"
+                    routerLink="/login"
+                    >I am already a member</a
                   >
                 </div>
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-medium">Username</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="username"
-                  class="input input-bordered h-8"
-                  name="username"
-                  formControlName="username"
-                />
-                <div
-                  class="text-sm text-red-500"
-                  *ngIf="
-                    signupForm.controls['username'].touched &&
-                    signupForm.controls['username'].invalid
-                  "
-                >
-                  <label
-                    *ngIf="signupForm.controls['username'].errors?.['required']"
-                    >username is required </label
-                  ><label
-                    *ngIf="
-                      signupForm.controls['username'].errors?.[
-                        'noSpaceValidator'
-                      ]
-                    "
-                    >username must not contain empty spaces</label
-                  ><label
-                    *ngIf="
-                      !signupForm.controls['username'].errors?.[
-                        'noSpaceValidator'
-                      ] && signupForm.controls['username'].errors?.['minlength']
-                    "
-                    >username must be atleast 5 characters</label
+                <div class="form-control mt-6">
+                  <button
+                    type="submit"
+                    [disabled]="signupForm.invalid"
+                    class="btn btn-primary text-textp"
                   >
+                    Sign Up
+                    <span
+                      *ngIf="loading"
+                      class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+                    ></span>
+                  </button>
+                </div>
+                <div class="divider">OR</div>
+                <div class="form-control mt-6">
+                  <button class="btn btn-success btn-outline text-textp">
+                    <img
+                      src="../../../../assets/images/google-logo-6278331_640.png"
+                      alt=""
+                      width="25px"
+                    />Sign Up with google
+                  </button>
                 </div>
               </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-medium">Email</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="email"
-                  class="input input-bordered h-8"
-                  name="email"
-                  formControlName="email"
-                />
-                <div
-                  class="text-sm text-red-500"
-                  *ngIf="
-                    signupForm.controls['email'].touched &&
-                    signupForm.controls['email'].invalid
-                  "
-                >
-                  <label
-                    *ngIf="signupForm.controls['email'].errors?.['required']"
-                    >email is required </label
-                  ><label *ngIf="signupForm.controls['email'].errors?.['email']"
-                    >provide a valid email</label
-                  >
-                </div>
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-medium">Mobile</span>
-                </label>
-                <input
-                  type="tel"
-                  placeholder="+91"
-                  class="input input-bordered h-8"
-                  name="mobile"
-                  formControlName="mobile"
-                />
-                <div
-                  class="text-sm text-red-500"
-                  *ngIf="
-                    signupForm.controls['mobile'].touched &&
-                    signupForm.controls['mobile'].invalid
-                  "
-                >
-                  <label
-                    *ngIf="signupForm.controls['mobile'].errors?.['required']"
-                    >mobile is required </label
-                  ><label
-                    *ngIf="signupForm.controls['mobile'].errors?.['pattern']"
-                    >not a valid mobile</label
-                  >
-                </div>
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-medium">Password</span>
-                </label>
-                <input
-                  type="password"
-                  placeholder="password"
-                  class="input input-bordered h-8"
-                  name="password"
-                  formControlName="password"
-                  [(ngModel)]="pass"
-                />
-                <div
-                  class="text-sm text-red-500"
-                  *ngIf="
-                    signupForm.controls['password'].touched &&
-                    signupForm.controls['password'].invalid
-                  "
-                >
-                  <label
-                    *ngIf="signupForm.controls['password'].errors?.['required']"
-                    >password is required </label
-                  ><label
-                    *ngIf="
-                      signupForm.controls['password'].errors?.['containsSpaces']
-                    "
-                    >password should not contain spaces</label
-                  >
-                  <label
-                    *ngIf="
-                      signupForm.controls['password'].errors?.['minlength'] &&
-                      !signupForm.controls['password'].errors?.[
-                        'containsSpaces'
-                      ]
-                    "
-                    >password should contain atleast 6 characters</label
-                  >
-                  <label
-                    *ngIf="
-                      signupForm.controls['password'].errors?.[
-                        'invalidPassword'
-                      ] &&
-                      !signupForm.controls['password'].errors?.[
-                        'containsSpaces'
-                      ] &&
-                      !signupForm.controls['password'].errors?.['minlength'] &&
-                      !signupForm.controls['password'].errors?.['required']
-                    "
-                    >password should contain a number and a character</label
-                  >
-                </div>
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-medium">Confirm Password</span>
-                </label>
-                <input
-                  type="password"
-                  placeholder="repeat your password"
-                  class="input input-bordered h-8"
-                  name="confirmPassword"
-                  formControlName="confirmPassword"
-                  [(ngModel)]="conf"
-                />
-                <div
-                  class="text-sm text-red-500"
-                  *ngIf="
-                    signupForm.controls['confirmPassword'].touched &&
-                    signupForm.controls['confirmPassword'].invalid
-                  "
-                >
-                  <label
-                    *ngIf="
-                      signupForm.controls['confirmPassword'].errors?.[
-                        'required'
-                      ]
-                    "
-                    >this field is required </label
-                  ><label
-                    *ngIf="
-                      signupForm.controls['confirmPassword'].errors?.[
-                        'mismatch'
-                      ] &&
-                      !signupForm.controls['confirmPassword'].errors?.[
-                        'required'
-                      ]
-                    "
-                    >passwords do not match</label
-                  >
-                </div>
-              </div>
-              <div class="form-control mt-3 md:hidden">
-                <a
-                  class="link self-center text-textp hover:text-blue-500"
-                  routerLink="/login"
-                  >I am already a member</a
-                >
-              </div>
-              <div class="form-control mt-6">
-                <button
-                  type="submit"
-                  [disabled]="signupForm.invalid"
-                  class="btn btn-primary text-textp"
-                >
-                  Sign Up
-                  <span
-                    *ngIf="loading"
-                    class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
-                  ></span> 
-                </button>
-              </div>
-              <div class="divider">OR</div>
-              <div class="form-control mt-6">
-                <button class="btn btn-success btn-outline text-textp">
-                  <img
-                    src="../../../../assets/images/google-logo-6278331_640.png"
-                    alt=""
-                    width="25px"
-                  />Sign Up with google
-                </button>
-              </div>
-            </div>
-          </form>
+            </form>
+          </div>
+        </div>
+        <div class="hidden flex-col md:flex">
+          <img
+            class="grow"
+            src="../../../../assets/images/Study abroad-rafiki.png"
+            alt=""
+          />
+          <a
+            class="link mb-5 self-center text-textp hover:text-blue-500"
+            routerLink="/login"
+            >I am already a member</a
+          >
         </div>
       </div>
-      <div class="hidden flex-col md:flex">
-        <img
-          class="grow"
-          src="../../../../assets/images/Study abroad-rafiki.png"
-          alt=""
-        />
-        <a
-          class="link mb-5 self-center text-textp hover:text-blue-500"
-          routerLink="/login"
-          >I am already a member</a
-        >
-      </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </div>

@@ -31,7 +31,7 @@ export const daisyui = {
         primary: "#03AF48", //primary
         secondary: "#ffffff", //secondary
         accent: "#1D7643", //accent
-        "base-100": "#e1e1e1", //bg-color
+        "base-100": "#e6e6e6", //bg-color
         neutral: "#400000", //textS
         info: "#6C757D", //textG
         success: "#000000", //textP

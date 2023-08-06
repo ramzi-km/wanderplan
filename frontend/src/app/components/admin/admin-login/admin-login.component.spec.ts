@@ -8,7 +8,7 @@ describe('AdminLoginComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AdminLoginComponent]
+      declarations: [AdminLoginComponent],
     });
     fixture = TestBed.createComponent(AdminLoginComponent);
     component = fixture.componentInstance;

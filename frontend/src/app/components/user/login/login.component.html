@@ -1,144 +1,150 @@
-<div class="mb-20 mt-28 flex justify-center md:mt-40">
-  <section
-    id="login"
-    class="mb-20 w-3/4 rounded-lg bg-secondary py-10 shadow-[0px_5px_15px_-3px_rgba(3,175,2,0.2)]"
-  >
-    <div class="flex w-full flex-col md:flex-row">
-      <div class="ml-14 hidden flex-col md:flex">
-        <img
-          class="grow"
-          src="../../../../assets/images/Journey-amico.png"
-          alt="hello how are you, i am under the water"
-        />
-        <a
-          class="link mb-5 self-center text-textp hover:text-blue-500"
-          routerLink="/signup"
-          >Create an account</a
-        >
-      </div>
-      <div class="flex min-w-[50%] items-center justify-center">
-        <div class="flex min-w-[65%] flex-col">
-          <h1 class="p-3 text-center text-4xl font-bold text-textp">Login</h1>
-          <form
-            [formGroup]="loginForm"
-            (ngSubmit)="submitForm()"
-            class="signupForm"
+<div class="mb-20 mt-20">
+  <div class="flex justify-center pt-10 md:pt-20">
+    <section
+      id="login"
+      class="w-3/4 rounded-lg bg-secondary py-10 shadow-[0px_5px_15px_-3px_rgba(3,175,2,0.2)]"
+    >
+      <div class="flex w-full flex-col md:flex-row">
+        <div class="ml-14 hidden flex-col md:flex">
+          <img
+            class="grow"
+            src="../../../../assets/images/Journey-amico.png"
+            alt="hello how are you, i am under the water"
+          />
+          <a
+            class="link mb-5 self-center text-textp hover:text-blue-500"
+            routerLink="/signup"
+            >Create an account</a
           >
-            <div class="min-w-[75%]">
-              <div class="alert alert-error mt-3 flex h-10" *ngIf="errMessage">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6 shrink-0 stroke-current"
-                  fill="none"
-                  viewBox="0 0 24 24"
+        </div>
+        <div class="flex min-w-[50%] items-center justify-center">
+          <div class="flex min-w-[65%] flex-col">
+            <h1 class="p-3 text-center text-4xl font-bold text-textp">Login</h1>
+            <form
+              [formGroup]="loginForm"
+              (ngSubmit)="submitForm()"
+              class="signupForm"
+            >
+              <div class="min-w-[75%]">
+                <div
+                  class="alert alert-error mt-3 flex h-10"
+                  *ngIf="errMessage"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 shrink-0 stroke-current"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>{{ errMessage }}</span>
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">Username</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="username or email"
+                    class="input input-bordered"
+                    name="email"
+                    formControlName="username"
                   />
-                </svg>
-                <span>{{ errMessage }}</span>
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-medium">Username</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="username or email"
-                  class="input input-bordered"
-                  name="email"
-                  formControlName="username"
-                />
-                <div
-                  class="text-sm text-red-500"
-                  *ngIf="fc['username'].touched && fc['username'].invalid"
-                >
-                  <label *ngIf="fc['username'].errors?.['required']"
-                    >username is required
+                  <div
+                    class="text-sm text-red-500"
+                    *ngIf="fc['username'].touched && fc['username'].invalid"
+                  >
+                    <label *ngIf="fc['username'].errors?.['required']"
+                      >username is required
+                    </label>
+                    <label *ngIf="fc['username'].errors?.['noSpaceValidator']"
+                      >username will not contain empty spaces</label
+                    ><label
+                      *ngIf="
+                        fc['username'].errors?.['minlength'] &&
+                        !fc['username'].errors?.['noSpaceValidator']
+                      "
+                      >username will be atleast five characters</label
+                    >
+                  </div>
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">Password</span>
                   </label>
-                  <label *ngIf="fc['username'].errors?.['noSpaceValidator']"
-                    >username will not contain empty spaces</label
-                  ><label
-                    *ngIf="
-                      fc['username'].errors?.['minlength'] &&
-                      !fc['username'].errors?.['noSpaceValidator']
-                    "
-                    >username will be atleast five characters</label
+                  <input
+                    type="password"
+                    placeholder="password"
+                    class="input input-bordered"
+                    name="password"
+                    formControlName="password"
+                  />
+                  <div
+                    class="text-sm text-red-500"
+                    *ngIf="fc['password'].touched && fc['password'].invalid"
+                  >
+                    <label *ngIf="fc['password'].errors?.['required']"
+                      >password is required
+                    </label>
+                    <label *ngIf="fc['password'].errors?.['noSpaceValidator']"
+                      >password will not contain empty spaces</label
+                    ><label
+                      *ngIf="
+                        fc['password'].errors?.['minlength'] &&
+                        !fc['password'].errors?.['noSpaceValidator']
+                      "
+                      >password will be atleast six characters</label
+                    >
+                  </div>
+                  <label class="label">
+                    <a class="link-hover link label-text-alt"
+                      >Forgot password?</a
+                    >
+                  </label>
+                </div>
+
+                <div class="form-control mt-3 md:hidden">
+                  <a
+                    class="link self-center text-textp hover:text-blue-500"
+                    routerLink="/signup"
+                    >Create an account</a
                   >
                 </div>
-                
-              </div>
-
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-medium">Password</span>
-                </label>
-                <input
-                  type="password"
-                  placeholder="password"
-                  class="input input-bordered"
-                  name="password"
-                  formControlName="password"
-                />
-                <div
-                  class="text-sm text-red-500"
-                  *ngIf="fc['password'].touched && fc['password'].invalid"
-                >
-                  <label *ngIf="fc['password'].errors?.['required']"
-                    >password is required
-                  </label>
-                  <label *ngIf="fc['password'].errors?.['noSpaceValidator']"
-                    >password will not contain empty spaces</label
-                  ><label
-                    *ngIf="
-                      fc['password'].errors?.['minlength'] &&
-                      !fc['password'].errors?.['noSpaceValidator']
-                    "
-                    >password will be atleast six characters</label
+                <div class="form-control mt-6">
+                  <button
+                    type="submit"
+                    [disabled]="loginForm.invalid"
+                    class="btn btn-primary text-textp"
                   >
+                    Login
+                    <span
+                      *ngIf="loading"
+                      class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+                    ></span>
+                  </button>
                 </div>
-                <label class="label">
-                  <a class="label-text-alt link link-hover">Forgot password?</a>
-                </label>
+                <div class="divider">OR</div>
+                <div class="form-control mt-6">
+                  <button class="btn btn-success btn-outline text-textp">
+                    <img
+                      src="../../../../assets/images/google-logo-6278331_640.png"
+                      alt=""
+                      width="25px"
+                    />Login with google
+                  </button>
+                </div>
               </div>
-
-              <div class="form-control mt-3 md:hidden">
-                <a
-                  class="link self-center text-textp hover:text-blue-500"
-                  routerLink="/signup"
-                  >Create an account</a
-                >
-              </div>
-              <div class="form-control mt-6">
-                <button
-                  type="submit"
-                  [disabled]="loginForm.invalid"
-                  class="btn btn-primary text-textp"
-                >
-                  Login
-                  <span
-                    *ngIf="loading"
-                    class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
-                  ></span>
-                </button>
-              </div>
-              <div class="divider">OR</div>
-              <div class="form-control mt-6">
-                <button class="btn btn-success btn-outline text-textp">
-                  <img
-                    src="../../../../assets/images/google-logo-6278331_640.png"
-                    alt=""
-                    width="25px"
-                  />Login with google
-                </button>
-              </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </div>

@@ -26,16 +26,16 @@ export class SignupOtpComponent {
     private http: HttpClient,
     private router: Router,
     private userAuthService: UserAuthService,
-    private store:Store
+    private store: Store,
   ) {}
 
   onSubmit(form: NgForm): void {
     this.loading = true;
     this.userAuthService.emailVerify(form.value).subscribe({
-      next: (res:any) => {
+      next: (res: any) => {
         this.errMessage = null;
         this.loading = false;
-        this.store.dispatch(UserActions.userLogin({user:res.user}));
+        this.store.dispatch(UserActions.userLogin({ user: res.user }));
         this.router.navigate(['/home']);
       },
       error: (err) => {
