@@ -34,6 +34,5 @@ export class AppInitializerService {
 
     // Both actions and effects are completed, resolve the Promise
     return Promise.resolve();
-
   }
 }

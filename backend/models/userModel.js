@@ -1,40 +1,40 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose'
 
 // Declare the Schema of the Mongo model
 var userSchema = new Schema({
-    name:{
-        type:String,
-        required:true,
+    name: {
+        type: String,
+        required: true,
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true,
+    email: {
+        type: String,
+        required: true,
+        unique: true,
     },
-    username:{
-        type:String,
-        required:true,
-        unique:true,
+    username: {
+        type: String,
+        required: true,
+        unique: true,
     },
-    mobile:{
-        type:String,
-        required:true,
+    mobile: {
+        type: String,
+        required: true,
     },
-    password:{
-        type:String,
-        required:true,
+    password: {
+        type: String,
+        required: true,
     },
-    profilePic:{
-        type:Object,
+    profilePic: {
+        type: Object,
     },
-    notifications:{
-        type:Array
+    notifications: {
+        type: Array,
     },
-    ban:{
-        type:Boolean,
-        default:false,
-    }
-});
+    ban: {
+        type: Boolean,
+        default: false,
+    },
+})
 
 //Export the model
-export default model('User', userSchema);
+export default model('User', userSchema)

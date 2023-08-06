@@ -1,9 +1,9 @@
 export interface User {
-    _id?: string;
-    name?: string;
-    username?: string;
-    email?: string;
-    mobile?: string;
-    notifications?: Array<any>;
-    ban?: boolean;
+  _id?: string;
+  name?: string;
+  username?: string;
+  email?: string;
+  mobile?: string;
+  notifications?: Array<any>;
+  ban?: boolean;
 }

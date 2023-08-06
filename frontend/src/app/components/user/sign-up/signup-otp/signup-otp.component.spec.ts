@@ -8,7 +8,7 @@ describe('SignupOtpComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SignupOtpComponent]
+      declarations: [SignupOtpComponent],
     });
     fixture = TestBed.createComponent(SignupOtpComponent);
     component = fixture.componentInstance;

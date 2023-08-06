@@ -1,10 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule, isDevMode } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { ToastrModule } from 'ngx-toastr';
 import { AppInitializerService } from './app-intializer.service';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -58,6 +61,9 @@ import { userReducer } from './store/user/user.reducers';
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
+    CommonModule,
+    BrowserAnimationsModule, // required animations module
+    ToastrModule.forRoot(), // ToastrModule added
     StoreModule.forRoot({
       userState: userReducer,
       adminState: adminReducer,

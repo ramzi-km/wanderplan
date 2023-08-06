@@ -1,6 +1,49 @@
 <div class="p-5">
-  <div class="overflow-x-auto">
-    <table class="table bg-secondary text-textp">
+  <div class="mx-1 my-4">
+    <label
+      for="default-search"
+      class="sr-only mb-2 text-sm font-medium text-textg"
+      >Search</label
+    >
+    <div class="relative">
+      <div
+        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+      >
+        <svg
+          class="h-4 w-4 text-gray-500"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 20 20"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+          />
+        </svg>
+      </div>
+      <input
+        type="text"
+        id="default-search"
+        class="block w-full rounded-lg border border-textg bg-secondary p-4 pl-10 text-sm text-textp focus:border-blue-500 focus:ring-blue-500"
+        placeholder="Search username, email..."
+        [(ngModel)]="searchText"
+      />
+      <button
+        (click)="showToast('hi')"
+        type="submit"
+        class="absolute bottom-2.5 right-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
+      >
+        Search
+      </button>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto rounded-xl">
+    <table class="table border border-textg bg-secondary text-textp">
       <!-- head -->
       <thead>
         <tr>
@@ -12,9 +55,17 @@
           <th class="font-bold text-textp">Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody *ngFor="let user of users$ | async; let i = index">
         <!-- row 1 -->
-        <tr *ngFor="let user of users$ | async; let i = index">
+        <tr
+          *ngIf="
+            searchText.trim() == '' ||
+            user.name?.toLocaleLowerCase()?.includes(searchText.trim()) ||
+            user.email?.toLocaleLowerCase()?.includes(searchText.trim()) ||
+            user.username?.toLocaleLowerCase()?.includes(searchText.trim()) ||
+            user.mobile?.toLocaleLowerCase()?.includes(searchText.trim())
+          "
+        >
           <td>{{ i + 1 }}</td>
           <td>
             <div class="flex items-center space-x-3">
@@ -37,6 +88,7 @@
           <th>
             <ng-container *ngIf="user.ban">
               <button
+                (click)="blockUser(user._id!)"
                 class="btn btn-sm bg-primary text-gray-100 hover:bg-gray-200 hover:text-primary"
               >
                 <i class="fa-solid fa-unlock"></i> Unblock
@@ -44,6 +96,7 @@
             </ng-container>
             <ng-container *ngIf="!user.ban">
               <button
+                (click)="blockUser(user._id!)"
                 class="btn btn-sm bg-red-600 text-gray-100 hover:bg-gray-200 hover:text-red-600"
               >
                 <i class="fa-solid fa-ban"></i> Block
@@ -66,6 +119,10 @@
     </table>
   </div>
   <div *ngIf="loading$ | async">
-    <button class="btn btn-primary btn-lg">hellow</button>
+    <div
+      class="fixed inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-60 text-primary"
+    >
+      <span class="loading loading-infinity w-24"></span>
+    </div>
   </div>
 </div>

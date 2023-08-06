@@ -22,9 +22,24 @@ export class usersEffects {
               users: res.users as ReadonlyArray<User>,
             }),
           ),
-          catchError((error) => of(UsersActions.getUsersFailure({ error }))),
+          catchError((res: any) =>
+            of(UsersActions.getUsersFailure({ error: res })),
+          ),
         ),
       ),
     );
   });
+
+  // block or unblock user
+  blockUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UsersActions.blockUser),
+      switchMap((action) =>
+        this.usersService.blockUser(action.id).pipe(
+          map((res: any) => UsersActions.blockUserSuccess({ id: res.userId })),
+          catchError((error: any) => of(UsersActions.blockUserFailure(error))),
+        ),
+      ),
+    ),
+  );
 }

@@ -49,7 +49,7 @@ export class LoginComponent {
       next: (res: any) => {
         this.errMessage = null;
         this.loading = false;
-        this.store.dispatch(UserActions.userLogin({user:res.user}));
+        this.store.dispatch(UserActions.userLogin({ user: res.user }));
         this.router.navigate(['/home']);
       },
       error: (err) => {

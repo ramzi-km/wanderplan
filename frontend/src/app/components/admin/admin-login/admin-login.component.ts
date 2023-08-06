@@ -50,6 +50,5 @@ export class AdminLoginComponent {
         this.loading = false;
       },
     });
-    
   }
 }
