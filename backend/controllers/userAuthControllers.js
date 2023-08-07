@@ -125,14 +125,12 @@ export async function postLogin(req, res) {
                 .status(401)
                 .json({ message: 'provide necessary information' })
         }
-        const user = await userModel.findOne(
-            {
-                $or: [{ email: username }, { username: username }],
-            },
-            { ban: 0 }
-        )
+        const user = await userModel.findOne({
+            $or: [{ email: username }, { username: username }],
+        })
         if (user) {
             if (!user.ban) {
+                console.log(user.ban)
                 const comparison = await bcrypt.compare(password, user.password)
                 if (comparison) {
                     const secret = process.env.JWT_SECRET_KEY
@@ -147,13 +145,14 @@ export async function postLogin(req, res) {
                         {
                             email: user.email,
                         },
-                        { ban: 0, password: 0, __v: 0 }
+                        { password: 0, __v: 0 }
                     )
                     return res.json({ user: resUser })
                 } else {
                     res.status(400).json({ message: 'Incorrect Password' })
                 }
             } else {
+                res.cookie('userToken', '', { maxAge: 0 })
                 res.status(403).json({ message: 'user is banned' })
             }
         } else {
@@ -162,14 +161,6 @@ export async function postLogin(req, res) {
     } catch (err) {
         console.log(err)
         res.status(500).json({ message: 'internal server error' })
-    }
-}
-
-export async function getUser(req, res) {
-    try {
-        res.status(200).json(req.user)
-    } catch (error) {
-        res.status(500).json({ message: error.message })
     }
 }
 
