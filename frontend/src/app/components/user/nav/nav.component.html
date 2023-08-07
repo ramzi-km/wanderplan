@@ -7,15 +7,15 @@
         alt=""
         routerLink="/"
       />
-      <div class="hidden flex-row space-x-10 md:flex">
+      <div class="hidden flex-row space-x-8 md:flex">
         <a
-          class="border-primary text-lg text-texts"
+          class="border-primary px-3 text-center font-semibold text-texts"
           routerLink="/home"
           routerLinkActive="border-b-4"
           >Home</a
         >
         <a
-          class="border-primary text-lg text-texts"
+          class="border-primary px-3 font-semibold text-texts"
           routerLink="/guides"
           routerLinkActive="border-b-4"
           >Travel guides</a
@@ -101,7 +101,7 @@
             class="menu dropdown-content rounded-box menu-sm z-[1] mt-3 w-40 bg-secondary p-2 text-textp shadow"
           >
             <li>
-              <a class="text-lg font-medium text-textp"
+              <a class="text-lg font-medium text-textp" routerLink="profile"
                 ><i class="fa-regular fa-user mr-3"></i>Profile</a
               >
             </li>
@@ -239,7 +239,7 @@
                 >
               </li>
               <li>
-                <a
+                <a routerLink="profile"
                   ><i class="fa-solid fa-user ml-1 mr-3 text-textp"></i
                   >Profile</a
                 >
@@ -292,13 +292,13 @@
           </svg>
         </label>
         <a
-          class="border-primary text-lg text-texts"
+          class="border-primary px-3 font-semibold text-texts"
           routerLink="/login"
           routerLinkActive="border-b-4"
           >Login</a
         >
         <a
-          class="border-primary text-lg text-texts"
+          class="border-primary px-3 font-semibold text-texts"
           routerLink="/signup"
           routerLinkActive="border-b-4"
           >Sign Up</a

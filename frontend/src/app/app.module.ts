@@ -36,6 +36,9 @@ import { usersEffects } from './store/admin/users/users.effects';
 import { usersReducer } from './store/admin/users/users.reducers';
 import { userEffects } from './store/user/user.effects';
 import { userReducer } from './store/user/user.reducers';
+import { ProfileComponent } from './components/user/profile/profile.component';
+import { UserTripPlansComponent } from './components/user/profile/user-trip-plans/user-trip-plans.component';
+import { UserGuidesComponent } from './components/user/profile/user-guides/user-guides.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +57,9 @@ import { userReducer } from './store/user/user.reducers';
     AdminLoginComponent,
     AdminDashboardComponent,
     UserManagementComponent,
+    ProfileComponent,
+    UserTripPlansComponent,
+    UserGuidesComponent,
   ],
   imports: [
     BrowserModule,

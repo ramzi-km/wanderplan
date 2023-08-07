@@ -1,0 +1,64 @@
+<div class="mt-20"></div>
+<main class="container mx-auto flex flex-row flex-wrap px-8 py-20 xl:px-24">
+  <div class="w-full md:basis-1/3">
+    <div class="rounded-lg bg-secondary py-3 shadow-xl">
+      <div class="photo-wrapper p-2">
+        <img
+          class="mx-auto h-32 w-32 rounded-full"
+          src="../../../../assets/images/profile.png"
+          alt="John Doe"
+        />
+      </div>
+      <div class="p-2">
+        <h3 class="text-center text-xl font-medium leading-8 text-textp">
+          Ramzi K.M
+        </h3>
+        <div class="text-center text-xs font-semibold text-gray-400">
+          <p>@ramzi</p>
+        </div>
+        <table class="my-3 text-xs text-textp">
+          <tbody>
+            <tr>
+              <td class="px-2 py-2 font-semibold text-texts">Email :</td>
+              <td class="px-2 py-2">john@exmaple.com</td>
+            </tr>
+            <tr>
+              <td class="px-2 py-2 font-semibold text-texts">Phone :</td>
+              <td class="px-2 py-2">+977 9955221114</td>
+            </tr>
+            <tr>
+              <td class="px-2 py-2 font-semibold text-texts">Address :</td>
+              <td class="px-2 py-2">Chatakpur-3, Dhangadhi Kailali</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="my-3 text-center">
+          <button class="btn btn-primary w-2/5 rounded-full text-textp">
+            <i class="fa-regular fa-pen-to-square mb-1"></i> Edit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-12 w-full px-10 md:mt-0 md:basis-2/3">
+    <nav class="flex items-center justify-center space-x-8">
+      <a
+        class="w-32 border-primary text-center text-lg font-semibold"
+        routerLink="/profile"
+        routerLinkActive="border-b-4 text-primary"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ><i class="fa-solid fa-passport"></i> Trip plans</a
+      >
+      <a
+        class="w-32 border-primary text-center text-lg font-semibold"
+        routerLink="guides"
+        routerLinkActive="border-b-4 text-primary"
+        ><i class="fa-regular fa-compass"></i> Guides</a
+      >
+    </nav>
+    <section>
+      <router-outlet></router-outlet>
+    </section>
+  </div>
+</main>
