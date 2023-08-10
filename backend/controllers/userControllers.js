@@ -11,14 +11,37 @@ export async function getUser(req, res) {
 export async function updateUser(req, res) {
     try {
         let user = req.user
-        const details = req.body
-        user = await userModel
-            .findByIdAndUpdate(user.id, details, {
-                new: true,
-            })
-            .select('-password')
+        const detailsToUpdate = {
+            username: req.body.username,
+            name: req.body.name,
+            mobile: req.body.mobile,
+        }
+        if (
+            !detailsToUpdate.username ||
+            !detailsToUpdate.name ||
+            !detailsToUpdate.mobile
+        ) {
+            return res
+                .status(401)
+                .json({ message: 'provide necessary information' })
+        }
+        const username = detailsToUpdate.username
+        const findUser = await userModel.findOne({ username })
+        if (findUser && findUser.id !== user.id) {
+            return res.status(403).json({ message: 'username already taken' })
+        } else {
+            user = await userModel
+                .findByIdAndUpdate(
+                    user.id,
+                    { $set: detailsToUpdate },
+                    {
+                        new: true,
+                    }
+                )
+                .select('-password')
 
-        res.status(200).json({ user: user, message: 'success' })
+            res.status(200).json({ user: user, message: 'success' })
+        }
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error, message: 'internal server error' })

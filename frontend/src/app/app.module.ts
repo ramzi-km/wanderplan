@@ -2,6 +2,9 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule, isDevMode } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EffectsModule } from '@ngrx/effects';
@@ -30,15 +33,16 @@ import { AdminLoginComponent } from './components/admin/admin-login/admin-login.
 import { UserManagementComponent } from './components/admin/user-management/user-management.component';
 import { ErrorComponent } from './components/error/error.component';
 import { ListGuidesComponent } from './components/user/list-guides/list-guides.component';
+import { ProfileComponent } from './components/user/profile/profile.component';
+import { UserGuidesComponent } from './components/user/profile/user-guides/user-guides.component';
+import { UserTripPlansComponent } from './components/user/profile/user-trip-plans/user-trip-plans.component';
 import { adminEffects } from './store/admin/admin.effects';
 import { adminReducer } from './store/admin/admin.reducers';
 import { usersEffects } from './store/admin/users/users.effects';
 import { usersReducer } from './store/admin/users/users.reducers';
 import { userEffects } from './store/user/user.effects';
 import { userReducer } from './store/user/user.reducers';
-import { ProfileComponent } from './components/user/profile/profile.component';
-import { UserTripPlansComponent } from './components/user/profile/user-trip-plans/user-trip-plans.component';
-import { UserGuidesComponent } from './components/user/profile/user-guides/user-guides.component';
+import { ProfileModalComponent } from './components/user/profile/profile-modal/profile-modal.component';
 
 @NgModule({
   declarations: [
@@ -60,15 +64,19 @@ import { UserGuidesComponent } from './components/user/profile/user-guides/user-
     ProfileComponent,
     UserTripPlansComponent,
     UserGuidesComponent,
+    ProfileModalComponent,
   ],
   imports: [
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
     CommonModule,
-    BrowserAnimationsModule, // required animations module
+    BrowserAnimationsModule,
     ToastrModule.forRoot(), // ToastrModule added
     StoreModule.forRoot({
       userState: userReducer,

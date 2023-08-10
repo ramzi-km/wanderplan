@@ -1,0 +1,110 @@
+<div class="bg-secondary">
+  <button class="float-right m-5" (click)="closeDialog()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+  <form [formGroup]="profileForm" (ngSubmit)="submitForm()">
+    <mat-dialog-content>
+      <h1 class="text-center text-lg font-semibold text-textp">Edit profile</h1>
+      <div class=" mt-3 flex h-5 ml-5" *ngIf="errMessage">
+        <span class="text-sm text-error">{{ errMessage }}</span>
+      </div>
+      <div class="ml-8 mt-2">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Name</span>
+          </label>
+          <input
+            type="text"
+            placeholder="name"
+            class="input input-bordered h-10 text-textp"
+            maxlength="20"
+            formControlName="name"
+          />
+          <div
+            class="text-sm text-red-500"
+            *ngIf="fc['name'].touched && fc['name'].invalid"
+          >
+            <label *ngIf="fc['name'].errors?.['required']"
+              >name is required
+            </label>
+            <label *ngIf="fc['name'].errors?.['noEmptySpaces']"
+              >name must be atleast five characters</label
+            >
+          </div>
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Username</span>
+          </label>
+          <input
+            type="text"
+            placeholder="username"
+            class="input input-bordered h-10 text-textp"
+            formControlName="username"
+          />
+          <div
+            class="text-sm text-red-500"
+            *ngIf="fc['username'].touched && fc['username'].invalid"
+          >
+            <label *ngIf="fc['username'].errors?.['required']"
+              >username is required
+            </label>
+            <label *ngIf="fc['username'].errors?.['noSpaceValidator']"
+              >username should not contain empty spaces</label
+            ><label
+              *ngIf="
+                fc['username'].errors?.['minlength'] &&
+                !fc['username'].errors?.['noSpaceValidator']
+              "
+              >username will be atleast five characters</label
+            >
+          </div>
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Email</span>
+          </label>
+          <input
+            disabled
+            type="email"
+            class="input input-bordered h-10 text-textp"
+            [value]="user.email"
+          />
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Mobile</span>
+          </label>
+          <input
+            type="tel"
+            maxlength="10"
+            class="input input-bordered h-10 text-textp"
+            formControlName="mobile"
+          />
+          <div
+            class="text-sm text-red-500"
+            *ngIf="fc['mobile'].touched && fc['mobile'].invalid"
+          >
+            <label *ngIf="fc['mobile'].errors?.['required']"
+              >mobile is required </label
+            ><label *ngIf="fc['mobile'].errors?.['pattern']"
+              >not a valid mobile</label
+            >
+          </div>
+        </div>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button
+        type="submit"
+        [disabled]="profileForm.invalid"
+        class="btn btn-primary btn-sm m-3 rounded-full text-textp"
+      >
+        Save<span
+          *ngIf="loading"
+          class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+        ></span>
+      </button>
+    </mat-dialog-actions>
+  </form>
+</div>
