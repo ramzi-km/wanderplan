@@ -13,6 +13,9 @@ import { AdminNavComponent } from './components/admin/admin-nav/admin-nav.compon
 import { UserManagementComponent } from './components/admin/user-management/user-management.component';
 import { ErrorComponent } from './components/error/error.component';
 import { ListGuidesComponent } from './components/user/list-guides/list-guides.component';
+import { ProfileComponent } from './components/user/profile/profile.component';
+import { UserGuidesComponent } from './components/user/profile/user-guides/user-guides.component';
+import { UserTripPlansComponent } from './components/user/profile/user-trip-plans/user-trip-plans.component';
 import { adminAuthGuard } from './guards/admin-auth.guard';
 import { adminLoginGuard } from './guards/admin-login.guard';
 import { guestGuard } from './guards/guest.guard';
@@ -27,6 +30,16 @@ const routes: Routes = [
       { path: 'signup', component: SignUpComponent, canActivate: [guestGuard] },
       { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
       { path: 'home', component: HomeComponent, canActivate: [userAuthGuard] },
+      {
+        path: 'profile',
+        component: ProfileComponent,
+        canActivate: [userAuthGuard],
+        children: [
+          { path: '', redirectTo: 'trip-plans', pathMatch: 'full' },
+          { path: 'trip-plans', component: UserTripPlansComponent },
+          { path: 'guides', component: UserGuidesComponent },
+        ],
+      },
       { path: 'guides', component: ListGuidesComponent },
       {
         path: 'emailVerification',

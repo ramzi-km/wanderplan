@@ -1,12 +1,16 @@
 import express from 'express'
 import {
-    getUser,
     logout,
     postLogin,
     postSignup,
     resendOtp,
     signupVerify,
 } from '../controllers/userAuthControllers.js'
+import {
+    getUser,
+    updateUser,
+    uploadProfile,
+} from '../controllers/userControllers.js'
 import verifyUser from '../middlewares/verifyUser.js'
 const router = express.Router()
 
@@ -17,5 +21,7 @@ router.post('/login', postLogin)
 router.post('/logout', logout)
 
 router.get('/user', verifyUser, getUser)
+router.patch('/user', verifyUser, updateUser)
+router.post('/user/uploadProfile', verifyUser, uploadProfile)
 
 export default router

@@ -2,7 +2,7 @@ import userModel from '../models/userModel.js'
 
 export async function getAllUsers(req, res) {
     try {
-        const users = await userModel.find({}, { password: 0, __v: 0 })
+        const users = await userModel.find({}, { password: 0, __v: 0 }).lean()
         res.status(200).json({ users: users, message: 'ok' })
     } catch (error) {
         console.log(error)
