@@ -4,10 +4,7 @@ export interface User {
   username?: string;
   email?: string;
   mobile?: string;
-<<<<<<< HEAD
-=======
   profilePic?: any;
->>>>>>> user-profile
   notifications?: Array<any>;
   ban?: boolean;
 }

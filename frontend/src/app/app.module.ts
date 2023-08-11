@@ -33,6 +33,7 @@ import { AdminLoginComponent } from './components/admin/admin-login/admin-login.
 import { UserManagementComponent } from './components/admin/user-management/user-management.component';
 import { ErrorComponent } from './components/error/error.component';
 import { ListGuidesComponent } from './components/user/list-guides/list-guides.component';
+import { ProfileModalComponent } from './components/user/profile/profile-modal/profile-modal.component';
 import { ProfileComponent } from './components/user/profile/profile.component';
 import { UserGuidesComponent } from './components/user/profile/user-guides/user-guides.component';
 import { UserTripPlansComponent } from './components/user/profile/user-trip-plans/user-trip-plans.component';
@@ -42,7 +43,6 @@ import { usersEffects } from './store/admin/users/users.effects';
 import { usersReducer } from './store/admin/users/users.reducers';
 import { userEffects } from './store/user/user.effects';
 import { userReducer } from './store/user/user.reducers';
-import { ProfileModalComponent } from './components/user/profile/profile-modal/profile-modal.component';
 
 @NgModule({
   declarations: [
@@ -76,11 +76,7 @@ import { ProfileModalComponent } from './components/user/profile/profile-modal/p
     FormsModule,
     HttpClientModule,
     CommonModule,
-<<<<<<< HEAD
-    BrowserAnimationsModule, // required animations module
-=======
     BrowserAnimationsModule,
->>>>>>> user-profile
     ToastrModule.forRoot(), // ToastrModule added
     StoreModule.forRoot({
       userState: userReducer,

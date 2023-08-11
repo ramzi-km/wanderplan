@@ -7,9 +7,6 @@ import { User } from 'src/app/interfaces/user.model';
   providedIn: 'root',
 })
 export class UserService {
-<<<<<<< HEAD
-  constructor() {}
-=======
   constructor(private http: HttpClient) {}
   private baseUrl = environment.API_URL;
 
@@ -23,5 +20,4 @@ export class UserService {
       withCredentials: true,
     });
   }
->>>>>>> user-profile
 }

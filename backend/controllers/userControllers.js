@@ -81,8 +81,13 @@ export async function uploadProfile(req, res) {
 
         // Delete the previous profile picture from Cloudinary if it's not the default one
         if (previousProfilePic && previousProfilePic !== defaultProfilePicUrl) {
-            // const publicId = previousProfilePic.split('/').pop().split('.')[0]
-            // await cloudinary.uploader.destroy(publicId)
+            const publicId = previousProfilePic.split('/').pop().split('.')[0]
+            cloudinary.api
+                .delete_resources([`wanderplan/${publicId}`], {
+                    type: 'upload',
+                    resource_type: 'image',
+                })
+                .then((data) => console.log(data))
         }
 
         res.status(200).json({ user: updatedUser, message: 'success' })
