@@ -24,14 +24,10 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
-<<<<<<< HEAD
-            "styles": ["src/styles.scss"],
-=======
             "styles": [
               "@angular/material/prebuilt-themes/deeppurple-amber.css",
               "src/styles.scss"
             ],
->>>>>>> user-profile
             "scripts": []
           },
           "configurations": {
@@ -86,14 +82,10 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
-<<<<<<< HEAD
-            "styles": ["src/styles.scss"],
-=======
             "styles": [
               "@angular/material/prebuilt-themes/deeppurple-amber.css",
               "src/styles.scss"
             ],
->>>>>>> user-profile
             "scripts": []
           }
         },
