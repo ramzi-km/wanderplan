@@ -1,4 +1,5 @@
 <div class="mt-20"></div>
+
 <main class="container mx-auto flex flex-row flex-wrap px-8 py-20 xl:px-24">
   <div class="w-full md:basis-1/3">
     <div class="rounded-lg bg-secondary py-3 shadow-xl">
@@ -6,15 +7,24 @@
         <div class="photo-wrapper p-2">
           <div class="relative mx-auto h-32 w-32">
             <img
-              class="rounded-full"
-              src="../../../../assets/images/profile.png"
+              class="h-32 w-32 rounded-full"
+              src="{{ user.profilePic }}"
               alt="John Doe"
             />
             <button
+              type="file"
               class="btn btn-circle btn-info btn-sm absolute bottom-2 right-2"
+              (click)="fileInput.click()"
             >
               <i class="fa-solid fa-pen"></i>
             </button>
+            <input
+              accept=".jpg,.jpeg,.png"
+              type="file"
+              #fileInput
+              style="display: none"
+              (change)="onFileSelected($event)"
+            />
           </div>
         </div>
         <div class="p-2">
@@ -54,11 +64,12 @@
       </ng-container>
     </div>
   </div>
+
   <div class="mt-12 w-full px-10 md:mt-0 md:basis-2/3">
     <nav class="flex items-center justify-center space-x-8">
       <a
         class="w-32 border-primary text-center text-lg font-semibold"
-        routerLink="/profile"
+        routerLink="trip-plans"
         routerLinkActive="border-b-4 text-primary"
         [routerLinkActiveOptions]="{ exact: true }"
         ><i class="fa-solid fa-passport"></i> Trip plans</a
@@ -73,5 +84,12 @@
     <section>
       <router-outlet></router-outlet>
     </section>
+  </div>
+  <div *ngIf="loading">
+    <div
+      class="fixed inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-60 text-primary"
+    >
+      <span class="loading loading-infinity w-24"></span>
+    </div>
   </div>
 </main>

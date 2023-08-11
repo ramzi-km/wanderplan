@@ -25,7 +25,9 @@ var userSchema = new Schema({
         required: true,
     },
     profilePic: {
-        type: Object,
+        type: String,
+        default:
+            'https://res.cloudinary.com/dbmujhmpe/image/upload/v1691666473/wanderplan/j7nkqvajk2ppfdfqqpkt.png',
     },
     notifications: {
         type: Array,

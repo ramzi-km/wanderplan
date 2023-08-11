@@ -35,7 +35,8 @@ const routes: Routes = [
         component: ProfileComponent,
         canActivate: [userAuthGuard],
         children: [
-          { path: '', component: UserTripPlansComponent },
+          { path: '', redirectTo: 'trip-plans', pathMatch: 'full' },
+          { path: 'trip-plans', component: UserTripPlansComponent },
           { path: 'guides', component: UserGuidesComponent },
         ],
       },

@@ -5,7 +5,7 @@
   <form [formGroup]="profileForm" (ngSubmit)="submitForm()">
     <mat-dialog-content>
       <h1 class="text-center text-lg font-semibold text-textp">Edit profile</h1>
-      <div class=" mt-3 flex h-5 ml-5" *ngIf="errMessage">
+      <div class="ml-5 mt-3 flex h-5" *ngIf="errMessage">
         <span class="text-sm text-error">{{ errMessage }}</span>
       </div>
       <div class="ml-8 mt-2">

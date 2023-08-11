@@ -33,7 +33,7 @@ export const usersReducer = createReducer(
     ...state,
     loading: false,
     users: state.users.map((user) =>
-      user._id === id ? { ...user, ban: !user.ban } : user
+      user._id === id ? { ...user, ban: !user.ban } : user,
     ),
   })),
   on(UsersActions.blockUserFailure, (state, { error }) => ({

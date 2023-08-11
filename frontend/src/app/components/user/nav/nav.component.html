@@ -10,8 +10,8 @@
       <div class="hidden flex-row space-x-8 md:flex">
         <a
           class="border-primary px-3 text-center font-semibold text-texts"
-          routerLink="/home"
           routerLinkActive="border-b-4"
+          routerLink="/home"
           >Home</a
         >
         <a
@@ -24,7 +24,7 @@
     </div>
     <ng-container *ngIf="isLoggedIn$ | async; else guestNav">
       <div class="hidden flex-row space-x-5 md:flex">
-        <label class="swap swap-rotate">
+        <label class="swap-rotate swap">
           <!-- this hidden checkbox controls the state -->
           <input
             type="checkbox"
@@ -55,7 +55,7 @@
             />
           </svg>
         </label>
-        <div class="dropdown dropdown-end">
+        <div class="dropdown-end dropdown">
           <label tabindex="0" class="btn btn-circle btn-ghost text-textp">
             <div class="indicator">
               <svg
@@ -88,12 +88,12 @@
             </div>
           </div>
         </div>
-        <div class="dropdown-end dropdown">
+        <div *ngIf="user$ | async as user" class="dropdown-end dropdown">
           <label tabindex="0" class="avatar btn btn-circle btn-ghost">
             <div
               class="w-10 rounded-full ring ring-primary ring-offset-1 ring-offset-base-100"
             >
-              <img src="../../../../assets/images/profile.png" />
+              <img src="{{ user.profilePic }}" />
             </div>
           </label>
           <ul
@@ -101,7 +101,7 @@
             class="menu dropdown-content rounded-box menu-sm z-[1] mt-3 w-40 bg-secondary p-2 text-textp shadow"
           >
             <li>
-              <a class="text-lg font-medium text-textp" routerLink="profile"
+              <a class="text-lg font-medium text-textp" routerLink="/profile"
                 ><i class="fa-regular fa-user mr-3"></i>Profile</a
               >
             </li>
@@ -239,7 +239,7 @@
                 >
               </li>
               <li>
-                <a routerLink="profile"
+                <a routerLink="/profile"
                   ><i class="fa-solid fa-user ml-1 mr-3 text-textp"></i
                   >Profile</a
                 >
@@ -354,7 +354,7 @@
               class="menu dropdown-content rounded-box z-[1] w-52 bg-secondary p-2 text-textp shadow"
             >
               <li>
-                <a routerLink="/home"
+                <a [routerLink]="'/home'"
                   ><i class="fa-solid fa-house ml-1 mr-2 text-textp"></i>Home</a
                 >
               </li>

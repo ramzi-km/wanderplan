@@ -15,4 +15,9 @@ export class UserService {
       withCredentials: true,
     });
   }
+  uploadProfile(profile: { profilePic: string }) {
+    return this.http.post(`${this.baseUrl}/user/uploadProfile`, profile, {
+      withCredentials: true,
+    });
+  }
 }
