@@ -12,6 +12,8 @@ import { AdminLoginComponent } from './components/admin/admin-login/admin-login.
 import { AdminNavComponent } from './components/admin/admin-nav/admin-nav.component';
 import { UserManagementComponent } from './components/admin/user-management/user-management.component';
 import { ErrorComponent } from './components/error/error.component';
+import { CreateGuideComponent } from './components/user/create-guide/create-guide.component';
+import { CreatePlanComponent } from './components/user/create-plan/create-plan.component';
 import { ListGuidesComponent } from './components/user/list-guides/list-guides.component';
 import { ProfileComponent } from './components/user/profile/profile.component';
 import { UserGuidesComponent } from './components/user/profile/user-guides/user-guides.component';
@@ -38,6 +40,15 @@ const routes: Routes = [
           { path: '', redirectTo: 'trip-plans', pathMatch: 'full' },
           { path: 'trip-plans', component: UserTripPlansComponent },
           { path: 'guides', component: UserGuidesComponent },
+        ],
+      },
+      {
+        path: 'create',
+        canActivate: [userAuthGuard],
+        children: [
+          { path: '', redirectTo: 'plan', pathMatch: 'full' },
+          { path: 'plan', component: CreatePlanComponent },
+          { path: 'guide', component: CreateGuideComponent },
         ],
       },
       { path: 'guides', component: ListGuidesComponent },

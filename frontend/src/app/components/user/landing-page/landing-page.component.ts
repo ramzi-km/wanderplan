@@ -1,5 +1,4 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-
 @Component({
   selector: 'app-landing-page',
   templateUrl: './landing-page.component.html',
@@ -18,5 +17,9 @@ export class LandingPageComponent {
     if (sectionElement) {
       sectionElement.scrollIntoView({ behavior: 'smooth' });
     }
+  }
+  loading = true;
+  onImageLoaded() {
+    this.loading = false;
   }
 }
