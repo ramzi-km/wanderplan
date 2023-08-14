@@ -1,4 +1,13 @@
 import express from 'express'
+const router = express.Router()
+
+//---------------middlewares-----------------//
+
+import verifyUser from '../middlewares/verifyUser.js'
+
+//--------------controllers-----------------//
+
+//---------user-auth-controllers---//
 import {
     logout,
     postLogin,
@@ -6,13 +15,22 @@ import {
     resendOtp,
     signupVerify,
 } from '../controllers/userAuthControllers.js'
+
+//--------user-controllers-------//
+
 import {
     getUser,
     updateUser,
     uploadProfile,
 } from '../controllers/userControllers.js'
-import verifyUser from '../middlewares/verifyUser.js'
-const router = express.Router()
+
+//------tripPlanConrollers--------//
+
+import { addNewTrip } from '../controllers/tripPlanControllers.js'
+
+//----------------------------------------------//
+
+//------------user-auth------------------//
 
 router.post('/signUp', postSignup)
 router.post('/verifySignup', signupVerify)
@@ -20,8 +38,13 @@ router.post('/resendSignupOtp', resendOtp)
 router.post('/login', postLogin)
 router.post('/logout', logout)
 
+//----------user-profile------------------//
+
 router.get('/user', verifyUser, getUser)
 router.patch('/user', verifyUser, updateUser)
 router.post('/user/uploadProfile', verifyUser, uploadProfile)
+
+//----------user-trip-plans-----------------//
+router.post('/trip/create', verifyUser, addNewTrip)
 
 export default router

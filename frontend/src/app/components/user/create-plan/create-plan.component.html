@@ -1,19 +1,42 @@
+<script src="../path/to/flowbite/dist/datepicker.js"></script>
 <div class="mt-20"></div>
 <section class="flex justify-center py-16">
   <div
     class="flex w-5/6 flex-col items-center justify-center space-y-5 md:w-2/3 lg:w-2/5"
   >
     <h1 class="text-4xl font-bold text-textp">Plan a new trip</h1>
-    <form class="w-full">
-      <div class="form-control">
+    <form class="w-full" [formGroup]="createPlanForm" (ngSubmit)="submitForm()">
+      <div class="form-control relative">
         <label class="label">
           <span class="label-text text-lg text-textp">Where to?</span>
         </label>
         <input
           type="text"
           placeholder="e.g: Paris,Hawaii,Goa"
+          [formControl]="inputControl"
+          [(ngModel)]="searchInput"
           class="input input-bordered bg-secondary"
+          (focus)="showResults = true"
+          (blur)="blurResults()"
         />
+        <div class="text-sm text-red-500" *ngIf="showErrors">
+          <label *ngIf="fc['place'].errors?.['required']"
+            >Choose a place
+          </label>
+        </div>
+        <div
+          *ngIf="places.length > 0 && showResults"
+          class="absolute z-10 mt-24 w-full rounded border border-gray-300 bg-secondary shadow-lg"
+        >
+          <div
+            *ngFor="let place of places"
+            class="cursor-pointer px-4 py-2 text-textp hover:bg-gray-300"
+            (click)="selectPlace(place)"
+          >
+            <p>{{ place.text }}</p>
+            <span class="text-sm text-texts">{{ place.place_name }}</span>
+          </div>
+        </div>
       </div>
 
       <div class="">
@@ -21,15 +44,22 @@
           <span class="label-text text-lg text-textp">Dates</span> </label
         ><mat-form-field class="w-full" (click)="openDatePicker()">
           <mat-label>Select a date range</mat-label>
-          <mat-date-range-input [rangePicker]="picker">
+          <mat-date-range-input [min]="currentDate" [rangePicker]="picker">
             <input
               matStartDate
-              [min]="today"
               placeholder="Start date"
-              disabled
               class="w-full cursor-pointer rounded bg-gray-100 px-3 py-2"
+              (dateChange)="startChange($event)"
+              disabled
+              required
             />
-            <input matEndDate placeholder="End date" disabled />
+            <input
+              matEndDate
+              placeholder="End date"
+              (dateChange)="endChange($event)"
+              required
+              disabled
+            />
           </mat-date-range-input>
           <mat-datepicker-toggle
             matIconSuffix
@@ -40,20 +70,33 @@
             disabled="false"
           ></mat-date-range-picker>
         </mat-form-field>
+        <div class="-mt-4 text-sm text-red-500" *ngIf="showErrors">
+          <label
+            *ngIf="
+              fc['startDate'].errors?.['required'] ||
+              fc['endDate'].errors?.['required']
+            "
+            >Invalid date range
+          </label>
+        </div>
       </div>
 
-      <div class="-mt-4 flex justify-end">
+      <div class="flex justify-end">
         <select
           class="select select-bordered select-sm ml-auto bg-secondary text-sm"
+          formControlName="visibility"
         >
-          <option selected>Private</option>
-          <option>Public</option>
+          <option value="private">Private</option>
+          <option value="public">Public</option>
         </select>
       </div>
+      <div class="mt-2 flex justify-center">
+        <button type="submit" class="btn btn-primary rounded-full text-textp">
+          Start planning
+        </button>
+      </div>
     </form>
-    <button class="btn btn-primary rounded-full text-textp">
-      Start planning
-    </button>
+
     <a routerLink="../guide" class="font-medium text-texts">
       Or write a new guide
     </a>
