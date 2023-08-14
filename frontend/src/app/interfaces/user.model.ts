@@ -6,5 +6,6 @@ export interface User {
   mobile?: string;
   profilePic?: any;
   notifications?: Array<any>;
+  history?: Array<any>;
   ban?: boolean;
 }

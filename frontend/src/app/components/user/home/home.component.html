@@ -1,9 +1,248 @@
-<div class="mt-44">
-  <p>home works!</p>
-  <div *ngIf="user$ | async as user">
-    <p>{{ user.name }}</p>
+<div class="mt-20"></div>
+<section id="recent">
+  <div class="container mx-auto flex w-3/4 items-center justify-center">
+    <div class="flex w-full flex-col gap-5 py-14">
+      <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-bold text-textp">
+          Recently viewed and upcoming
+        </h1>
+        <button routerLink="/create/plan" class="btn btn-primary rounded-full text-textp">
+          <i class="fa-solid fa-plus"></i>Plan new trip
+        </button>
+      </div>
+      <div class="flex flex-col">
+        <a class="m-3 self-end font-semibold text-texts" routerLink="/profile"
+          >See all</a
+        >
+        <div>
+          <swiper-container navigation="true" class="mySwiper" init="true">
+            <swiper-slide
+              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
+                <button
+                  class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
+                >
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <button class="btn btn-neutral btn-xs absolute left-2 top-2">
+                  in 2 days
+                </button>
+                <a>
+                  <img
+                    class="rounded-t-lg"
+                    src="../../../../../assets/images/paris.jpeg"
+                    alt=""
+                  />
+                </a>
+                <div class="p-5">
+                  <a>
+                    <h5
+                      class="mb-2 text-lg font-semibold tracking-tight text-textp"
+                    >
+                      Trip to paris
+                    </h5>
+                  </a>
+                  <p class="text-sm font-normal text-gray-500">
+                    <span>&bull; 17 jul - 20</span>
+                    <span class="ml-5">&bull; 5 places</span>
+                  </p>
+                </div>
+              </div></swiper-slide
+            >
+            <swiper-slide
+              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
+                <button
+                  class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
+                >
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <button class="btn btn-neutral btn-xs absolute left-2 top-2">
+                  in 2 days
+                </button>
+                <a>
+                  <img
+                    class="rounded-t-lg"
+                    src="../../../../../assets/images/paris.jpeg"
+                    alt=""
+                  />
+                </a>
+                <div class="p-5">
+                  <a>
+                    <h5
+                      class="mb-2 text-lg font-semibold tracking-tight text-textp"
+                    >
+                      Trip to paris
+                    </h5>
+                  </a>
+                  <p class="text-sm font-normal text-gray-500">
+                    <span>&bull; 17 jul - 20</span>
+                    <span class="ml-5">&bull; 5 places</span>
+                  </p>
+                </div>
+              </div></swiper-slide
+            >
+            <swiper-slide
+              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
+                <button
+                  class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
+                >
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <button class="btn btn-neutral btn-xs absolute left-2 top-2">
+                  in 2 days
+                </button>
+                <a>
+                  <img
+                    class="rounded-t-lg"
+                    src="../../../../../assets/images/paris.jpeg"
+                    alt=""
+                  />
+                </a>
+                <div class="p-5">
+                  <a>
+                    <h5
+                      class="mb-2 text-lg font-semibold tracking-tight text-textp"
+                    >
+                      Trip to paris
+                    </h5>
+                  </a>
+                  <p class="text-sm font-normal text-gray-500">
+                    <span>&bull; 17 jul - 20</span>
+                    <span class="ml-5">&bull; 5 places</span>
+                  </p>
+                </div>
+              </div></swiper-slide
+            >
+            <swiper-slide
+              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
+                <button
+                  class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
+                >
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <button class="btn btn-neutral btn-xs absolute left-2 top-2">
+                  in 2 days
+                </button>
+                <a>
+                  <img
+                    class="rounded-t-lg"
+                    src="../../../../../assets/images/paris.jpeg"
+                    alt=""
+                  />
+                </a>
+                <div class="p-5">
+                  <a>
+                    <h5
+                      class="mb-2 text-lg font-semibold tracking-tight text-textp"
+                    >
+                      Trip to paris
+                    </h5>
+                  </a>
+                  <p class="text-sm font-normal text-gray-500">
+                    <span>&bull; 17 jul - 20</span>
+                    <span class="ml-5">&bull; 5 places</span>
+                  </p>
+                </div>
+              </div></swiper-slide
+            >
+            <swiper-slide
+              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
+                <button
+                  class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
+                >
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <button class="btn btn-neutral btn-xs absolute left-2 top-2">
+                  in 2 days
+                </button>
+                <a>
+                  <img
+                    class="rounded-t-lg"
+                    src="../../../../../assets/images/paris.jpeg"
+                    alt=""
+                  />
+                </a>
+                <div class="p-5">
+                  <a>
+                    <h5
+                      class="mb-2 text-lg font-semibold tracking-tight text-textp"
+                    >
+                      Trip to paris
+                    </h5>
+                  </a>
+                  <p class="text-sm font-normal text-gray-500">
+                    <span>&bull; 17 jul - 20</span>
+                    <span class="ml-5">&bull; 5 places</span>
+                  </p>
+                </div>
+              </div></swiper-slide
+            >
+            <swiper-slide
+              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
+                <button
+                  class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
+                >
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <button class="btn btn-neutral btn-xs absolute left-2 top-2">
+                  in 2 days
+                </button>
+                <a>
+                  <img
+                    class="rounded-t-lg"
+                    src="../../../../../assets/images/paris.jpeg"
+                    alt=""
+                  />
+                </a>
+                <div class="p-5">
+                  <a>
+                    <h5
+                      class="mb-2 text-lg font-semibold tracking-tight text-textp"
+                    >
+                      Trip to paris
+                    </h5>
+                  </a>
+                  <p class="text-sm font-normal text-gray-500">
+                    <span>&bull; 17 jul - 20</span>
+                    <span class="ml-5">&bull; 5 places</span>
+                  </p>
+                </div>
+              </div></swiper-slide
+            >
+            <swiper-slide
+              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
+                <button
+                  class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
+                >
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <button class="btn btn-neutral btn-xs absolute left-2 top-2">
+                  in 2 days
+                </button>
+                <a>
+                  <img
+                    class="rounded-t-lg"
+                    src="../../../../../assets/images/paris.jpeg"
+                    alt=""
+                  />
+                </a>
+                <div class="p-5">
+                  <a>
+                    <h5
+                      class="mb-2 text-lg font-semibold tracking-tight text-textp"
+                    >
+                      Trip to paris
+                    </h5>
+                  </a>
+                  <p class="text-sm font-normal text-gray-500">
+                    <span>&bull; 17 jul - 20</span>
+                    <span class="ml-5">&bull; 5 places</span>
+                  </p>
+                </div>
+              </div></swiper-slide
+            >
+          </swiper-container>
+        </div>
+      </div>
+    </div>
   </div>
-  <div *ngIf="isLoggedIn$ | async">
-    <p>user is logged in</p>
-  </div>
-</div>
+</section>

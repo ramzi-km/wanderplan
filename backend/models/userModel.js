@@ -32,6 +32,10 @@ var userSchema = new Schema({
     notifications: {
         type: Array,
     },
+    history: {
+        type: Array,
+        default: [],
+    },
     ban: {
         type: Boolean,
         default: false,
