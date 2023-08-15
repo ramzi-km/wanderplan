@@ -130,7 +130,6 @@ export async function postLogin(req, res) {
         })
         if (user) {
             if (!user.ban) {
-                console.log(user.ban)
                 const comparison = await bcrypt.compare(password, user.password)
                 if (comparison) {
                     const secret = process.env.JWT_SECRET_KEY
@@ -165,6 +164,6 @@ export async function postLogin(req, res) {
 }
 
 export async function logout(req, res) {
-    res.cookie('userToken', '', { maxAge: 0 })
+    res.cookie('userToken', '', { maxAge: 0, httpOnly: true })
     res.status(200).json({ message: 'success' })
 }

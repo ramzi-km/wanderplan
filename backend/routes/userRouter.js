@@ -19,6 +19,8 @@ import {
 //--------user-controllers-------//
 
 import {
+    getAllTrips,
+    getRecentAndUpcomingTrips,
     getUser,
     updateUser,
     uploadProfile,
@@ -43,6 +45,9 @@ router.post('/logout', logout)
 router.get('/user', verifyUser, getUser)
 router.patch('/user', verifyUser, updateUser)
 router.post('/user/uploadProfile', verifyUser, uploadProfile)
+
+router.get('/user/getRecentTrips', verifyUser, getRecentAndUpcomingTrips)
+router.get('/user/getAllTrips', verifyUser, getAllTrips)
 
 //----------user-trip-plans-----------------//
 router.post('/trip/create', verifyUser, addNewTrip)

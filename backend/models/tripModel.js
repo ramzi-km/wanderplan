@@ -24,7 +24,7 @@ const itineraryPlaceSchema = new Schema({
 const tripSchema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'User' },
     name: String,
-    starDate: Date,
+    startDate: Date,
     endDate: Date,
     coverPhoto: String,
     place: {
@@ -55,4 +55,4 @@ const tripSchema = new Schema({
     },
 })
 
-export default model('TripPlan', tripSchema)
+export default model('Trip', tripSchema)

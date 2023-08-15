@@ -33,7 +33,7 @@ var userSchema = new Schema({
         type: Array,
     },
     history: {
-        type: Array,
+        type: [{ type: Schema.Types.ObjectId, ref: 'Trip' }],
         default: [],
     },
     ban: {

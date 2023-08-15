@@ -53,6 +53,8 @@ import { usersEffects } from './store/admin/users/users.effects';
 import { usersReducer } from './store/admin/users/users.reducers';
 import { userEffects } from './store/user/user.effects';
 import { userReducer } from './store/user/user.reducers';
+import { DateRangePipe } from './pipes/date-range.pipe';
+import { DaysToPipe } from './pipes/days-to.pipe';
 
 @NgModule({
   declarations: [
@@ -77,6 +79,8 @@ import { userReducer } from './store/user/user.reducers';
     ProfileModalComponent,
     CreatePlanComponent,
     CreateGuideComponent,
+    DateRangePipe,
+    DaysToPipe,
   ],
   imports: [
     MatButtonModule,

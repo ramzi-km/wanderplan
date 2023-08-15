@@ -1,7 +1,9 @@
+import mongoose from 'mongoose'
 import cloudinary from '../config/cloudinary.js'
 
 //------------------ models --------------------//
 
+import tripModel from '../models/tripModel.js'
 import userModel from '../models/userModel.js'
 
 //-----------------------------------------------//
@@ -92,6 +94,157 @@ export async function uploadProfile(req, res) {
 
         res.status(200).json({ user: updatedUser, message: 'success' })
     } catch (error) {
+        res.status(500).json({ message: 'Internal Server Error' })
+    }
+}
+
+export async function getAllTrips(req, res) {
+    try {
+        const user = req.user
+        const trips = await tripModel
+            .aggregate([
+                {
+                    $match: {
+                        $or: [{ userId: user._id }, { tripMates: user._id }],
+                    },
+                },
+                {
+                    $addFields: {
+                        totalPlacesToVisit: {
+                            $size: '$overview.placesToVisit',
+                        },
+                        totalItineraryPlaces: {
+                            $sum: '$itinerary.places.length',
+                        },
+                    },
+                },
+                {
+                    $sort: {
+                        startDate: 1,
+                        endDate: 1,
+                    },
+                },
+                {
+                    $project: {
+                        userId: 1,
+                        _id: 1,
+                        name: 1,
+                        coverPhoto: 1,
+                        startDate: 1,
+                        endDate: 1,
+                        totalPlacesToVisit: 1,
+                        totalItineraryPlaces: 1,
+                    },
+                },
+            ])
+            .exec()
+        res.status(200).json({ trips: trips })
+    } catch (error) {
+        res.status(500).json({ message: 'Internal Server Error' })
+    }
+}
+
+export async function getRecentAndUpcomingTrips(req, res) {
+    try {
+        const user = req.user
+        let today = new Date()
+        let next10Days = new Date()
+        next10Days.setDate(today.getDate() + 10)
+
+        const tripsWithin10Days = await tripModel
+            .aggregate([
+                {
+                    $match: {
+                        $or: [{ userId: user._id }, { tripMates: user._id }],
+                        startDate: {
+                            $gte: today,
+                            $lte: next10Days,
+                        },
+                    },
+                },
+                {
+                    $addFields: {
+                        totalPlacesToVisit: {
+                            $size: '$overview.placesToVisit',
+                        },
+                        totalItineraryPlaces: {
+                            $sum: '$itinerary.places.length',
+                        },
+                    },
+                },
+                {
+                    $sort: {
+                        startDate: 1,
+                        endDate: 1,
+                    },
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        coverPhoto: 1,
+                        startDate: 1,
+                        endDate: 1,
+                        totalPlacesToVisit: 1,
+                        totalItineraryPlaces: 1,
+                    },
+                },
+            ])
+            .exec()
+
+        const recent = await userModel
+            .aggregate([
+                { $match: { _id: user._id } },
+                {
+                    $project: {
+                        history: 1,
+                    },
+                },
+            ])
+            .exec()
+
+        const recentArr = [...recent[0].history]
+
+        const recentTrips = await tripModel.aggregate([
+            {
+                $match: {
+                    _id: {
+                        $in: recentArr.map(
+                            (id) => new mongoose.Types.ObjectId(id)
+                        ),
+                    },
+                },
+            },
+            {
+                $addFields: {
+                    totalPlacesToVisit: {
+                        $size: '$overview.placesToVisit',
+                    },
+                    totalItineraryPlaces: {
+                        $sum: '$itinerary.places.length',
+                    },
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    coverPhoto: 1,
+                    startDate: 1,
+                    endDate: 1,
+                    totalPlacesToVisit: 1,
+                    totalItineraryPlaces: 1,
+                },
+            },
+        ])
+
+        res.status(200).json({
+            message: 'success',
+            recentTrips: recentTrips,
+            upcomingTrips: tripsWithin10Days,
+        })
+    } catch (error) {
+        console.log(error)
         res.status(500).json({ message: 'Internal Server Error' })
     }
 }

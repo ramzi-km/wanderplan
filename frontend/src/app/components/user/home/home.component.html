@@ -6,7 +6,10 @@
         <h1 class="text-3xl font-bold text-textp">
           Recently viewed and upcoming
         </h1>
-        <button routerLink="/create/plan" class="btn btn-primary rounded-full text-textp">
+        <button
+          routerLink="/create/plan"
+          class="btn btn-primary rounded-full text-textp"
+        >
           <i class="fa-solid fa-plus"></i>Plan new trip
         </button>
       </div>
@@ -16,226 +19,86 @@
         >
         <div>
           <swiper-container navigation="true" class="mySwiper" init="true">
-            <swiper-slide
-              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
+            <swiper-slide *ngFor="let upcomingTrip of upcomingTrips"
+              ><div class="relative max-w-sm">
                 <button
                   class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
                 >
                   <i class="fa-solid fa-ellipsis"></i>
                 </button>
                 <button class="btn btn-neutral btn-xs absolute left-2 top-2">
-                  in 2 days
+                  {{ upcomingTrip.startDate | daysTo }}
                 </button>
                 <a>
                   <img
-                    class="rounded-t-lg"
-                    src="../../../../../assets/images/paris.jpeg"
+                    class="rounded-lg w-full h-40"
+                    src="{{ upcomingTrip.coverPhoto }}"
                     alt=""
                   />
                 </a>
-                <div class="p-5">
+                <div class="pt-3">
                   <a>
                     <h5
                       class="mb-2 text-lg font-semibold tracking-tight text-textp"
                     >
-                      Trip to paris
+                      {{ upcomingTrip.name }}
                     </h5>
                   </a>
-                  <p class="text-sm font-normal text-gray-500">
-                    <span>&bull; 17 jul - 20</span>
-                    <span class="ml-5">&bull; 5 places</span>
+                  <p class="text-sm font-normal text-texts">
+                    <span
+                      >&bull;
+                      {{
+                        [upcomingTrip.startDate, upcomingTrip.endDate]
+                          | dateRange
+                      }}</span
+                    >
+                    <span class="ml-5"
+                      >&bull;{{
+                        upcomingTrip.totalPlacesToVisit +
+                          upcomingTrip.totalItineraryPlaces
+                      }}
+                      places</span
+                    >
                   </p>
                 </div>
               </div></swiper-slide
             >
-            <swiper-slide
-              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
+            <swiper-slide *ngFor="let recentTrip of recentTrips"
+              ><div class="relative max-w-sm">
                 <button
                   class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
                 >
                   <i class="fa-solid fa-ellipsis"></i>
                 </button>
-                <button class="btn btn-neutral btn-xs absolute left-2 top-2">
-                  in 2 days
-                </button>
                 <a>
                   <img
-                    class="rounded-t-lg"
-                    src="../../../../../assets/images/paris.jpeg"
+                    class="rounded-lg w-full h-40"
+                    src="{{ recentTrip.coverPhoto }}"
                     alt=""
                   />
                 </a>
-                <div class="p-5">
+                <div class="pt-3">
                   <a>
                     <h5
                       class="mb-2 text-lg font-semibold tracking-tight text-textp"
                     >
-                      Trip to paris
+                      {{ recentTrip.name }}
                     </h5>
                   </a>
-                  <p class="text-sm font-normal text-gray-500">
-                    <span>&bull; 17 jul - 20</span>
-                    <span class="ml-5">&bull; 5 places</span>
-                  </p>
-                </div>
-              </div></swiper-slide
-            >
-            <swiper-slide
-              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
-                <button
-                  class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
-                >
-                  <i class="fa-solid fa-ellipsis"></i>
-                </button>
-                <button class="btn btn-neutral btn-xs absolute left-2 top-2">
-                  in 2 days
-                </button>
-                <a>
-                  <img
-                    class="rounded-t-lg"
-                    src="../../../../../assets/images/paris.jpeg"
-                    alt=""
-                  />
-                </a>
-                <div class="p-5">
-                  <a>
-                    <h5
-                      class="mb-2 text-lg font-semibold tracking-tight text-textp"
+                  <p class="text-sm font-normal text-texts">
+                    <span
+                      >&bull;
+                      {{
+                        [recentTrip.startDate, recentTrip.endDate] | dateRange
+                      }}</span
                     >
-                      Trip to paris
-                    </h5>
-                  </a>
-                  <p class="text-sm font-normal text-gray-500">
-                    <span>&bull; 17 jul - 20</span>
-                    <span class="ml-5">&bull; 5 places</span>
-                  </p>
-                </div>
-              </div></swiper-slide
-            >
-            <swiper-slide
-              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
-                <button
-                  class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
-                >
-                  <i class="fa-solid fa-ellipsis"></i>
-                </button>
-                <button class="btn btn-neutral btn-xs absolute left-2 top-2">
-                  in 2 days
-                </button>
-                <a>
-                  <img
-                    class="rounded-t-lg"
-                    src="../../../../../assets/images/paris.jpeg"
-                    alt=""
-                  />
-                </a>
-                <div class="p-5">
-                  <a>
-                    <h5
-                      class="mb-2 text-lg font-semibold tracking-tight text-textp"
+                    <span class="ml-5"
+                      >&bull;{{
+                        recentTrip.totalPlacesToVisit +
+                          recentTrip.totalItineraryPlaces
+                      }}
+                      places</span
                     >
-                      Trip to paris
-                    </h5>
-                  </a>
-                  <p class="text-sm font-normal text-gray-500">
-                    <span>&bull; 17 jul - 20</span>
-                    <span class="ml-5">&bull; 5 places</span>
-                  </p>
-                </div>
-              </div></swiper-slide
-            >
-            <swiper-slide
-              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
-                <button
-                  class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
-                >
-                  <i class="fa-solid fa-ellipsis"></i>
-                </button>
-                <button class="btn btn-neutral btn-xs absolute left-2 top-2">
-                  in 2 days
-                </button>
-                <a>
-                  <img
-                    class="rounded-t-lg"
-                    src="../../../../../assets/images/paris.jpeg"
-                    alt=""
-                  />
-                </a>
-                <div class="p-5">
-                  <a>
-                    <h5
-                      class="mb-2 text-lg font-semibold tracking-tight text-textp"
-                    >
-                      Trip to paris
-                    </h5>
-                  </a>
-                  <p class="text-sm font-normal text-gray-500">
-                    <span>&bull; 17 jul - 20</span>
-                    <span class="ml-5">&bull; 5 places</span>
-                  </p>
-                </div>
-              </div></swiper-slide
-            >
-            <swiper-slide
-              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
-                <button
-                  class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
-                >
-                  <i class="fa-solid fa-ellipsis"></i>
-                </button>
-                <button class="btn btn-neutral btn-xs absolute left-2 top-2">
-                  in 2 days
-                </button>
-                <a>
-                  <img
-                    class="rounded-t-lg"
-                    src="../../../../../assets/images/paris.jpeg"
-                    alt=""
-                  />
-                </a>
-                <div class="p-5">
-                  <a>
-                    <h5
-                      class="mb-2 text-lg font-semibold tracking-tight text-textp"
-                    >
-                      Trip to paris
-                    </h5>
-                  </a>
-                  <p class="text-sm font-normal text-gray-500">
-                    <span>&bull; 17 jul - 20</span>
-                    <span class="ml-5">&bull; 5 places</span>
-                  </p>
-                </div>
-              </div></swiper-slide
-            >
-            <swiper-slide
-              ><div class="relative max-w-sm rounded-lg bg-secondary shadow">
-                <button
-                  class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
-                >
-                  <i class="fa-solid fa-ellipsis"></i>
-                </button>
-                <button class="btn btn-neutral btn-xs absolute left-2 top-2">
-                  in 2 days
-                </button>
-                <a>
-                  <img
-                    class="rounded-t-lg"
-                    src="../../../../../assets/images/paris.jpeg"
-                    alt=""
-                  />
-                </a>
-                <div class="p-5">
-                  <a>
-                    <h5
-                      class="mb-2 text-lg font-semibold tracking-tight text-textp"
-                    >
-                      Trip to paris
-                    </h5>
-                  </a>
-                  <p class="text-sm font-normal text-gray-500">
-                    <span>&bull; 17 jul - 20</span>
-                    <span class="ml-5">&bull; 5 places</span>
                   </p>
                 </div>
               </div></swiper-slide

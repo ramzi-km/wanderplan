@@ -20,4 +20,14 @@ export class UserService {
       withCredentials: true,
     });
   }
+  getRecentTrips() {
+    return this.http.get(`${this.baseUrl}/user/getRecentTrips`, {
+      withCredentials: true,
+    });
+  }
+  getAllTrips() {
+    return this.http.get(`${this.baseUrl}/user/getAllTrips`, {
+      withCredentials: true,
+    });
+  }
 }
