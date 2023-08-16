@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TripEditComponent } from './trip-edit.component';
+import { TripViewComponent } from './trip-view.component';
 
-describe('TripEditComponent', () => {
-  let component: TripEditComponent;
-  let fixture: ComponentFixture<TripEditComponent>;
+describe('TripViewComponent', () => {
+  let component: TripViewComponent;
+  let fixture: ComponentFixture<TripViewComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TripEditComponent]
+      declarations: [TripViewComponent]
     });
-    fixture = TestBed.createComponent(TripEditComponent);
+    fixture = TestBed.createComponent(TripViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

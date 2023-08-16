@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environment';
-import { CreateTrip } from 'src/app/interfaces/create-trip.model';
+import { CreateTrip } from 'src/app/interfaces/create-trip.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +12,11 @@ export class TripService {
 
   createTrip(data: CreateTrip) {
     return this.http.post(`${this.baseUrl}/trip/create`, data, {
+      withCredentials: true,
+    });
+  }
+  getDetails(id: string) {
+    return this.http.get(`${this.baseUrl}/trip/getDetails/${id}`, {
       withCredentials: true,
     });
   }

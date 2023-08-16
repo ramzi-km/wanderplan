@@ -13,16 +13,13 @@ import {
   MatDatepickerInputEvent,
 } from '@angular/material/datepicker';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import {
-  Observable,
   Subject,
-  Subscription,
   catchError,
-  combineLatest,
   debounceTime,
   distinctUntilChanged,
   forkJoin,
-  mergeMap,
   of,
   switchMap,
   take,
@@ -32,6 +29,7 @@ import { MapboxService } from 'src/app/services/mapbox/mapbox.service';
 import { TripService } from 'src/app/services/trip/trip.service';
 import { UnsplashService } from 'src/app/services/unsplash/unsplash.service';
 import { WikipediaService } from 'src/app/services/wikepedia/wikipedia.service';
+import * as tripEditActions from '../../../store/editingTrip/trip-edit.actions';
 
 @Component({
   selector: 'app-create-plan',
@@ -62,6 +60,7 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
     private unsplashService: UnsplashService,
     private tripService: TripService,
     private router: Router,
+    private store: Store,
   ) {
     this.createPlanForm = fb.group({
       place: ['', [Validators.required]],
@@ -135,7 +134,6 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
           takeUntil(this.unsubscribe$),
         )
         .subscribe(([descriptionResponse, photoUrlResponse]: any) => {
-          // Here you can access the updated description and photo URL
           const updatedDescription =
             descriptionResponse?.query?.pages[0]?.extract;
           const updatedPhotoUrl = photoUrlResponse?.results[0]?.urls?.regular;
@@ -154,8 +152,9 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
           const form = this.createPlanForm.value;
           this.tripService.createTrip(form).subscribe({
             next: (response: any) => {
-              console.log(response.tripId);
-              this.router.navigate(['/home']);
+              const trip = response.trip;
+              this.store.dispatch(tripEditActions.setTripEdit({ trip: trip }));
+              this.router.navigate(['trip/edit', trip._id]);
             },
             error: (error: any) => {
               console.log(error.error.message);

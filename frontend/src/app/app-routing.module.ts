@@ -12,8 +12,8 @@ import { AdminLoginComponent } from './components/admin/admin-login/admin-login.
 import { AdminNavComponent } from './components/admin/admin-nav/admin-nav.component';
 import { UserManagementComponent } from './components/admin/user-management/user-management.component';
 import { ErrorComponent } from './components/error/error.component';
-import { TripEditComponent } from './components/trip/trip-edit/trip-edit.component';
-import { TripViewComponent } from './components/trip/trip-view/trip-view/trip-view.component';
+import { TripEditComponent, TripEditComponent } from './components/trip/trip-edit/trip-edit.component';
+import { TripViewComponent, TripViewComponent } from './components/trip/trip-view/trip-view/trip-view.component';
 import { CreateGuideComponent } from './components/user/create-guide/create-guide.component';
 import { CreatePlanComponent } from './components/user/create-plan/create-plan.component';
 import { ListGuidesComponent } from './components/user/list-guides/list-guides.component';
@@ -23,9 +23,9 @@ import { UserTripPlansComponent } from './components/user/profile/user-trip-plan
 import { adminAuthGuard } from './guards/admin-auth.guard';
 import { adminLoginGuard } from './guards/admin-login.guard';
 import { guestGuard } from './guards/guest.guard';
-import { tripEditGuard } from './guards/trip-edit.guard';
+import { tripEditGuard, tripEditGuard } from './guards/trip-edit.guard';
 import { userAuthGuard } from './guards/user-auth.guard';
-import { TripEditResolver } from './resolvers/trip-edit.resolver';
+import { TripEditResolver, TripEditResolver } from './resolvers/trip-edit.resolver';
 
 const routes: Routes = [
   {
@@ -61,8 +61,8 @@ const routes: Routes = [
           {
             path: 'edit/:id',
             component: TripEditComponent,
-            resolve: { trip: TripEditResolver },
-            canActivate: [tripEditGuard],
+            // resolve: { trip: TripEditResolver },
+            // canActivate: [tripEditGuard],
           },
           {
             path: 'view/:id',
