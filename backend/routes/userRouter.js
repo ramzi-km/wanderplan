@@ -28,7 +28,7 @@ import {
 
 //------tripPlanConrollers--------//
 
-import { addNewTrip } from '../controllers/tripPlanControllers.js'
+import { addNewTrip, getTripDetails } from '../controllers/tripPlanControllers.js'
 
 //----------------------------------------------//
 
@@ -51,5 +51,6 @@ router.get('/user/getAllTrips', verifyUser, getAllTrips)
 
 //----------user-trip-plans-----------------//
 router.post('/trip/create', verifyUser, addNewTrip)
+router.get('/trip/getDetails/:id', verifyUser, getTripDetails)
 
 export default router

@@ -29,15 +29,15 @@
                 <button class="btn btn-neutral btn-xs absolute left-2 top-2">
                   {{ upcomingTrip.startDate | daysTo }}
                 </button>
-                <a>
+                <a (click)="navigateTo(upcomingTrip._id)">
                   <img
-                    class="rounded-lg w-full h-40"
+                    class="h-40 w-full rounded-lg"
                     src="{{ upcomingTrip.coverPhoto }}"
                     alt=""
                   />
                 </a>
                 <div class="pt-3">
-                  <a>
+                  <a (click)="navigateTo(upcomingTrip.id)">
                     <h5
                       class="mb-2 text-lg font-semibold tracking-tight text-textp"
                     >
@@ -72,7 +72,7 @@
                 </button>
                 <a>
                   <img
-                    class="rounded-lg w-full h-40"
+                    class="h-40 w-full rounded-lg"
                     src="{{ recentTrip.coverPhoto }}"
                     alt=""
                   />

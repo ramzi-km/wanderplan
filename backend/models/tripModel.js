@@ -26,7 +26,11 @@ const tripSchema = new Schema({
     name: String,
     startDate: Date,
     endDate: Date,
-    coverPhoto: String,
+    coverPhoto: {
+        type: String,
+        default:
+            'https://res.cloudinary.com/dbmujhmpe/image/upload/v1692011176/wanderplan/default-image_th3auj.jpg',
+    },
     place: {
         name: String,
         extendedName: String,
@@ -38,7 +42,10 @@ const tripSchema = new Schema({
         default: 'private',
     },
     overview: {
-        description: String,
+        description: {
+            type: String,
+            default: '',
+        },
         notes: String,
         placesToVisit: [placeToVisitSchema],
     },
@@ -50,7 +57,7 @@ const tripSchema = new Schema({
         },
     ],
     budget: {
-        limit: Number,
+        limit: { type: Number, default: 0 },
         expenses: [{ type: Schema.Types.ObjectId, ref: 'Expense' }],
     },
 })
