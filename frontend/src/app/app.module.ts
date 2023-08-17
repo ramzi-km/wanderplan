@@ -51,10 +51,6 @@ import { ClickOutsideDirective } from './directives/click-outside.directive';
 
 import { environment } from '../../environment';
 
-import { adminEffects } from './store/admin/admin.effects';
-import { adminReducer } from './store/admin/admin.reducers';
-import { usersEffects } from './store/admin/users/users.effects';
-import { usersReducer } from './store/admin/users/users.reducers';
 import { editTripReducer } from './store/editingTrip/trip-edit.reducers';
 import { userEffects } from './store/user/user.effects';
 import { userReducer } from './store/user/user.reducers';
@@ -109,11 +105,9 @@ import { DaysToPipe } from './pipes/days-to.pipe';
     ToastrModule.forRoot(), // ToastrModule added
     StoreModule.forRoot({
       userState: userReducer,
-      adminState: adminReducer,
-      usersState: usersReducer,
       editTripState: editTripReducer,
     }),
-    EffectsModule.forRoot([userEffects, adminEffects, usersEffects]),
+    EffectsModule.forRoot([userEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
   ],
   providers: [

@@ -3,7 +3,6 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AdminAuthService } from 'src/app/services/admin/admin-auth.service';
 import * as AdminActions from '../../../store/admin/admin.actions';
-import * as AdminSelector from '../../../store/admin/admin.selectors';
 
 @Component({
   selector: 'app-admin-nav',
