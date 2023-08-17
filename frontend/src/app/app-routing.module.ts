@@ -61,8 +61,8 @@ const routes: Routes = [
           {
             path: 'edit/:id',
             component: TripEditComponent,
-            // resolve: { trip: TripEditResolver },
-            // canActivate: [tripEditGuard],
+            resolve: { trip: TripEditResolver },
+            canActivate: [tripEditGuard],
           },
           {
             path: 'view/:id',
