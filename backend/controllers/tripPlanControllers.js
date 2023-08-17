@@ -70,6 +70,7 @@ export async function addNewTrip(req, res) {
         // Create the new trip
         const newTrip = new tripModel(newTripData)
         const savedTrip = await newTrip.save()
+        console.log(savedTrip)
 
         res.status(201).json({
             message: 'New trip added',
