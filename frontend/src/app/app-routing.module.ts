@@ -25,7 +25,6 @@ import { adminLoginGuard } from './guards/admin-login.guard';
 import { guestGuard } from './guards/guest.guard';
 import { tripEditGuard } from './guards/trip-edit.guard';
 import { userAuthGuard } from './guards/user-auth.guard';
-import { TripEditResolver } from './resolvers/trip-edit.resolver';
 
 const routes: Routes = [
   {
@@ -61,7 +60,6 @@ const routes: Routes = [
           {
             path: 'edit/:id',
             component: TripEditComponent,
-            resolve: { trip: TripEditResolver },
             canActivate: [tripEditGuard],
           },
           {
