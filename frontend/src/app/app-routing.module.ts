@@ -78,6 +78,10 @@ const routes: Routes = [
     ],
   },
   {
+    path: 'admen',
+    loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule),
+  },
+  {
     path: 'admin/login',
     component: AdminLoginComponent,
     canActivate: [adminLoginGuard],
