@@ -43,7 +43,6 @@ export async function addNewTrip(req, res) {
             name: `Trip to ${frontendData.place.name}`,
             startDate: startDate,
             endDate: endDate,
-            coverPhoto: frontendData.place.photoUrl,
             place: {
                 name: frontendData.place.name,
                 extendedName: frontendData.place.extendedName,
@@ -52,7 +51,6 @@ export async function addNewTrip(req, res) {
             tripMates: [],
             visibility: frontendData.visibility,
             overview: {
-                description: frontendData.place.description,
                 notes: '',
                 placesToVisit: [],
             },
@@ -62,17 +60,45 @@ export async function addNewTrip(req, res) {
             },
         }
 
+        if (frontendData.place?.description?.length > 3) {
+            newTripData.overview.description = frontendData.place.description
+        }
+        if (frontendData.place?.photoUrl?.length > 3) {
+            newTripData.coverPhoto = frontendData.place.photoUrl
+        }
+
         // Create the new trip
         const newTrip = new tripModel(newTripData)
         const savedTrip = await newTrip.save()
 
-        console.log(savedTrip)
         res.status(201).json({
             message: 'New trip added',
-            tripId: savedTrip.id,
+            trip: savedTrip,
         })
     } catch (error) {
         console.error('Error adding new trip:', error)
         res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function getTripDetails(req, res) {
+    try {
+        const user = req.user
+        const tripId = req.params.id
+        const owner = await tripModel.findById(tripId).select('userId')
+        if (owner.userId.equals(user._id)) {
+            const trip = await tripModel.findById(tripId)
+
+            return res
+                .status(200)
+                .json({ message: 'Success', trip: trip, editable: true })
+        } else {
+            const trip = await tripModel.findById(tripId).select('userId')
+            return res
+                .status(200)
+                .json({ message: 'success', trip: trip, editable: false })
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' })
     }
 }
