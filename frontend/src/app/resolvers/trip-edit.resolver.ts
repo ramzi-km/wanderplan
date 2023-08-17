@@ -17,7 +17,7 @@ export class TripEditResolver implements Resolve<any> {
   ) {}
   resolve(route: ActivatedRouteSnapshot): Observable<any> {
     const tripId = route.paramMap.get('id');
-    console.log('object');
+    console.log('hi');
     return this.store.select(tripEditSelector.selectEditingTrip).pipe(
       switchMap((tripFromStore) => {
         if (tripFromStore && tripFromStore._id === tripId) {
