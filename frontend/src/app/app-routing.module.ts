@@ -79,7 +79,8 @@ const routes: Routes = [
   },
   {
     path: 'admen',
-    loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule),
+    loadChildren: () =>
+      import('./admin/admin.module').then((m) => m.AdminModule),
   },
   {
     path: 'admin/login',

@@ -55,6 +55,10 @@ import { editTripReducer } from './store/editingTrip/trip-edit.reducers';
 import { userEffects } from './store/user/user.effects';
 import { userReducer } from './store/user/user.reducers';
 
+import { adminEffects } from './admin/store/admin/admin.effects';
+import { adminReducer } from './admin/store/admin/admin.reducers';
+import { usersEffects } from './admin/store/users/users.effects';
+import { usersReducer } from './admin/store/users/users.reducers';
 import { DateRangePipe } from './pipes/date-range.pipe';
 import { DaysToPipe } from './pipes/days-to.pipe';
 
@@ -106,8 +110,10 @@ import { DaysToPipe } from './pipes/days-to.pipe';
     StoreModule.forRoot({
       userState: userReducer,
       editTripState: editTripReducer,
+      adminState: adminReducer,
+      usersState: usersReducer,
     }),
-    EffectsModule.forRoot([userEffects]),
+    EffectsModule.forRoot([userEffects, adminEffects, usersEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
   ],
   providers: [

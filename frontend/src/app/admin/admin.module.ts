@@ -27,9 +27,6 @@ import { usersReducer } from './store/users/users.reducers';
     AdminRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    StoreModule.forFeature('adminState', adminReducer),
-    StoreModule.forFeature('usersState', usersReducer),
-    EffectsModule.forFeature([adminEffects, usersEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
   ],
 })
