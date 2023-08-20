@@ -25,10 +25,6 @@ import { AppInitializerService } from './app-intializer.service';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
-import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
-import { AdminLoginComponent } from './components/admin/admin-login/admin-login.component';
-import { AdminNavComponent } from './components/admin/admin-nav/admin-nav.component';
-import { UserManagementComponent } from './components/admin/user-management/user-management.component';
 import { ErrorComponent } from './components/error/error.component';
 import { TripEditComponent } from './components/trip/trip-edit/trip-edit.component';
 import { TripViewComponent } from './components/trip/trip-view/trip-view/trip-view.component';
@@ -66,7 +62,6 @@ import { DaysToPipe } from './pipes/days-to.pipe';
   declarations: [
     AppComponent,
     NavComponent,
-    AdminNavComponent,
     SignUpComponent,
     LoginComponent,
     LandingPageComponent,
@@ -76,9 +71,6 @@ import { DaysToPipe } from './pipes/days-to.pipe';
     FooterComponent,
     ListGuidesComponent,
     ErrorComponent,
-    AdminLoginComponent,
-    AdminDashboardComponent,
-    UserManagementComponent,
     ProfileComponent,
     UserTripPlansComponent,
     UserGuidesComponent,
