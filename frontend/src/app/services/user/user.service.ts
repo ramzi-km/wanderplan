@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environment';
+import { ShortTripInfo } from 'src/app/interfaces/short-trip.interface';
 import { User } from 'src/app/interfaces/user.model';
 
 @Injectable({
@@ -11,23 +12,27 @@ export class UserService {
   private baseUrl = environment.API_URL;
 
   updateUser(user: User) {
-    return this.http.patch(`${this.baseUrl}/user`, user, {
-      withCredentials: true,
-    });
+    return this.http.patch<{ user: User; message: string }>(
+      `${this.baseUrl}/user`,
+      user,
+    );
   }
   uploadProfile(profile: { profilePic: string }) {
-    return this.http.post(`${this.baseUrl}/user/uploadProfile`, profile, {
-      withCredentials: true,
-    });
+    return this.http.post<{ user: User; message: string }>(
+      `${this.baseUrl}/user/uploadProfile`,
+      profile,
+    );
   }
   getRecentTrips() {
-    return this.http.get(`${this.baseUrl}/user/getRecentTrips`, {
-      withCredentials: true,
-    });
+    return this.http.get<{
+      recentTrips: ShortTripInfo[];
+      upcomingTrips: ShortTripInfo[];
+      message: string;
+    }>(`${this.baseUrl}/user/getRecentTrips`);
   }
   getAllTrips() {
-    return this.http.get(`${this.baseUrl}/user/getAllTrips`, {
-      withCredentials: true,
-    });
+    return this.http.get<{ trips: ShortTripInfo[] }>(
+      `${this.baseUrl}/user/getAllTrips`,
+    );
   }
 }

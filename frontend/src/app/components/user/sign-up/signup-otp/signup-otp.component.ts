@@ -1,12 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  NgForm,
-  NgModel,
-} from '@angular/forms';
+import { FormBuilder, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { UserAuthService } from 'src/app/services/user/user-auth.service';
@@ -32,14 +26,14 @@ export class SignupOtpComponent {
   onSubmit(form: NgForm): void {
     this.loading = true;
     this.userAuthService.emailVerify(form.value).subscribe({
-      next: (res: any) => {
+      next: (res) => {
         this.errMessage = null;
         this.loading = false;
         this.store.dispatch(UserActions.userLogin({ user: res.user }));
         this.router.navigate(['/home']);
       },
-      error: (err) => {
-        this.errMessage = err.error.message;
+      error: (errMessage: string) => {
+        this.errMessage = errMessage;
         this.loading = false;
       },
     });
@@ -51,8 +45,8 @@ export class SignupOtpComponent {
         this.errMessage = null;
         this.resendLoading = false;
       },
-      error: (err) => {
-        this.errMessage = err.error.message;
+      error: (errMessage: string) => {
+        this.errMessage = errMessage;
         this.resendLoading = false;
       },
     });

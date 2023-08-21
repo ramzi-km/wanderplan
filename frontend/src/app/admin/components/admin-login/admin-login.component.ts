@@ -39,14 +39,14 @@ export class AdminLoginComponent {
   submitForm() {
     this.loading = true;
     this.adminAuthService.adminLogin(this.loginForm.value).subscribe({
-      next: (res: any) => {
+      next: (res) => {
         this.errMessage = null;
         this.loading = false;
         this.store.dispatch(AdminActions.adminLogin({ admin: res.admin }));
         this.router.navigate(['/admen']);
       },
-      error: (err) => {
-        this.errMessage = err.error.message;
+      error: (errMessage: string) => {
+        this.errMessage = errMessage;
         this.loading = false;
       },
     });

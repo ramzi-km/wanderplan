@@ -22,6 +22,11 @@ import { userAuthGuard } from './guards/user-auth.guard';
 
 const routes: Routes = [
   {
+    path: 'admen',
+    loadChildren: () =>
+      import('./admin/admin.module').then((m) => m.AdminModule),
+  },
+  {
     path: '',
     component: NavComponent,
     children: [
@@ -69,27 +74,9 @@ const routes: Routes = [
         component: SignupOtpComponent,
         canActivate: [guestGuard],
       },
+      { path: '**', component: ErrorComponent },
     ],
   },
-  {
-    path: 'admen',
-    loadChildren: () =>
-      import('./admin/admin.module').then((m) => m.AdminModule),
-  },
-  // {
-  //   path: 'admin/login',
-  //   component: AdminLoginComponent,
-  //   canActivate: [adminLoginGuard],
-  // },
-  // {
-  //   path: 'admin',
-  //   component: AdminNavComponent,
-  //   children: [
-  //     { path: '', component: AdminDashboardComponent },
-  //     { path: 'user-management', component: UserManagementComponent },
-  //   ],
-  //   canActivate: [adminAuthGuard],
-  // },
   { path: '**', component: ErrorComponent },
 ];
 

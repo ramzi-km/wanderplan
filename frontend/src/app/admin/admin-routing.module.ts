@@ -10,20 +10,20 @@ import { adminLoginGuard } from './guards/admin-login.guard';
 
 const routes: Routes = [
   {
+    path: 'login',
+    component: AdminLoginComponent,
+    canActivate: [adminLoginGuard],
+  },
+  {
     path: '',
     component: AdminNavComponent,
     children: [
       { path: '', component: AdminDashboardComponent },
       { path: 'user-management', component: UserManagementComponent },
+      { path: '**', component: ErrorComponent },
     ],
     canActivate: [adminAuthGuard],
   },
-  {
-    path: 'login',
-    component: AdminLoginComponent,
-    canActivate: [adminLoginGuard],
-  },
-  { path: '**', component: ErrorComponent },
 ];
 
 @NgModule({

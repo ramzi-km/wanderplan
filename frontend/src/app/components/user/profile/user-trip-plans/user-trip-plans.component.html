@@ -6,7 +6,7 @@
       >
         <i class="fa-solid fa-ellipsis"></i>
       </button>
-      <a>
+      <a (click)="navigateTo(trip._id)">
         <img
           class="h-40 w-full rounded-lg"
           src="{{ trip.coverPhoto }}"
@@ -14,7 +14,7 @@
         />
       </a>
       <div class="pt-3">
-        <a>
+        <a (click)="navigateTo(trip._id)">
           <h5 class="mb-2 text-lg font-semibold tracking-tight text-textp">
             {{ trip.name }}
           </h5>
@@ -22,9 +22,11 @@
         <p class="text-sm font-normal text-texts">
           <span>&bull; {{ [trip.startDate, trip.endDate] | dateRange }}</span>
           <span class="ml-5"
-            >&bull; {{
+            >&bull;
+            {{
               trip.totalPlacesToVisit + trip.totalItineraryPlaces
-            }} places</span
+            }}
+            places</span
           >
         </p>
       </div>

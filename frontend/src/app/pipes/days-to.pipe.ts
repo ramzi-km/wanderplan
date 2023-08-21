@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'daysTo',
 })
 export class DaysToPipe implements PipeTransform {
-  transform(targetDate: Date): string {
+  transform(targetDate: Date|string): string {
     const today = new Date();
     targetDate = new Date(targetDate);
     const timeDifference = targetDate.getTime() - today.getTime();

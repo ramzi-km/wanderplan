@@ -46,14 +46,14 @@ export class LoginComponent {
   submitForm() {
     this.loading = true;
     this.userAuthService.userLogin(this.loginForm.value).subscribe({
-      next: (res: any) => {
+      next: (res) => {
         this.errMessage = null;
         this.loading = false;
         this.store.dispatch(UserActions.userLogin({ user: res.user }));
         this.router.navigate(['/home']);
       },
-      error: (err) => {
-        this.errMessage = err.error.message;
+      error: (errMessage: string) => {
+        this.errMessage = errMessage;
         this.loading = false;
       },
     });

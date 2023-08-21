@@ -14,7 +14,6 @@
           type="text"
           placeholder="e.g: Paris,Hawaii,Goa"
           [formControl]="inputControl"
-          [(ngModel)]="searchInput"
           class="input input-bordered bg-secondary"
           (focus)="showResults = true"
           (blur)="blurResults()"
@@ -44,7 +43,11 @@
           <span class="label-text text-lg text-textp">Dates</span> </label
         ><mat-form-field class="w-full" (click)="openDatePicker()">
           <mat-label>Select a date range</mat-label>
-          <mat-date-range-input [min]="currentDate" [rangePicker]="picker">
+          <mat-date-range-input
+            (click)="openDatePicker()"
+            [min]="currentDate"
+            [rangePicker]="picker"
+          >
             <input
               matStartDate
               placeholder="Start date"

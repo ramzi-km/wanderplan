@@ -9,26 +9,23 @@ import {
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import {
   MatDatepicker,
-  MatDatepickerInput,
   MatDatepickerInputEvent,
 } from '@angular/material/datepicker';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
   Subject,
-  catchError,
   debounceTime,
   distinctUntilChanged,
-  forkJoin,
-  of,
   switchMap,
-  take,
   takeUntil,
 } from 'rxjs';
+import {
+  MapboxGeocodingResponse,
+  MapboxPlaceFeature,
+} from 'src/app/interfaces/mapbox-interface';
 import { MapboxService } from 'src/app/services/mapbox/mapbox.service';
 import { TripService } from 'src/app/services/trip/trip.service';
-import { UnsplashService } from 'src/app/services/unsplash/unsplash.service';
-import { WikipediaService } from 'src/app/services/wikepedia/wikipedia.service';
 import * as tripEditActions from '../../../store/editingTrip/trip-edit.actions';
 
 @Component({
@@ -42,8 +39,7 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
   currentDate = new Date();
   createPlanForm: any;
   showErrors: boolean = false;
-  places: Array<any> = [];
-  searchInput = '';
+  places: Array<MapboxPlaceFeature> = [];
   private unsubscribe$ = new Subject<void>();
   @ViewChild('picker') picker!: MatDatepicker<any>;
   @HostListener('document:click', ['$event'])
@@ -56,8 +52,6 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
     private hostElement: ElementRef,
     fb: FormBuilder,
     private mapboxService: MapboxService,
-    private wikiService: WikipediaService,
-    private unsplashService: UnsplashService,
     private tripService: TripService,
     private router: Router,
     private store: Store,
@@ -79,7 +73,7 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
         }),
         takeUntil(this.unsubscribe$),
       )
-      .subscribe((response: any) => {
+      .subscribe((response) => {
         this.places = response.features;
       });
   }
@@ -107,12 +101,11 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
     }, 200);
   }
   selectPlace(selectedPlace: any) {
-    this.searchInput = selectedPlace.text;
+    this.inputControl.setValue(selectedPlace.text);
     const place = {
       name: selectedPlace.text,
       coordinates: selectedPlace.center,
       extendedName: selectedPlace.place_name,
-      description: '',
     };
     this.createPlanForm.patchValue({
       place: place,
@@ -123,67 +116,18 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
     if (this.createPlanForm.invalid) {
       this.showErrors = true;
     } else {
-      const placeName = this.createPlanForm.value.place.name;
-
-      const updateDescription$ = this.updatePlaceDescription(placeName);
-      const fetchPhotoUrl$ = this.fetchPlacePhotoUrl(placeName);
-
-      forkJoin([updateDescription$, fetchPhotoUrl$])
-        .pipe(
-          take(1), // Take only one emission
-          takeUntil(this.unsubscribe$),
-        )
-        .subscribe(([descriptionResponse, photoUrlResponse]: any) => {
-          const updatedDescription =
-            descriptionResponse?.query?.pages[0]?.extract;
-          const updatedPhotoUrl = photoUrlResponse?.results[0]?.urls?.regular;
-
-          // Update the form values with the new description and photo URL
-          this.createPlanForm.patchValue({
-            place: {
-              ...this.createPlanForm.value.place,
-              description: updatedDescription,
-              photoUrl: updatedPhotoUrl,
-            },
-          });
-
-          // after the form is updated sent to the server
-
-          const form = this.createPlanForm.value;
-          this.tripService.createTrip(form).subscribe({
-            next: (response: any) => {
-              const trip = response.trip;
-              this.store.dispatch(tripEditActions.setTripEdit({ trip: trip }));
-              this.router.navigate(['trip/edit', trip._id]);
-            },
-            error: (error: any) => {
-              console.log(error.error.message);
-            },
-          });
-        });
+      const form = this.createPlanForm.value;
+      this.tripService.createTrip(form).subscribe({
+        next: (response) => {
+          const trip = response.trip;
+          this.store.dispatch(tripEditActions.setTripEdit({ trip: trip }));
+          this.router.navigate(['trip/edit', trip._id]);
+        },
+        error: (errMessage) => {
+          console.log(errMessage);
+        },
+      });
     }
-  }
-  fetchPlacePhotoUrl(placeName: string) {
-    return this.unsplashService.getPlacePhotoUrl(placeName).pipe(
-      takeUntil(this.unsubscribe$),
-      catchError((error: any) => {
-        console.log(error.error);
-        return of(null); // Return a default value to continue the flow
-      }),
-    );
-  }
-  updatePlaceDescription(placeName: string) {
-    return this.wikiService.getLocationPage(placeName).pipe(
-      switchMap((locationResponse: any) => {
-        const pageId = locationResponse.query.search[0].pageid;
-        return this.wikiService.getExtract(pageId);
-      }),
-      takeUntil(this.unsubscribe$),
-      catchError((error: any) => {
-        console.log(error.error);
-        return of(null); // Return a default value to continue the flow
-      }),
-    );
   }
 
   ngOnDestroy(): void {

@@ -9,7 +9,7 @@ export const getUsersSuccess = createAction(
 );
 export const getUsersFailure = createAction(
   '[UserManagement Component] getUsersFailure',
-  props<{ error: any }>(),
+  props<{ error: string }>(),
 );
 
 export const blockUser = createAction(
@@ -22,5 +22,5 @@ export const blockUserSuccess = createAction(
 );
 export const blockUserFailure = createAction(
   '[UserManagement Component] blockUserFailure',
-  props<{ error: any }>(),
+  props<{ error: string }>(),
 );

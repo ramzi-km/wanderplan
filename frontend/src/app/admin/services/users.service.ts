@@ -10,15 +10,14 @@ export class UsersService {
   private baseUrl = environment.API_URL;
   constructor(private http: HttpClient) {}
   getUsers() {
-    return this.http.get(`${this.baseUrl}/admin/allUsers`, {
-      withCredentials: true,
-    });
+    return this.http.get<{ users: User[]; message: string }>(
+      `${this.baseUrl}/admin/allUsers`,
+    );
   }
   blockUser(id: string) {
-    return this.http.patch(
+    return this.http.patch<{ message: string; userId: string }>(
       `${this.baseUrl}/admin/blockUser/${id}`,
       {},
-      { withCredentials: true },
     );
   }
 }

@@ -17,13 +17,13 @@ export class usersEffects {
       ofType(UsersActions.getUsers),
       switchMap(() =>
         this.usersService.getUsers().pipe(
-          map((res: any) =>
+          map((res) =>
             UsersActions.getUsersSuccess({
               users: res.users as ReadonlyArray<User>,
             }),
           ),
-          catchError((res: any) =>
-            of(UsersActions.getUsersFailure({ error: res })),
+          catchError((errMessage) =>
+            of(UsersActions.getUsersFailure({ error: errMessage })),
           ),
         ),
       ),
@@ -36,8 +36,10 @@ export class usersEffects {
       ofType(UsersActions.blockUser),
       switchMap((action) =>
         this.usersService.blockUser(action.id).pipe(
-          map((res: any) => UsersActions.blockUserSuccess({ id: res.userId })),
-          catchError((error: any) => of(UsersActions.blockUserFailure(error))),
+          map((res) => UsersActions.blockUserSuccess({ id: res.userId })),
+          catchError((errMessage: string) =>
+            of(UsersActions.blockUserFailure({ error: errMessage })),
+          ),
         ),
       ),
     ),

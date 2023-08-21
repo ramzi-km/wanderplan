@@ -61,8 +61,8 @@ export class AdminNavComponent {
         this.store.dispatch(AdminActions.adminLogout());
         this.router.navigate(['/admen/login']);
       },
-      error: (err) => {
-        console.log(err);
+      error: (errMessage) => {
+        console.log(errMessage);
       },
     });
   }

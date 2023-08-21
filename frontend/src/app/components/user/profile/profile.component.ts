@@ -50,12 +50,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .uploadProfile(formData)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
-        next: (res: any) => {
+        next: (res) => {
           this.store.dispatch(userActions.getUserSuccess({ user: res.user }));
           this.loading = false;
         },
-        error: (res: any) => {
-          this.showToast(res.error.message);
+        error: (errMessage:string) => {
           this.loading = false;
         },
       });

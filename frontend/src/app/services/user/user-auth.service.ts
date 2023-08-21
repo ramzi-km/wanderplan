@@ -11,39 +11,24 @@ export class UserAuthService {
   private baseUrl = environment.API_URL;
 
   userRegister(user: User) {
-    return this.http.post(`${this.baseUrl}/signUp`, user, {
-      withCredentials: true,
-    });
+    return this.http.post<{ message: string }>(`${this.baseUrl}/signUp`, user);
   }
   emailVerify(body: { otp: string }) {
-    return this.http.post(`${this.baseUrl}/verifySignup`, body, {
-      withCredentials: true,
-    });
+    return this.http.post<{ user: User }>(`${this.baseUrl}/verifySignup`, body);
   }
   userLogin(user: User) {
-    return this.http.post(`${this.baseUrl}/login`, user, {
-      withCredentials: true,
-    });
+    return this.http.post<{ user: User }>(`${this.baseUrl}/login`, user);
   }
   getUser() {
-    return this.http.get(`${this.baseUrl}/user`, {
-      withCredentials: true,
-    });
+    return this.http.get<{ user: User }>(`${this.baseUrl}/user`);
   }
   resendOtp() {
-    return this.http.post(
+    return this.http.post<{ message: string }>(
       `${this.baseUrl}/resendSignupOtp`,
       {},
-      {
-        withCredentials: true,
-      },
     );
   }
   userLogout() {
-    return this.http.post(
-      `${this.baseUrl}/logout`,
-      {},
-      { withCredentials: true },
-    );
+    return this.http.post<{ message: string }>(`${this.baseUrl}/logout`, {});
   }
 }

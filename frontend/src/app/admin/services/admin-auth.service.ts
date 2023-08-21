@@ -10,20 +10,18 @@ export class AdminAuthService {
   constructor(private http: HttpClient) {}
   private baseUrl = environment.API_URL;
   adminLogin(admin: Admin) {
-    return this.http.post(`${this.baseUrl}/admin/login`, admin, {
-      withCredentials: true,
-    });
+    return this.http.post<{ admin: Admin }>(
+      `${this.baseUrl}/admin/login`,
+      admin,
+    );
   }
   getAdmin() {
-    return this.http.get(`${this.baseUrl}/admin/data`, {
-      withCredentials: true,
-    });
+    return this.http.get<{ admin: Admin }>(`${this.baseUrl}/admin/data`);
   }
   adminLogout() {
-    return this.http.post(
+    return this.http.post<{ message: string }>(
       `${this.baseUrl}/admin/logout`,
       {},
-      { withCredentials: true },
     );
   }
 }

@@ -20,9 +20,9 @@ export class userEffects {
       ofType(UserActions.getUser),
       switchMap(() =>
         this.userAuthService.getUser().pipe(
-          map((user) =>
+          map((res) =>
             UserActions.getUserSuccess({
-              user: user as Readonly<User>,
+              user: res.user as Readonly<User>,
             }),
           ),
           catchError((error) => of(UserActions.getUserFailure({ error }))),

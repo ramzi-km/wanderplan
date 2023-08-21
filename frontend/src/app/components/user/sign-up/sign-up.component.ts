@@ -2,10 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder,
   FormControl,
   FormGroup,
-  NgForm,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
@@ -97,8 +95,8 @@ export class SignUpComponent implements OnInit {
         this.loading = false;
         this.router.navigate(['/emailVerification']);
       },
-      error: (err) => {
-        this.errMessage = err.error.message;
+      error: (errMessage) => {
+        this.errMessage = errMessage;
         this.loading = false;
       },
     });

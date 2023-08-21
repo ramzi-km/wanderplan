@@ -87,14 +87,13 @@ export class ProfileModalComponent implements OnDestroy {
     if (this.profileForm.valid && submit) {
       this.loading = true;
       this.userService.updateUser(this.profileForm.value).subscribe({
-        next: (res: any) => {
+        next: (res) => {
           this.store.dispatch(userActions.getUserSuccess({ user: res.user }));
           this.loading = false;
           this.closeDialog();
         },
-        error: (error) => {
-          console.log(error);
-          this.errMessage = error.error.message;
+        error: (errMessage) => {
+          this.errMessage = errMessage;
           this.loading = false;
         },
       });

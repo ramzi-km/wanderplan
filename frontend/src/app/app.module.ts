@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import {
   APP_INITIALIZER,
   CUSTOM_ELEMENTS_SCHEMA,
@@ -55,6 +55,7 @@ import { adminEffects } from './admin/store/admin/admin.effects';
 import { adminReducer } from './admin/store/admin/admin.reducers';
 import { usersEffects } from './admin/store/users/users.effects';
 import { usersReducer } from './admin/store/users/users.reducers';
+import { MainInterceptor } from './interceptors/main.interceptor';
 import { DateRangePipe } from './pipes/date-range.pipe';
 import { DaysToPipe } from './pipes/days-to.pipe';
 
@@ -98,7 +99,7 @@ import { DaysToPipe } from './pipes/days-to.pipe';
     HttpClientModule,
     CommonModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot(), // ToastrModule added
+    ToastrModule.forRoot(),
     StoreModule.forRoot({
       userState: userReducer,
       editTripState: editTripReducer,
@@ -115,6 +116,11 @@ import { DaysToPipe } from './pipes/days-to.pipe';
       useFactory: (appInitializerService: AppInitializerService) => () =>
         appInitializerService.initializeApp(),
       deps: [AppInitializerService],
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MainInterceptor,
       multi: true,
     },
   ],

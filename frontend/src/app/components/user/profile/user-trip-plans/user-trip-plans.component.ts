@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { UserService } from 'src/app/services/user/user.service';
@@ -12,6 +13,7 @@ export class UserTripPlansComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserService,
     private toastr: ToastrService,
+    private router: Router,
   ) {}
   private ngUnsubscribe = new Subject<void>();
   userTrips: Array<any> = [];
@@ -20,11 +22,11 @@ export class UserTripPlansComponent implements OnInit, OnDestroy {
       .getAllTrips()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
-        next: (res: any) => {
+        next: (res) => {
           this.userTrips = res.trips;
         },
-        error: (err: any) => {
-          this.showToast(err.error.message);
+        error: (errMessage:string) => {
+          // this.showToast(errMessage);
         },
       });
   }
@@ -32,6 +34,9 @@ export class UserTripPlansComponent implements OnInit, OnDestroy {
     this.toastr.error(message, 'Error!', {
       timeOut: 3000,
     });
+  }
+  navigateTo(id: string) {
+    this.router.navigate(['trip/edit', id]);
   }
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();

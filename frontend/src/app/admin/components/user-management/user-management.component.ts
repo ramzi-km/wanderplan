@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, Subscription } from 'rxjs';
-import { UsersService } from '../../services/users.service';
 import * as UsersActions from '../../store/users/users.actions';
 import * as UsersSelectors from '../../store/users/users.selectors';
 
@@ -14,7 +13,6 @@ import * as UsersSelectors from '../../store/users/users.selectors';
 export class UserManagementComponent {
   constructor(
     private store: Store,
-    private usersService: UsersService,
     private toastr: ToastrService,
   ) {
     this.error$ = this.store.select(UsersSelectors.selectError);
@@ -23,7 +21,7 @@ export class UserManagementComponent {
   ngOnInit(): void {
     this.store.dispatch(UsersActions.getUsers());
     this.errorSubscription = this.error$.subscribe({
-      next: (err: any) => {
+      next: (err) => {
         this.showToast(err.message);
       },
     });

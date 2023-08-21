@@ -37,7 +37,7 @@
                   />
                 </a>
                 <div class="pt-3">
-                  <a (click)="navigateTo(upcomingTrip.id)">
+                  <a (click)="navigateTo(upcomingTrip._id)">
                     <h5
                       class="mb-2 text-lg font-semibold tracking-tight text-textp"
                     >
@@ -70,7 +70,7 @@
                 >
                   <i class="fa-solid fa-ellipsis"></i>
                 </button>
-                <a>
+                <a (click)="navigateTo(recentTrip._id)">
                   <img
                     class="h-40 w-full rounded-lg"
                     src="{{ recentTrip.coverPhoto }}"
@@ -78,7 +78,7 @@
                   />
                 </a>
                 <div class="pt-3">
-                  <a>
+                  <a (click)="navigateTo(recentTrip._id)">
                     <h5
                       class="mb-2 text-lg font-semibold tracking-tight text-textp"
                     >

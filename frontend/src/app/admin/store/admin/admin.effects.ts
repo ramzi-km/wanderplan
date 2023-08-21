@@ -18,9 +18,9 @@ export class adminEffects {
       ofType(AdminActions.getAdmin),
       switchMap(() =>
         this.adminAuthService.getAdmin().pipe(
-          map((admin) =>
+          map((res) =>
             AdminActions.getAdminSuccess({
-              admin: admin as Readonly<Admin>,
+              admin: res.admin as Readonly<Admin>,
             }),
           ),
           catchError((error) => of(AdminActions.getAdminFailure({ error }))),

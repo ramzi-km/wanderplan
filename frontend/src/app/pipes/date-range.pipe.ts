@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'dateRange',
 })
 export class DateRangePipe implements PipeTransform {
-  transform(dateRange: Date[]): String {
+  transform(dateRange: Date[] | string[]): String {
     const startDate = new Date(dateRange[0]);
     const endDate = new Date(dateRange[1]);
 

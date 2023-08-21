@@ -1,19 +1,35 @@
-import { inject } from '@angular/core';
+import { Inject, inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs';
+import { map, switchMap, take } from 'rxjs';
+import { TripService } from '../services/trip/trip.service';
+import * as tripEditActions from '../store/editingTrip/trip-edit.actions';
 import * as tripEditSelector from '../store/editingTrip/trip-edit.selectors';
 
 export const tripEditGuard: CanActivateFn = (route, state) => {
   const store: Store = inject(Store);
   const router: Router = inject(Router);
+  const tripService: TripService = inject(TripService);
+
   return store.select(tripEditSelector.selectEditingTrip).pipe(
-    map((trip) => {
-      if (trip?._id) {
-        return true;
+    switchMap((trip) => {
+      const tripId = trip?._id;
+      const routeId = route.params['id'];
+      if (tripId && tripId === routeId) {
+        return [true];
       } else {
-        router.navigate(['trip/view/:id']);
-        return false;
+        return tripService.getDetails(routeId).pipe(
+          take(1),
+          map((res) => {
+            if (res.editable) {
+              store.dispatch(tripEditActions.setTripEdit({ trip: res.trip }));
+              return true;
+            } else {
+              router.navigate(['trip/view', routeId]);
+              return false;
+            }
+          }),
+        );
       }
     }),
   );
