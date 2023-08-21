@@ -9,7 +9,7 @@ export async function postSignup(req, res) {
         const { fullName: name, email, username, mobile, password } = req.body
         if (!email || !password || !name || !mobile || !username) {
             return res
-                .status(401)
+                .status(422)
                 .json({ message: 'provide necessary information' })
         }
         const passwordHash = await bcrypt.hash(password, 10)
@@ -79,7 +79,7 @@ export async function signupVerify(req, res) {
             })
             return res.status(200).json({ user: result })
         } else {
-            return res.status(400).json({ message: 'Invalid otp' })
+            return res.status(403).json({ message: 'Invalid otp' })
         }
     } catch (error) {
         res.status(500).json({ message: 'internal server error' })
@@ -122,7 +122,7 @@ export async function postLogin(req, res) {
         const { username, password } = req.body
         if (!username || !password) {
             return res
-                .status(401)
+                .status(422)
                 .json({ message: 'provide necessary information' })
         }
         const user = await userModel.findOne({
@@ -148,7 +148,7 @@ export async function postLogin(req, res) {
                     )
                     return res.json({ user: resUser })
                 } else {
-                    res.status(400).json({ message: 'Incorrect Password' })
+                    res.status(403).json({ message: 'Incorrect Password' })
                 }
             } else {
                 res.cookie('userToken', '', { maxAge: 0 })
@@ -158,12 +158,15 @@ export async function postLogin(req, res) {
             res.status(404).json({ message: 'user not found' })
         }
     } catch (err) {
-        console.log(err)
         res.status(500).json({ message: 'internal server error' })
     }
 }
 
 export async function logout(req, res) {
-    res.cookie('userToken', '', { maxAge: 0, httpOnly: true })
-    res.status(200).json({ message: 'success' })
+    try {
+        res.cookie('userToken', '', { maxAge: 0, httpOnly: true })
+        res.status(200).json({ message: 'success' })
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' })
+    }
 }

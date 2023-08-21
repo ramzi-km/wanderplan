@@ -10,7 +10,7 @@ import userModel from '../models/userModel.js'
 
 export async function getUser(req, res) {
     try {
-        res.status(200).json(req.user)
+        res.status(200).json({user:req.user})
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' })
     }
@@ -30,7 +30,7 @@ export async function updateUser(req, res) {
             !detailsToUpdate.mobile
         ) {
             return res
-                .status(401)
+                .status(422)
                 .json({ message: 'provide necessary information' })
         }
         const username = detailsToUpdate.username

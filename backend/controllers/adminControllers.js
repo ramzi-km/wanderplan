@@ -6,7 +6,7 @@ export async function getAllUsers(req, res) {
         res.status(200).json({ users: users, message: 'ok' })
     } catch (error) {
         console.log(error)
-        res.status(500).json({ error: error, message: 'Internal server error' })
+        res.status(500).json({ message: 'Internal server error' })
     }
 }
 
@@ -19,12 +19,12 @@ export async function blockUser(req, res) {
             await user.save()
             res.status(200).json({ message: 'Success', userId: user.id })
         } else {
-            res.status(401).json({
+            res.status(422).json({
                 message: 'user with the provided id does not exist',
             })
         }
     } catch (error) {
         console.log(error)
-        res.status(500).json({ error: error, message: 'Internal server error' })
+        res.status(500).json({ message: 'Internal server error' })
     }
 }

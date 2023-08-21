@@ -1,3 +1,4 @@
+import axios from 'axios'
 //------------------ models --------------------//
 
 import tripModel from '../models/tripModel.js'
@@ -7,6 +8,26 @@ import tripModel from '../models/tripModel.js'
 export async function addNewTrip(req, res) {
     try {
         const frontendData = req.body
+        const accessKey = process.env.UNSPLASH_KEY
+        const trimmedQuery = frontendData?.place?.name?.trim()
+
+        const updateDescriptionPageResponse = await axios.get(
+            `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&list=search&srsearch=${encodeURIComponent(
+                trimmedQuery
+            )}`
+        )
+
+        const pageId = updateDescriptionPageResponse.data.query.search[0].pageid
+        const updateDescriptionResponse = await axios.get(
+            `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=extracts&list=&pageids=${pageId}&formatversion=2&exsentences=3&exintro=1&explaintext=1`
+        )
+
+        const fetchPhotoUrlResponse = await axios.get(
+            `https://api.unsplash.com/search/photos?client_id=${accessKey}&query=${trimmedQuery}`
+        )
+        const description =
+            updateDescriptionResponse.data.query.pages[0].extract
+        const photoUrl = fetchPhotoUrlResponse.data.results[0].urls.regular
 
         // Calculate the number of days
         const startDate = new Date(frontendData.startDate)
@@ -60,11 +81,11 @@ export async function addNewTrip(req, res) {
             },
         }
 
-        if (frontendData.place?.description?.length > 3) {
-            newTripData.overview.description = frontendData.place.description
+        if (description?.length > 3) {
+            newTripData.overview.description = description
         }
-        if (frontendData.place?.photoUrl?.length > 3) {
-            newTripData.coverPhoto = frontendData.place.photoUrl
+        if (photoUrl?.length > 3) {
+            newTripData.coverPhoto = photoUrl
         }
 
         // Create the new trip

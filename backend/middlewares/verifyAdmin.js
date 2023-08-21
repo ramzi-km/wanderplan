@@ -19,7 +19,7 @@ export default async function verifyAdmin(req, res, next) {
             { password: 0, __v: 0 }
         )
         if (!admin) {
-            return res.status(404).json({ message: 'Admin not found.' })
+            return res.status(401).json({ message: 'Admin not found.' })
         }
         req.admin = admin
         next()

@@ -7,7 +7,7 @@ export async function postAdminLogin(req, res) {
         const { email, password } = { ...req.body }
         if (!email || !password) {
             return res
-                .status(401)
+                .status(422)
                 .json({ message: 'provide necessary information' })
         }
         const admin = await adminModel.findOne({ email: email })
@@ -28,7 +28,7 @@ export async function postAdminLogin(req, res) {
                 )
                 return res.status(200).json({ admin: data })
             } else {
-                res.status(400).json({ message: 'Incorrect password' })
+                res.status(403).json({ message: 'Incorrect password' })
             }
         } else {
             res.status(404).json({ message: 'Admin not found' })
@@ -42,14 +42,14 @@ export async function postAdminLogout(req, res) {
         res.cookie('adminToken', '', { maxAge: 0 })
         res.status(200).send({ message: 'success' })
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        res.status(500).json({ message: 'Internal server error' })
     }
 }
 
 export async function getAdminData(req, res) {
     try {
-        res.status(200).json(req.admin)
+        res.status(200).json({ admin: req.admin })
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        res.status(500).json({ message: 'Internal server error' })
     }
 }
