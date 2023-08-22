@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import otpGenerator from 'otp-generator'
+import sentForgotPassOtp from '../helpers/sentForgotPassOtp.js'
 import sentOtp from '../helpers/sentOtp.js'
 import userModel from '../models/userModel.js'
 
@@ -53,7 +54,6 @@ export async function postSignup(req, res) {
 export async function signupVerify(req, res) {
     try {
         const otp = req.body.otp
-        console.log(req.session)
         const tempUser = req.session.tempUser
         if (otp == tempUser?.otp && Date.now() < tempUser.expirationTime) {
             const user = new userModel(tempUser.userData)
@@ -111,7 +111,79 @@ export async function resendOtp(req, res) {
 
 export async function forgotPassword(req, res) {
     try {
-        console.log('reset password')
+        const email = req.body.email
+        const user = await userModel.findOne({ email: email })
+        if (user) {
+            const otp = otpGenerator.generate(6, {
+                upperCaseAlphabets: false,
+                specialChars: false,
+                lowerCaseAlphabets: false,
+                digits: true,
+            })
+            req.session.forgotPassOtp = {
+                otp,
+                email,
+                expirationTime: Date.now() + 3 * 60 * 1000, // 3 minutes expiration time
+                verified: false,
+            }
+            sentForgotPassOtp(email, otp)
+            return res.json({ message: 'otp sented successfully' })
+        } else {
+            return res.status(404).json({ message: 'user not found' })
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' })
+    }
+}
+export async function forgotPasswordVerify(req, res) {
+    try {
+        const otp = req.body.otp
+        console.log(otp)
+        const forgotPassOtp = req.session.forgotPassOtp
+        if (!forgotPassOtp) {
+            return res.status(403).json({ message: 'provide email first' })
+        }
+        if (
+            otp == forgotPassOtp?.otp &&
+            Date.now() < forgotPassOtp.expirationTime
+        ) {
+            const email = forgotPassOtp.email
+            const user = await userModel.findOne({ email })
+            if (!user) {
+                res.status(403).json({ message: 'provide email first' })
+            } else {
+                req.session.forgotPassOtp.verified = true
+                res.status(200).json({ message: 'success' })
+            }
+        } else {
+            res.status(403).json({ message: 'invalid otp' })
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' })
+    }
+}
+export async function resetForgotPassword(req, res) {
+    try {
+        const password = req.body.password
+        if (!password) {
+            res.status(404).json({ message: 'provide password' })
+        }
+        const forgotPassOtp = req.session.forgotPassOtp
+        if (forgotPassOtp) {
+            if (forgotPassOtp.verified) {
+                const passwordHash = await bcrypt.hash(password, 10)
+                await userModel.findOneAndUpdate(
+                    { email: forgotPassOtp.email },
+                    { password: passwordHash }
+                )
+                req.session.forgotPassOtp = null
+                res.status(200).json({ message: 'succes' })
+            } else {
+                res.status(403).json({ message: 'otp is not verified' })
+            }
+        } else {
+            res.status(403).json({ message: 'provide email and otp first' })
+        }
     } catch (error) {
         res.status(500).json({ message: 'internal server error' })
     }

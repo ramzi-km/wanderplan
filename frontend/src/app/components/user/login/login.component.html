@@ -104,7 +104,9 @@
                     >
                   </div>
                   <label class="label">
-                    <a class="link-hover link label-text-alt"
+                    <a
+                      (click)="showEmailModal()"
+                      class="link-hover link label-text-alt"
                       >Forgot password?</a
                     >
                   </label>
@@ -149,5 +151,117 @@
         </div>
       </div>
     </section>
+
+    <dialog id="inputEmailModal" class="modal">
+      <form
+        [formGroup]="emailForm"
+        (ngSubmit)="submitEmail()"
+        class="modal-box"
+      >
+        <div class="m-0 flex justify-end">
+          <a
+            (click)="closeEmailModal()"
+            class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </a>
+        </div>
+        <h3 class="text-center text-3xl font-bold text-textp">
+          Reset password
+        </h3>
+        <div class="mt-6 w-full space-y-3 text-textp">
+          <div class="alert alert-error mt-3 flex h-10" *ngIf="emailErrMessage">
+            {{ emailErrMessage }}
+          </div>
+          <input
+            type="text"
+            placeholder="input your email address"
+            class="input input-bordered w-full text-textp"
+            formControlName="email"
+          />
+          <div
+            class="text-sm text-red-500"
+            *ngIf="emailFc['email'].touched && emailFc['email'].invalid"
+          >
+            <label *ngIf="emailFc['email'].errors?.['required']"
+              >email is required
+            </label>
+            <label *ngIf="emailFc['email'].errors?.['email']"
+              >invalid email
+            </label>
+          </div>
+        </div>
+        <div class="modal-action justify-center text-textp">
+          <button
+            type="submit"
+            [disabled]="emailForm.invalid"
+            class="btn btn-primary btn-sm"
+          >
+            submit
+            <span
+              *ngIf="emailSubmitLoading"
+              class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+            ></span>
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="otpModal" class="modal">
+      <form [formGroup]="otpForm" (ngSubmit)="submitOtp()" class="modal-box">
+        <div class="flex flex-col items-center justify-center">
+          <div class="text-3xl font-semibold">
+            <p>Otp Verification</p>
+          </div>
+          <div class="flex flex-row text-sm font-medium text-gray-400">
+            <p>We have sent a code to your email</p>
+          </div>
+        </div>
+        <div class="m-6 flex flex-row justify-center">
+          <div class="mb-2">
+            <div class="flex items-center justify-center">
+              <label class="text-lg text-red-500">{{ otpErrMessage }}</label>
+            </div>
+            <input
+              class="flex w-full flex-col items-center justify-center rounded-xl border border-gray-200 bg-secondary px-5 text-center text-lg text-textp outline-none ring-primary focus:ring-1"
+              type="text"
+              maxlength="6"
+              minlength="6"
+              formControlName="otp"
+              required
+            />
+
+            <div
+              class="text-sm text-red-500"
+              *ngIf="otpFc['otp'].touched && otpFc['otp'].invalid"
+            >
+              <label *ngIf="otpFc['otp'].errors?.['required']"
+                >otp is required
+              </label>
+              <label
+                *ngIf="
+                  otpFc['otp'].errors?.['minlength'] ||
+                  otpFc['otp'].errors?.['maxlength'] ||
+                  otpFc['otp'].errors?.['pattern']
+                "
+                >otp must be 6 numbers
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-action justify-center text-textp">
+          <button
+            type="submit"
+            [disabled]="otpForm.invalid"
+            class="btn btn-primary btn-sm"
+          >
+            submit
+            <span
+              *ngIf="otpSubmitLoading"
+              class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+            ></span>
+          </button>
+        </div>
+      </form>
+    </dialog>
   </main>
 </div>

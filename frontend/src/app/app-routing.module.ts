@@ -13,6 +13,7 @@ import { TripViewComponent } from './components/trip/trip-view/trip-view/trip-vi
 import { CreateGuideComponent } from './components/user/create-guide/create-guide.component';
 import { CreatePlanComponent } from './components/user/create-plan/create-plan.component';
 import { ListGuidesComponent } from './components/user/list-guides/list-guides.component';
+import { ResetForgotPasswordComponent } from './components/user/login/reset-forgot-password/reset-forgot-password.component';
 import { ProfileComponent } from './components/user/profile/profile.component';
 import { UserGuidesComponent } from './components/user/profile/user-guides/user-guides.component';
 import { UserTripPlansComponent } from './components/user/profile/user-trip-plans/user-trip-plans.component';
@@ -72,6 +73,11 @@ const routes: Routes = [
       {
         path: 'emailVerification',
         component: SignupOtpComponent,
+        canActivate: [guestGuard],
+      },
+      {
+        path: 'resetForgotPassword',
+        component: ResetForgotPasswordComponent,
         canActivate: [guestGuard],
       },
       { path: '**', component: ErrorComponent },

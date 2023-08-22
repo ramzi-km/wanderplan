@@ -22,6 +22,24 @@ export class UserAuthService {
   getUser() {
     return this.http.get<{ user: User }>(`${this.baseUrl}/user`);
   }
+  forgotPassword(body: { email: string }) {
+    return this.http.post<{ message: string }>(
+      `${this.baseUrl}/forgotPassword`,
+      body,
+    );
+  }
+  forgotPasswordVerify(body: { otp: string }) {
+    return this.http.post<{ message: string }>(
+      `${this.baseUrl}/forgotPasswordVerify`,
+      body,
+    );
+  }
+  resetForgotPassword(body: { password: string }) {
+    return this.http.patch<{ message: string }>(
+      `${this.baseUrl}/resetForgotPassword`,
+      body,
+    );
+  }
   resendOtp() {
     return this.http.post<{ message: string }>(
       `${this.baseUrl}/resendSignupOtp`,

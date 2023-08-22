@@ -9,10 +9,13 @@ import verifyUser from '../middlewares/verifyUser.js'
 
 //---------user-auth-controllers---//
 import {
+    forgotPassword,
+    forgotPasswordVerify,
     logout,
     postLogin,
     postSignup,
     resendOtp,
+    resetForgotPassword,
     signupVerify,
 } from '../controllers/userAuthControllers.js'
 
@@ -28,7 +31,10 @@ import {
 
 //------tripPlanConrollers--------//
 
-import { addNewTrip, getTripDetails } from '../controllers/tripPlanControllers.js'
+import {
+    addNewTrip,
+    getTripDetails,
+} from '../controllers/tripPlanControllers.js'
 
 //----------------------------------------------//
 
@@ -37,6 +43,9 @@ import { addNewTrip, getTripDetails } from '../controllers/tripPlanControllers.j
 router.post('/signUp', postSignup)
 router.post('/verifySignup', signupVerify)
 router.post('/resendSignupOtp', resendOtp)
+router.post('/forgotPassword', forgotPassword)
+router.post('/forgotPasswordVerify', forgotPasswordVerify)
+router.patch('/resetForgotPassword', resetForgotPassword)
 router.post('/login', postLogin)
 router.post('/logout', logout)
 
