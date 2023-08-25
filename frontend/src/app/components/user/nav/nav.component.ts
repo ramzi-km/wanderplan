@@ -1,9 +1,11 @@
 import { Component, HostListener } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Subject, takeUntil } from 'rxjs';
 import { UserAuthService } from 'src/app/services/user/user-auth.service';
 import * as UserActions from '../../../store/user/user.actions';
 import * as UserSelector from '../../../store/user/user.selectors';
+declare const google: any;
 
 @Component({
   selector: 'app-nav',
@@ -21,6 +23,8 @@ export class NavComponent {
     private userAuthService: UserAuthService,
     private store: Store,
   ) {}
+  private ngUnsubscribe = new Subject<void>();
+
 
   user$ = this.store.select(UserSelector.selectUser);
   isLoggedIn$ = this.store.select(UserSelector.selectIsLoggedIn);
@@ -62,6 +66,7 @@ export class NavComponent {
     }
   }
   logout(): void {
+
     this.userAuthService.userLogout().subscribe({
       next: (res) => {
         this.store.dispatch(UserActions.userLogout());

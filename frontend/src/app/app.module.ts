@@ -1,3 +1,10 @@
+import {
+  GoogleLoginProvider,
+  GoogleSigninButtonDirective,
+  GoogleSigninButtonModule,
+  SocialAuthServiceConfig,
+  SocialLoginModule,
+} from '@abacritt/angularx-social-login';
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import {
@@ -55,10 +62,10 @@ import { adminEffects } from './admin/store/admin/admin.effects';
 import { adminReducer } from './admin/store/admin/admin.reducers';
 import { usersEffects } from './admin/store/users/users.effects';
 import { usersReducer } from './admin/store/users/users.reducers';
+import { ResetForgotPasswordComponent } from './components/user/login/reset-forgot-password/reset-forgot-password.component';
 import { MainInterceptor } from './interceptors/main.interceptor';
 import { DateRangePipe } from './pipes/date-range.pipe';
 import { DaysToPipe } from './pipes/days-to.pipe';
-import { ResetForgotPasswordComponent } from './components/user/login/reset-forgot-password/reset-forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -86,6 +93,8 @@ import { ResetForgotPasswordComponent } from './components/user/login/reset-forg
     ResetForgotPasswordComponent,
   ],
   imports: [
+    SocialLoginModule,
+    GoogleSigninButtonModule,
     MatSidenavModule,
     MatButtonModule,
     MatListModule,
@@ -124,6 +133,23 @@ import { ResetForgotPasswordComponent } from './components/user/login/reset-forg
       provide: HTTP_INTERCEPTORS,
       useClass: MainInterceptor,
       multi: true,
+    },
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(environment.GOOGLE_CLIENT_ID, {
+              oneTapEnabled: false,
+            }),
+          },
+        ],
+        onError: (err) => {
+          console.error(err);
+        },
+      } as SocialAuthServiceConfig,
     },
   ],
   bootstrap: [AppComponent],

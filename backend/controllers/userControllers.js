@@ -10,7 +10,7 @@ import userModel from '../models/userModel.js'
 
 export async function getUser(req, res) {
     try {
-        res.status(200).json({user:req.user})
+        res.status(200).json({ user: req.user })
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' })
     }
@@ -148,7 +148,15 @@ export async function getRecentAndUpcomingTrips(req, res) {
     try {
         const user = req.user
         let today = new Date()
-        let next10Days = new Date()
+        const year = today.getUTCFullYear()
+        const month = today.getUTCMonth() + 1
+        const day = today.getUTCDate()
+        today = new Date(
+            `${year}-${month.toString().padStart(2, '0')}-${day
+                .toString()
+                .padStart(2, '0')}T00:00:00.000+00:00`
+        )
+        const next10Days = new Date()
         next10Days.setDate(today.getDate() + 10)
 
         const tripsWithin10Days = await tripModel
@@ -157,8 +165,10 @@ export async function getRecentAndUpcomingTrips(req, res) {
                     $match: {
                         $or: [{ userId: user._id }, { tripMates: user._id }],
                         startDate: {
-                            $gte: today,
                             $lte: next10Days,
+                        },
+                        endDate: {
+                            $gte: today,
                         },
                     },
                 },

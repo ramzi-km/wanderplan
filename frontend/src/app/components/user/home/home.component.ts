@@ -46,17 +46,21 @@ export class HomeComponent implements OnInit, OnDestroy {
       breakpoints: {
         640: {
           slidesPerView: 2,
+          slidesPerGroup: 2,
           spaceBetween: 20,
         },
         768: {
           slidesPerView: 3,
+          slidesPerGroup: 2,
           spaceBetween: 40,
         },
         1024: {
           slidesPerView: 4,
+          slidesPerGroup: 2,
           spaceBetween: 50,
         },
       },
+      navigation: true,
     });
     swiperEl?.initialize();
   }

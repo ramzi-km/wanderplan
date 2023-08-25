@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export const content = [
   "./src/**/*.{html,ts}",
-  "./node_modules/flowbite/**/*.js",
+  // "./node_modules/flowbite/**/*.js",
 ];
 export const theme = {
   screens: {
@@ -49,4 +49,6 @@ export const daisyui = {
     },
   ],
 };
-export const plugins = [require("daisyui"), require("flowbite/plugin")];
+export const plugins = [
+  require("daisyui"), //require("flowbite/plugin")//
+];

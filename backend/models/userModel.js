@@ -18,16 +18,18 @@ var userSchema = new Schema({
     },
     mobile: {
         type: String,
-        required: true,
     },
     password: {
         type: String,
-        required: true,
     },
     profilePic: {
         type: String,
         default:
             'https://res.cloudinary.com/dbmujhmpe/image/upload/v1691666473/wanderplan/j7nkqvajk2ppfdfqqpkt.png',
+    },
+    googleLogin: {
+        type: Boolean,
+        default: false,
     },
     notifications: {
         type: Array,

@@ -12,6 +12,7 @@ import {
     forgotPassword,
     forgotPasswordVerify,
     logout,
+    postGoogleLogin,
     postLogin,
     postSignup,
     resendOtp,
@@ -47,6 +48,7 @@ router.post('/forgotPassword', forgotPassword)
 router.post('/forgotPasswordVerify', forgotPasswordVerify)
 router.patch('/resetForgotPassword', resetForgotPassword)
 router.post('/login', postLogin)
+router.post('/googleLogin', postGoogleLogin)
 router.post('/logout', logout)
 
 //----------user-profile------------------//

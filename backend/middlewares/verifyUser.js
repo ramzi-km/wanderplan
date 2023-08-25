@@ -6,7 +6,7 @@ export default async function verifyUser(req, res, next) {
         const token = req.cookies.userToken
         if (!token) {
             return res
-                .status(401)    
+                .status(401)
                 .json({ message: 'Unauthorized: No token provided.' })
         }
 
@@ -24,7 +24,7 @@ export default async function verifyUser(req, res, next) {
         }
         if (user.ban) {
             res.cookie('userToken', '', { maxAge: 0 })
-            return res.status(401).json({ message: 'User is banned.'})
+            return res.status(401).json({ message: 'User is banned.' })
         }
         req.user = user
         next()

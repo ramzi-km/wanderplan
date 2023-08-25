@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { initFlowbite } from 'flowbite';
+// import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-root',
@@ -8,10 +8,9 @@ import { initFlowbite } from 'flowbite';
 })
 export class AppComponent implements OnInit {
   theme = 'light';
-  constructor(
-  ) {}
+  constructor() {}
   ngOnInit(): void {
-    initFlowbite();
+    // initFlowbite();
     if (localStorage.getItem('theme')) {
       this.theme = localStorage.getItem('theme')!;
       if (this.theme == 'dark') {

@@ -133,17 +133,26 @@
                   </button>
                 </div>
                 <div class="divider">OR</div>
-                <div class="form-control mt-6">
-                  <button
+
+                <div class="form-control mt-6 flex items-center justify-center">
+                  <!-- <button
                     type="button"
                     class="btn btn-success btn-outline text-textp"
+                    (click)="onGoogleLogin()"
                   >
                     <img
                       src="../../../../assets/images/google-logo-6278331_640.png"
                       alt=""
                       width="25px"
                     />Login with google
-                  </button>
+                  </button> -->
+                  <asl-google-signin-button
+                    shape="circle"
+                    type="standard"
+                    size="large"
+                    theme="filled_blue"
+                  >
+                  </asl-google-signin-button>
                 </div>
               </div>
             </form>

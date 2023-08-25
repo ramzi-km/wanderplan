@@ -1,17 +1,19 @@
-import { Component } from '@angular/core';
+import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
 import { UserAuthService } from 'src/app/services/user/user-auth.service';
 import { noSpace } from 'src/app/validators/noSpace.validators';
 import * as UserActions from '../../../store/user/user.actions';
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
+  private ngUnsubscribe = new Subject<void>();
   emailForm: FormGroup;
   loginForm: FormGroup;
   otpForm: FormGroup;
@@ -27,6 +29,7 @@ export class LoginComponent {
     private store: Store,
     private userAuthService: UserAuthService,
     private router: Router,
+    private socialAuthService: SocialAuthService,
   ) {
     this.loginForm = fb.group({
       username: [
@@ -60,6 +63,32 @@ export class LoginComponent {
         ],
       ],
     });
+  }
+  ngOnInit(): void {
+    this.socialAuthService.authState
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        switchMap((res: SocialUser) => {
+          if (res?.idToken) {
+            this.loading = true;
+            return this.userAuthService.googleLogin({ token: res.idToken });
+          } else {
+            return EMPTY;
+          }
+        }),
+      )
+      .subscribe({
+        next: (res) => {
+          this.errMessage = null;
+          this.loading = false;
+          this.store.dispatch(UserActions.userLogin({ user: res.user }));
+          this.router.navigate(['/home']);
+        },
+        error: (errMessage) => {
+          this.errMessage = errMessage;
+          this.loading = false;
+        },
+      });
   }
   get fc() {
     return this.loginForm.controls;
@@ -133,5 +162,10 @@ export class LoginComponent {
         this.otpSubmitLoading = false;
       },
     });
+  }
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+    this.socialAuthService.signOut();
   }
 }

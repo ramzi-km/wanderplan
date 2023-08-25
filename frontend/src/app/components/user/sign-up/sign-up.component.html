@@ -48,22 +48,11 @@
                   />
                   <div
                     class="text-sm text-red-500"
-                    *ngIf="
-                      signupForm.controls['fullName'].touched &&
-                      signupForm.controls['fullName'].invalid
-                    "
+                    *ngIf="fc['fullName'].touched && fc['fullName'].invalid"
                   >
-                    <label
-                      *ngIf="
-                        signupForm.controls['fullName'].errors?.['required']
-                      "
+                    <label *ngIf="fc['fullName'].errors?.['required']"
                       >name is required </label
-                    ><label
-                      *ngIf="
-                        signupForm.controls['fullName'].errors?.[
-                          'noEmptySpaces'
-                        ]
-                      "
+                    ><label *ngIf="fc['fullName'].errors?.['noEmptySpaces']"
                       >name must be atleast five characters</label
                     >
                   </div>
@@ -82,29 +71,16 @@
                   />
                   <div
                     class="text-sm text-red-500"
-                    *ngIf="
-                      signupForm.controls['username'].touched &&
-                      signupForm.controls['username'].invalid
-                    "
+                    *ngIf="fc['username'].touched && fc['username'].invalid"
                   >
-                    <label
-                      *ngIf="
-                        signupForm.controls['username'].errors?.['required']
-                      "
+                    <label *ngIf="fc['username'].errors?.['required']"
                       >username is required </label
-                    ><label
-                      *ngIf="
-                        signupForm.controls['username'].errors?.[
-                          'noSpaceValidator'
-                        ]
-                      "
+                    ><label *ngIf="fc['username'].errors?.['noSpaceValidator']"
                       >username must not contain empty spaces</label
                     ><label
                       *ngIf="
-                        !signupForm.controls['username'].errors?.[
-                          'noSpaceValidator'
-                        ] &&
-                        signupForm.controls['username'].errors?.['minlength']
+                        !fc['username'].errors?.['noSpaceValidator'] &&
+                        fc['username'].errors?.['minlength']
                       "
                       >username must be atleast 5 characters</label
                     >
@@ -123,17 +99,12 @@
                   />
                   <div
                     class="text-sm text-red-500"
-                    *ngIf="
-                      signupForm.controls['email'].touched &&
-                      signupForm.controls['email'].invalid
-                    "
+                    *ngIf="fc['email'].touched && fc['email'].invalid"
                   >
-                    <label
-                      *ngIf="signupForm.controls['email'].errors?.['required']"
+                    <label *ngIf="fc['email'].errors?.['required']"
                       >email is required </label
-                    ><label
-                      *ngIf="signupForm.controls['email'].errors?.['email']"
-                      >provide a valid email</label
+                    ><label *ngIf="fc['email'].errors?.['email']"
+                      >not a valid email</label
                     >
                   </div>
                 </div>
@@ -150,16 +121,11 @@
                   />
                   <div
                     class="text-sm text-red-500"
-                    *ngIf="
-                      signupForm.controls['mobile'].touched &&
-                      signupForm.controls['mobile'].invalid
-                    "
+                    *ngIf="fc['mobile'].touched && fc['mobile'].invalid"
                   >
-                    <label
-                      *ngIf="signupForm.controls['mobile'].errors?.['required']"
+                    <label *ngIf="fc['mobile'].errors?.['required']"
                       >mobile is required </label
-                    ><label
-                      *ngIf="signupForm.controls['mobile'].errors?.['pattern']"
+                    ><label *ngIf="fc['mobile'].errors?.['pattern']"
                       >not a valid mobile</label
                     >
                   </div>
@@ -174,49 +140,29 @@
                     class="input input-bordered h-8"
                     name="password"
                     formControlName="password"
-                    [(ngModel)]="pass"
                   />
                   <div
                     class="text-sm text-red-500"
-                    *ngIf="
-                      signupForm.controls['password'].touched &&
-                      signupForm.controls['password'].invalid
-                    "
+                    *ngIf="fc['password'].touched && fc['password'].invalid"
                   >
-                    <label
-                      *ngIf="
-                        signupForm.controls['password'].errors?.['required']
-                      "
+                    <label *ngIf="fc['password'].errors?.['required']"
                       >password is required </label
-                    ><label
-                      *ngIf="
-                        signupForm.controls['password'].errors?.[
-                          'containsSpaces'
-                        ]
-                      "
+                    ><label *ngIf="fc['password'].errors?.['noSpaceValidator']"
                       >password should not contain spaces</label
                     >
                     <label
                       *ngIf="
-                        signupForm.controls['password'].errors?.['minlength'] &&
-                        !signupForm.controls['password'].errors?.[
-                          'containsSpaces'
-                        ]
+                        fc['password'].errors?.['minlength'] &&
+                        !fc['password'].errors?.['containsSpaces']
                       "
                       >password should contain atleast 6 characters</label
                     >
                     <label
                       *ngIf="
-                        signupForm.controls['password'].errors?.[
-                          'invalidPassword'
-                        ] &&
-                        !signupForm.controls['password'].errors?.[
-                          'containsSpaces'
-                        ] &&
-                        !signupForm.controls['password'].errors?.[
-                          'minlength'
-                        ] &&
-                        !signupForm.controls['password'].errors?.['required']
+                        fc['password'].errors?.['pattern'] &&
+                        !fc['password'].errors?.['containsSpaces'] &&
+                        !fc['password'].errors?.['minlength'] &&
+                        !fc['password'].errors?.['required']
                       "
                       >password should contain a number and a character</label
                     >
@@ -232,30 +178,20 @@
                     class="input input-bordered h-8"
                     name="confirmPassword"
                     formControlName="confirmPassword"
-                    [(ngModel)]="conf"
                   />
                   <div
                     class="text-sm text-red-500"
                     *ngIf="
-                      signupForm.controls['confirmPassword'].touched &&
-                      signupForm.controls['confirmPassword'].invalid
+                      fc['confirmPassword'].touched &&
+                      fc['confirmPassword'].invalid
                     "
                   >
-                    <label
-                      *ngIf="
-                        signupForm.controls['confirmPassword'].errors?.[
-                          'required'
-                        ]
-                      "
+                    <label *ngIf="fc['confirmPassword'].errors?.['required']"
                       >this field is required </label
                     ><label
                       *ngIf="
-                        signupForm.controls['confirmPassword'].errors?.[
-                          'mismatch'
-                        ] &&
-                        !signupForm.controls['confirmPassword'].errors?.[
-                          'required'
-                        ]
+                        fc['confirmPassword'].hasError('mismatchedPasswords') &&
+                        !fc['confirmPassword'].errors?.['required']
                       "
                       >passwords do not match</label
                     >
@@ -282,17 +218,26 @@
                   </button>
                 </div>
                 <div class="divider">OR</div>
-                <div class="form-control mt-6">
-                  <button
+                <div
+                  class="mt-6form-control form-control mt-6 flex items-center justify-center"
+                >
+                  <!-- <button
                     type="button"
-                    class="btn btn-success btn-outline text-textp"
+                    class="btn btn-success btn-outline w-full text-textp"
                   >
                     <img
                       src="../../../../assets/images/google-logo-6278331_640.png"
                       alt=""
                       width="25px"
                     />Sign Up with google
-                  </button>
+                  </button> -->
+                  <asl-google-signin-button
+                    shape="circle"
+                    type="standard"
+                    size="large"
+                    theme="filled_blue"
+                  >
+                  </asl-google-signin-button>
                 </div>
               </div>
             </form>

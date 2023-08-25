@@ -1,6 +1,9 @@
 import bcrypt from 'bcrypt'
+import { OAuth2Client } from 'google-auth-library'
 import jwt from 'jsonwebtoken'
 import otpGenerator from 'otp-generator'
+import { generateFromEmail } from 'unique-username-generator'
+import { handleLoggedInUser } from '../helpers/handleLoggedInUser.js'
 import sentForgotPassOtp from '../helpers/sentForgotPassOtp.js'
 import sentOtp from '../helpers/sentOtp.js'
 import userModel from '../models/userModel.js'
@@ -202,25 +205,36 @@ export async function postLogin(req, res) {
         })
         if (user) {
             if (!user.ban) {
-                const comparison = await bcrypt.compare(password, user.password)
-                if (comparison) {
-                    const secret = process.env.JWT_SECRET_KEY
-                    const token = jwt.sign({ _id: user._id }, secret)
-                    res.cookie('userToken', token, {
-                        httpOnly: true,
-                        secure: true,
-                        sameSite: 'none',
-                        maxAge: 3 * 24 * 1000 * 60 * 60, // 3 day
+                if (user.googleLogin) {
+                    return res.status(403).json({
+                        message: 'Please use google sign in',
                     })
-                    const resUser = await userModel.findOne(
-                        {
-                            email: user.email,
-                        },
-                        { password: 0, __v: 0 }
-                    )
-                    return res.json({ user: resUser })
                 } else {
-                    res.status(403).json({ message: 'Incorrect Password' })
+                    const comparison = await bcrypt.compare(
+                        password,
+                        user.password
+                    )
+                    if (comparison) {
+                        const secret = process.env.JWT_SECRET_KEY
+                        const token = jwt.sign({ _id: user._id }, secret)
+                        res.cookie('userToken', token, {
+                            httpOnly: true,
+                            secure: true,
+                            sameSite: 'none',
+                            maxAge: 3 * 24 * 1000 * 60 * 60, // 3 day
+                        })
+                        const resUser = await userModel.findOne(
+                            {
+                                email: user.email,
+                            },
+                            { password: 0, __v: 0 }
+                        )
+                        return res.json({ user: resUser })
+                    } else {
+                        return res
+                            .status(403)
+                            .json({ message: 'Incorrect Password' })
+                    }
                 }
             } else {
                 res.cookie('userToken', '', { maxAge: 0 })
@@ -234,11 +248,59 @@ export async function postLogin(req, res) {
     }
 }
 
+export async function postGoogleLogin(req, res) {
+    try {
+        const token = req.body.token
+        const client = new OAuth2Client()
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        })
+        const payload = ticket.getPayload()
+        if (payload.email_verified) {
+            const { name, email, picture } = payload
+            const user = await userModel.findOne(
+                { email },
+                { password: 0, __v: 0 }
+            )
+            if (!user) {
+                let username = ''
+                let nameTaken = false
+                do {
+                    username = generateFromEmail(email, 3)
+                    nameTaken = await userModel.findOne({
+                        username: username,
+                    })
+                } while (nameTaken)
+                const newUser = await userModel.create({
+                    name,
+                    email,
+                    googleLogin: true,
+                    profilePic: picture,
+                    username,
+                })
+                return handleLoggedInUser(newUser, res)
+            }
+            if (!user.ban) {
+                return handleLoggedInUser(user, res)
+            } else {
+                return res.status(403).json({ message: 'user is banned' })
+            }
+        } else {
+            res.status(422).json({ message: 'google authentication failed' })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'internal server error' })
+    }
+}
+
 export async function logout(req, res) {
     try {
         res.cookie('userToken', '', { maxAge: 0, httpOnly: true })
         res.status(200).json({ message: 'success' })
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: 'internal server error' })
     }
 }

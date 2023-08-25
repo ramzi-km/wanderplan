@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environment';
 import { User } from '../../interfaces/user.model';
-
+declare const google: any;
 @Injectable({
   providedIn: 'root',
 })
@@ -48,5 +48,9 @@ export class UserAuthService {
   }
   userLogout() {
     return this.http.post<{ message: string }>(`${this.baseUrl}/logout`, {});
+  }
+
+  googleLogin(body: { token: string }) {
+    return this.http.post<{ user: User }>(`${this.baseUrl}/googleLogin`, body);
   }
 }

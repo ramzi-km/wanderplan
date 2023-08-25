@@ -8,7 +8,7 @@
       </button>
       <a (click)="navigateTo(trip._id)">
         <img
-          class="h-40 w-full rounded-lg"
+          class="h-40 w-full rounded-lg object-cover"
           src="{{ trip.coverPhoto }}"
           alt=""
         />
@@ -23,9 +23,7 @@
           <span>&bull; {{ [trip.startDate, trip.endDate] | dateRange }}</span>
           <span class="ml-5"
             >&bull;
-            {{
-              trip.totalPlacesToVisit + trip.totalItineraryPlaces
-            }}
+            {{ trip.totalPlacesToVisit + trip.totalItineraryPlaces }}
             places</span
           >
         </p>
