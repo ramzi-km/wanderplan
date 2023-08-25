@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   emailErrMessage: string | null = null;
   otpSubmitLoading: boolean = false;
   otpErrMessage: string | null = null;
+  emailSent = false;
 
   constructor(
     fb: FormBuilder,
@@ -115,10 +116,14 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
   showEmailModal() {
-    const inputEmailModal = document.getElementById(
-      'inputEmailModal',
-    ) as HTMLDialogElement;
-    inputEmailModal.showModal();
+    if (this.emailSent) {
+      this.showOtpModal();
+    } else {
+      const inputEmailModal = document.getElementById(
+        'inputEmailModal',
+      ) as HTMLDialogElement;
+      inputEmailModal.showModal();
+    }
   }
   closeEmailModal() {
     const inputEmailModal = document.getElementById(
@@ -132,6 +137,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       next: (res) => {
         console.log(res.message);
         this.emailSubmitLoading = false;
+        this.emailSent = true;
         this.closeEmailModal();
         this.showOtpModal();
       },
