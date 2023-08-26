@@ -34,6 +34,7 @@ import * as tripEditActions from '../../../store/editingTrip/trip-edit.actions';
   styleUrls: ['./create-plan.component.scss'],
 })
 export class CreatePlanComponent implements OnInit, OnDestroy {
+  loading = false;
   showResults: boolean = false;
   inputControl = new FormControl();
   currentDate = new Date();
@@ -116,11 +117,13 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
     if (this.createPlanForm.invalid) {
       this.showErrors = true;
     } else {
+      this.loading = true;
       const form = this.createPlanForm.value;
       this.tripService.createTrip(form).subscribe({
         next: (response) => {
           const trip = response.trip;
           this.store.dispatch(tripEditActions.setTripEdit({ trip: trip }));
+          this.loading = false;
           this.router.navigate(['trip/edit', trip._id]);
         },
         error: (errMessage) => {

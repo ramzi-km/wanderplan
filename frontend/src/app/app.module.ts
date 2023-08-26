@@ -34,7 +34,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ErrorComponent } from './components/error/error.component';
 import { TripEditComponent } from './components/trip/trip-edit/trip-edit.component';
-import { TripViewComponent } from './components/trip/trip-view/trip-view/trip-view.component';
+import { TripViewComponent } from './components/trip/trip-view/trip-view.component';
 import { CreateGuideComponent } from './components/user/create-guide/create-guide.component';
 import { CreatePlanComponent } from './components/user/create-plan/create-plan.component';
 import { FooterComponent } from './components/user/footer/footer.component';

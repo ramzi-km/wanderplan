@@ -107,7 +107,7 @@ export async function getTripDetails(req, res) {
         const user = req.user
         const tripId = req.params.id
         const owner = await tripModel.findById(tripId).select('userId')
-        if (owner.userId.equals(user._id)) {
+        if (owner?.userId?.equals(user._id)) {
             const trip = await tripModel.findById(tripId)
 
             return res
@@ -115,11 +115,16 @@ export async function getTripDetails(req, res) {
                 .json({ message: 'Success', trip: trip, editable: true })
         } else {
             const trip = await tripModel.findById(tripId).select('userId')
-            return res
-                .status(200)
-                .json({ message: 'success', trip: trip, editable: false })
+            if (trip) {
+                return res
+                    .status(200)
+                    .json({ message: 'success', trip: trip, editable: false })
+            }else{
+                return res.status(422).json({message:'invalid trip id'})
+            }
         }
     } catch (error) {
+        console.log(error)
         return res.status(500).json({ message: 'Internal server error' })
     }
 }

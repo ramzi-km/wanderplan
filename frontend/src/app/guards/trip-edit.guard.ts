@@ -1,7 +1,7 @@
 import { Inject, inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { map, switchMap, take } from 'rxjs';
+import { catchError, map, of, switchMap, take } from 'rxjs';
 import { TripService } from '../services/trip/trip.service';
 import * as tripEditActions from '../store/editingTrip/trip-edit.actions';
 import * as tripEditSelector from '../store/editingTrip/trip-edit.selectors';
@@ -28,6 +28,10 @@ export const tripEditGuard: CanActivateFn = (route, state) => {
               router.navigate(['trip/view', routeId]);
               return false;
             }
+          }),
+          catchError((error) => {
+            router.navigate(['/home']);
+            return of(false);
           }),
         );
       }

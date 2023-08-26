@@ -9,7 +9,7 @@ import { SignupOtpComponent } from './components/user/sign-up/signup-otp/signup-
 
 import { ErrorComponent } from './components/error/error.component';
 import { TripEditComponent } from './components/trip/trip-edit/trip-edit.component';
-import { TripViewComponent } from './components/trip/trip-view/trip-view/trip-view.component';
+import { TripViewComponent } from './components/trip/trip-view/trip-view.component';
 import { CreateGuideComponent } from './components/user/create-guide/create-guide.component';
 import { CreatePlanComponent } from './components/user/create-plan/create-plan.component';
 import { ListGuidesComponent } from './components/user/list-guides/list-guides.component';

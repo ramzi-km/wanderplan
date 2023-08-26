@@ -96,6 +96,10 @@
       <div class="mt-2 flex justify-center">
         <button type="submit" class="btn btn-primary rounded-full text-textp">
           Start planning
+          <span
+            *ngIf="loading"
+            class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+          ></span>
         </button>
       </div>
     </form>
