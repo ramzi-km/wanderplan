@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { ToastrService } from 'ngx-toastr';
+import { Subject, takeUntil } from 'rxjs';
 import { UserService } from 'src/app/services/user/user.service';
 import * as userActions from 'src/app/store/user/user.actions';
+import { noSpace } from 'src/app/validators/noSpace.validators';
 import * as userSelectors from '../../../store/user/user.selectors';
-
-import { Subject, Subscription, takeUntil } from 'rxjs';
 import { ProfileModalComponent } from './profile-modal/profile-modal.component';
 
 @Component({
@@ -14,17 +14,61 @@ import { ProfileModalComponent } from './profile-modal/profile-modal.component';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
-export class ProfileComponent implements OnInit, OnDestroy {
+export class ProfileComponent implements OnDestroy {
   loading: boolean = false;
+  resetPassForm: FormGroup;
+  resetPassLoading = false;
+  resetPassErrMessage = '';
   user$ = this.store.select(userSelectors.selectUser);
   private ngUnsubscribe = new Subject<void>();
   constructor(
+    fb: FormBuilder,
     private store: Store,
     private matDialog: MatDialog,
     private userService: UserService,
-    private toastr: ToastrService,
-  ) {}
-  ngOnInit(): void {}
+  ) {
+    this.resetPassForm = fb.group(
+      {
+        currentPassword: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(6),
+            noSpace.noSpaceValidation,
+            Validators.pattern(/^(?=.*\d)(?=.*[a-zA-Z])/),
+          ],
+        ],
+        newPassword: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(6),
+            noSpace.noSpaceValidation,
+            Validators.pattern(/^(?=.*\d)(?=.*[a-zA-Z])/),
+          ],
+        ],
+        confirmPassword: ['', [Validators.required]],
+      },
+      {
+        validator: this.matchingPasswords('newPassword', 'confirmPassword'),
+      },
+    );
+  }
+  matchingPasswords(passwordKey: string, confirmPasswordKey: string) {
+    return (group: FormGroup) => {
+      const passwordControl = group.controls[passwordKey];
+      const confirmPasswordControl = group.controls[confirmPasswordKey];
+
+      if (passwordControl.value !== confirmPasswordControl.value) {
+        confirmPasswordControl.setErrors({ mismatchedPasswords: true });
+      } else {
+        confirmPasswordControl.setErrors(null);
+      }
+    };
+  }
+  get fc() {
+    return this.resetPassForm.controls;
+  }
 
   openDialog() {
     this.matDialog.open(ProfileModalComponent, {
@@ -54,14 +98,42 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.store.dispatch(userActions.getUserSuccess({ user: res.user }));
           this.loading = false;
         },
-        error: (errMessage:string) => {
+        error: (errMessage: string) => {
           this.loading = false;
         },
       });
   }
-  showToast(message: string) {
-    this.toastr.error(message, 'Error!', {
-      timeOut: 3000,
+  showResetPassModal() {
+    const resetPassModal = document.getElementById(
+      'resetPassModal',
+    ) as HTMLDialogElement;
+    resetPassModal.showModal();
+  }
+  closeResetPassModal() {
+    const resetPassModal = document.getElementById(
+      'resetPassModal',
+    ) as HTMLDialogElement;
+    resetPassModal.close();
+    this.resetPassForm.markAsUntouched();
+  }
+  submitResetPassForm() {
+    this.resetPassLoading = true;
+    this.userService.resetPassword(this.resetPassForm.value).subscribe({
+      next: (res) => {
+        this.resetPassErrMessage = '';
+        this.resetPassLoading = false;
+        this.closeResetPassModal();
+        this.resetPassForm.setValue({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: '',
+        });
+        this.resetPassForm.markAsUntouched();
+      },
+      error: (errMessage: string) => {
+        this.resetPassErrMessage = errMessage;
+        this.resetPassLoading = false;
+      },
     });
   }
   ngOnDestroy(): void {

@@ -17,6 +17,12 @@ export class UserService {
       user,
     );
   }
+  resetPassword(body: { newPassword: string; oldPassword: string }) {
+    return this.http.patch<{ message: string }>(
+      `${this.baseUrl}/resetPassword`,
+      body,
+    );
+  }
   uploadProfile(profile: { profilePic: string }) {
     return this.http.post<{ user: User; message: string }>(
       `${this.baseUrl}/user/uploadProfile`,

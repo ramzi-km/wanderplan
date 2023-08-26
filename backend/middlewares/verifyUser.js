@@ -14,10 +14,7 @@ export default async function verifyUser(req, res, next) {
         const decoded = jwt.verify(token, secret)
 
         // Check if the decoded user ID exists in the database
-        const user = await userModel.findOne(
-            { _id: decoded._id },
-            { password: 0, __v: 0 }
-        )
+        const user = await userModel.findOne({ _id: decoded._id })
         if (!user) {
             res.cookie('userToken', '', { maxAge: 0 })
             return res.status(401).json({ message: 'User not found.' })

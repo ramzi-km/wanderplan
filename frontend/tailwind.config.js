@@ -42,7 +42,7 @@ export const daisyui = {
         secondary: "#222222", //secondary
         accent: "#1D7643", //accent
         "base-100": "#263238", //bg-color
-        neutral: "#F5F5DC)", //textS
+        neutral: "#f5f5dc", //textS
         info: "#6C757D", //textG
         success: "#ffffff", //textP
       },

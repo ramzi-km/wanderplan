@@ -26,6 +26,7 @@ import {
     getAllTrips,
     getRecentAndUpcomingTrips,
     getUser,
+    resetPassword,
     updateUser,
     uploadProfile,
 } from '../controllers/userControllers.js'
@@ -56,6 +57,7 @@ router.post('/logout', logout)
 router.get('/user', verifyUser, getUser)
 router.patch('/user', verifyUser, updateUser)
 router.post('/user/uploadProfile', verifyUser, uploadProfile)
+router.patch('/resetPassword', verifyUser, resetPassword)
 
 router.get('/user/getRecentTrips', verifyUser, getRecentAndUpcomingTrips)
 router.get('/user/getAllTrips', verifyUser, getAllTrips)

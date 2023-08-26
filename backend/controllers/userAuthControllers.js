@@ -205,7 +205,7 @@ export async function postLogin(req, res) {
         })
         if (user) {
             if (!user.ban) {
-                if (user.googleLogin) {
+                if (user.googleLogin && !user.password) {
                     return res.status(403).json({
                         message: 'Please use google sign in',
                     })

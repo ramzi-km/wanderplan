@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt'
 import mongoose from 'mongoose'
 import cloudinary from '../config/cloudinary.js'
 
@@ -95,6 +96,44 @@ export async function uploadProfile(req, res) {
         res.status(200).json({ user: updatedUser, message: 'success' })
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' })
+    }
+}
+
+export async function resetPassword(req, res) {
+    try {
+        const user = req.user
+        const newPassword = req.body.newPassword
+        const currentPassword = req.body.currentPassword
+        if (!newPassword) {
+            return res.status(404).json({ message: 'provide password' })
+        }
+        const passwordHash = await bcrypt.hash(newPassword, 10)
+        console.log(user)
+        if (user.googleLogin && !user.password) {
+            await userModel.findOneAndUpdate(
+                { email: user.email },
+                { password: passwordHash }
+            )
+            console.log(user.password);
+            return res.status(200).json({ message: 'success' })
+        } else {
+            const comparison = await bcrypt.compare(
+                currentPassword,
+                user.password
+            )
+            if (comparison) {
+                await userModel.findOneAndUpdate(
+                    { email: user.email },
+                    { password: passwordHash }
+                )
+                return res.status(200).json({ message: 'success' })
+            } else {
+                return res.status(403).json({ message: 'Incorrect Password' })
+            }
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'internal server error' })
     }
 }
 
