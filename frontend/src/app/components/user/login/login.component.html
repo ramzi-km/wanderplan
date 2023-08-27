@@ -75,17 +75,28 @@
                   </div>
                 </div>
 
-                <div class="form-control">
+                <div class="form-control relative">
                   <label class="label">
                     <span class="label-text font-medium">Password</span>
                   </label>
                   <input
-                    type="password"
+                    [type]="passHide ? 'password' : 'text'"
                     placeholder="password"
                     class="input input-bordered"
                     name="password"
                     formControlName="password"
                   />
+                  <button
+                    type="button"
+                    class="btn btn-circle btn-ghost btn-sm absolute right-2 top-12"
+                    (click)="passHide = !passHide"
+                  >
+                    <i
+                      [ngClass]="passHide ? 'fa-eye-slash' : 'fa-eye'"
+                      class="fa-solid"
+                    ></i>
+                  </button>
+
                   <div
                     class="text-sm text-red-500"
                     *ngIf="fc['password'].touched && fc['password'].invalid"

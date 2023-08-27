@@ -1,0 +1,6 @@
+<!-- attachment.component.html -->
+<input type="file" (change)="onFileChange($event)" />
+<div *ngIf="uploadedContent">
+  <img *ngIf="isImage" [src]="uploadedContent" alt="Uploaded Image" />
+  <a [href]="pdfBlobUrl" target="_blank">Open PDF</a>
+</div>

@@ -6,7 +6,7 @@ export interface Trip {
   endDate?: Date;
   coverPhoto?: string;
   place?: Place;
-  tripMates?:string[];
+  tripMates?: string[];
   visibility?: string;
   overview?: Overview;
   itinerary?: Itinerary[];
@@ -16,7 +16,7 @@ export interface Trip {
 export interface Place {
   name: string;
   extendedName: string;
-  coordinates: number[];
+  coordinates: [number, number];
 }
 
 export interface Overview {
@@ -35,7 +35,7 @@ export interface PlaceToVisit {
 }
 
 export interface Itinerary {
-  _id?:string;
+  _id?: string;
   Date: Date;
   subHeading: string;
   places: ItineraryPlace[];
@@ -50,10 +50,10 @@ export interface ItineraryPlace {
   extendedName: string;
   startTime?: Date;
   endTime?: Date;
-  expense?: string; 
+  expense?: string;
 }
 
 export interface Budget {
   limit: number;
-  expenses: string[]; 
+  expenses: string[];
 }

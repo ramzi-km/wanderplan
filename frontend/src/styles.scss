@@ -5,6 +5,8 @@
 @import "tailwindcss/utilities";
 // regular style toast
 @import "ngx-toastr/toastr";
+// mapbox map style
+@import "mapbox-gl/dist/mapbox-gl.css";
 
 :root {
   --primary-color: #03af48;

@@ -112,6 +112,23 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
       place: place,
     });
   }
+  selectedPlaceIndex: number = -1;
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'ArrowDown') {
+      this.selectedPlaceIndex =
+        (this.selectedPlaceIndex + 1) % this.places.length;
+    } else if (event.key === 'ArrowUp') {
+      this.selectedPlaceIndex =
+        (this.selectedPlaceIndex - 1 + this.places.length) % this.places.length;
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      if (this.selectedPlaceIndex >= 0) {
+        this.selectPlace(this.places[this.selectedPlaceIndex]);
+        this.selectedPlaceIndex = -1;
+      }
+      (event.target as HTMLInputElement).blur();
+    }
+  }
 
   submitForm() {
     if (this.createPlanForm.invalid) {

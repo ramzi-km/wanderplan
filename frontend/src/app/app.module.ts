@@ -62,6 +62,7 @@ import { adminEffects } from './admin/store/admin/admin.effects';
 import { adminReducer } from './admin/store/admin/admin.reducers';
 import { usersEffects } from './admin/store/users/users.effects';
 import { usersReducer } from './admin/store/users/users.reducers';
+import { AttachmentComponent } from './components/attachment/attachment.component';
 import { ResetForgotPasswordComponent } from './components/user/login/reset-forgot-password/reset-forgot-password.component';
 import { MainInterceptor } from './interceptors/main.interceptor';
 import { DateRangePipe } from './pipes/date-range.pipe';
@@ -91,6 +92,7 @@ import { DaysToPipe } from './pipes/days-to.pipe';
     TripEditComponent,
     TripViewComponent,
     ResetForgotPasswordComponent,
+    AttachmentComponent,
   ],
   imports: [
     SocialLoginModule,
@@ -142,7 +144,7 @@ import { DaysToPipe } from './pipes/days-to.pipe';
           {
             id: GoogleLoginProvider.PROVIDER_ID,
             provider: new GoogleLoginProvider(environment.GOOGLE_CLIENT_ID, {
-              oneTapEnabled: false,
+              oneTapEnabled: true,
             }),
           },
         ],

@@ -105,6 +105,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
       });
   }
   ngOnInit(): void {
+    this.socialAuthService.signOut();
     this.socialAuthService.authState
       .pipe(
         takeUntil(this.ngUnsubscribe),
@@ -133,6 +134,5 @@ export class SignUpComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-    this.socialAuthService.signOut();
   }
 }

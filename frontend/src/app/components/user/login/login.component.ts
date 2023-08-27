@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   otpSubmitLoading: boolean = false;
   otpErrMessage: string | null = null;
   emailSent = false;
+  passHide = true;
 
   constructor(
     fb: FormBuilder,
@@ -66,6 +67,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
   ngOnInit(): void {
+    this.socialAuthService.signOut();
     this.socialAuthService.authState
       .pipe(
         takeUntil(this.ngUnsubscribe),
@@ -172,6 +174,5 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-    this.socialAuthService.signOut();
   }
 }

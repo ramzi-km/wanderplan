@@ -17,25 +17,27 @@
           class="input input-bordered bg-secondary"
           (focus)="showResults = true"
           (blur)="blurResults()"
+          (keydown)="onKeyDown($event)"
         />
         <div class="text-sm text-red-500" *ngIf="showErrors">
           <label *ngIf="fc['place'].errors?.['required']"
             >Choose a place
           </label>
         </div>
-        <div
-          *ngIf="places.length > 0 && showResults"
+        <ul
           class="absolute z-10 mt-24 w-full rounded border border-gray-300 bg-secondary shadow-lg"
+          *ngIf="places.length > 0 && showResults"
         >
-          <div
-            *ngFor="let place of places"
+          <li
             class="cursor-pointer px-4 py-2 text-textp hover:bg-gray-300"
+            *ngFor="let place of places; let i = index"
+            [class.bg-gray-300]="i === selectedPlaceIndex"
             (click)="selectPlace(place)"
           >
             <p>{{ place.text }}</p>
             <span class="text-sm text-texts">{{ place.place_name }}</span>
-          </div>
-        </div>
+          </li>
+        </ul>
       </div>
 
       <div class="">

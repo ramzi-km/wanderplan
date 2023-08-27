@@ -25,7 +25,6 @@ export class NavComponent {
   ) {}
   private ngUnsubscribe = new Subject<void>();
 
-
   user$ = this.store.select(UserSelector.selectUser);
   isLoggedIn$ = this.store.select(UserSelector.selectIsLoggedIn);
 
@@ -66,7 +65,6 @@ export class NavComponent {
     }
   }
   logout(): void {
-
     this.userAuthService.userLogout().subscribe({
       next: (res) => {
         this.store.dispatch(UserActions.userLogout());
@@ -76,5 +74,11 @@ export class NavComponent {
         console.log(err);
       },
     });
+  }
+  shouldShowFooter(): boolean {
+    const excludedRoutePattern = /^\/trip\/edit\/.*/;
+    // Test if the current route matches the pattern
+    const shouldExclude = excludedRoutePattern.test(this.router.url);
+    return !shouldExclude;
   }
 }
