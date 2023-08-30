@@ -35,4 +35,34 @@ export const editTripReducer = createReducer(
       coverPhoto: coverPhoto,
     },
   })),
+  on(tripEditActions.updateDescription, (state, { description }) => ({
+    ...state,
+    trip: {
+      ...state.trip,
+      overview: {
+        ...state.trip.overview!,
+        description: description,
+      },
+    },
+  })),
+  on(tripEditActions.updateOverviewNotes, (state, { notes }) => ({
+    ...state,
+    trip: {
+      ...state.trip,
+      overview: {
+        ...state.trip.overview!,
+        notes: notes,
+      },
+    },
+  })),
+  on(tripEditActions.addPlaceToVisit, (state, { place }) => ({
+    ...state,
+    trip: {
+      ...state.trip,
+      overview: {
+        ...state.trip.overview!,
+        placesToVisit: [...state.trip.overview?.placesToVisit!, place],
+      },
+    },
+  })),
 );

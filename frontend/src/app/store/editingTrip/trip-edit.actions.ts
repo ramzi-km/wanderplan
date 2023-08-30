@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Trip } from 'src/app/interfaces/trip.interface';
+import { PlaceToVisit, Trip } from 'src/app/interfaces/trip.interface';
 
 export const setTripEdit = createAction(
   '[TripEdit Component] setTripEdit',
@@ -12,4 +12,16 @@ export const updateTripName = createAction(
 export const updateCoverPhoto = createAction(
   '[TripEdit Component] UpdateCoverPhoto',
   props<{ coverPhoto: string }>(),
+);
+export const updateDescription = createAction(
+  '[TripEdit Component] updateDescription',
+  props<{ description: string }>(),
+);
+export const updateOverviewNotes = createAction(
+  '[TripEdit Component] updateOverviewNotes',
+  props<{ notes: string }>(),
+);
+export const addPlaceToVisit = createAction(
+  '[TripEdit Component] addPlaceToVisit',
+  props<{ place: PlaceToVisit }>(),
 );

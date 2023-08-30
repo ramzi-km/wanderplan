@@ -1,9 +1,15 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Store } from '@ngrx/store';
 import { environment } from 'environment';
-// import mapboxgl from 'mapbox-gl';
-import { Subject, pipe, takeUntil } from 'rxjs';
+import mapboxgl from 'mapbox-gl';
+import { Subject, pipe, take, takeUntil } from 'rxjs';
 import { TripService } from 'src/app/services/trip/trip.service';
 import * as tripEditActions from '../../../store/editingTrip/trip-edit.actions';
 import * as tripEditSelecctor from '../../../store/editingTrip/trip-edit.selectors';
@@ -15,6 +21,10 @@ import * as tripEditSelecctor from '../../../store/editingTrip/trip-edit.selecto
 })
 export class TripEditComponent implements OnDestroy, OnInit {
   @ViewChild('drawer') drawer!: MatDrawer;
+  @ViewChild('overview') overview!: ElementRef;
+  @ViewChild('itinerary') itinerary!: ElementRef;
+  @ViewChild('budget') budget!: ElementRef;
+
   coordinates!: [number, number];
   headingSaveBtn = false;
   headingLoading = false;
@@ -22,28 +32,54 @@ export class TripEditComponent implements OnDestroy, OnInit {
   nameInput = '';
   tripId = '';
   coverPhotoLoading = false;
+  activeSection: string = 'overview';
+  showOverview = true;
   private ngUnsubscribe = new Subject<void>();
+
+  scrollToSection(section: ElementRef, sectionName: string): void {
+    section.nativeElement.scrollIntoView({ behavior: 'smooth' });
+    this.activeSection = sectionName;
+  }
+
   constructor(
     private store: Store,
     private tripService: TripService,
   ) {
-    // mapboxgl.accessToken = environment.MAPBOX_TOKEN;
+    mapboxgl.accessToken = environment.MAPBOX_TOKEN;
+    this.trip$.pipe(take(1)).subscribe({
+      next: (trip) => {
+        this.coordinates = trip.place?.coordinates!;
+      },
+    });
   }
   ngOnInit() {
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: this.coordinates,
+      zoom: 9,
+    });
     this.trip$.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
       next: (trip) => {
         this.coordinates = trip.place?.coordinates!;
         this.tripName = trip.name;
         this.nameInput = trip.name!;
         this.tripId = trip._id!;
+        trip.overview?.placesToVisit.forEach((element) => {
+          new mapboxgl.Marker({
+            color: '#3FB1CE',
+          })
+            .setLngLat(element.coordinates!)
+            .setPopup(
+              new mapboxgl.Popup().setHTML(
+                `<h1 class="text-lg">${element.name}</h1>
+                <p class="text-sm">${element.description}</p>`,
+              ),
+            )
+            .addTo(map);
+        });
       },
     });
-    // const map = new mapboxgl.Map({
-    //   container: 'map',
-    //   style: 'mapbox://styles/mapbox/streets-v12',
-    //   center: this.coordinates,
-    //   zoom: 9,
-    // });
   }
   trip$ = this.store.select(tripEditSelecctor.selectEditingTrip);
   isDrawerOpen(): boolean {
@@ -60,7 +96,7 @@ export class TripEditComponent implements OnDestroy, OnInit {
   }
   saveHeading() {
     this.headingLoading = true;
-    if (this.nameInput?.trim().length > 3) {
+    if (this.nameInput?.trim().length > 3 && this.nameInput !== this.tripName) {
       this.tripService
         .changeName(this.tripId, { tripName: this.nameInput })
         .pipe(takeUntil(this.ngUnsubscribe))

@@ -4,9 +4,19 @@ const placeToVisitSchema = new Schema({
     coordinates: [Number],
     name: String,
     extendedName: String,
-    image: String,
-    description: String,
-    note: String,
+    image: {
+        type: String,
+        default:
+            'https://res.cloudinary.com/dbmujhmpe/image/upload/v1692011176/wanderplan/default-image_th3auj.jpg',
+    },
+    description: {
+        type: String,
+        default: '',
+    },
+    note: {
+        type: String,
+        default: '',
+    },
 })
 
 const itineraryPlaceSchema = new Schema({

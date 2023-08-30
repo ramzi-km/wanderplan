@@ -36,9 +36,12 @@ import {
 
 import {
     addNewTrip,
+    addPlaceToVisit,
     changeCoverPhoto,
     changeTripName,
     getTripDetails,
+    updateDescription,
+    updateNotes,
 } from '../controllers/tripPlanControllers.js'
 
 //----------------------------------------------//
@@ -74,6 +77,24 @@ router.patch(
     verifyUser,
     verifyTripMate,
     changeCoverPhoto
+)
+router.patch(
+    '/trip/edit/overview/description/:id',
+    verifyUser,
+    verifyTripMate,
+    updateDescription
+)
+router.patch(
+    '/trip/edit/overview/notes/:id',
+    verifyUser,
+    verifyTripMate,
+    updateNotes
+)
+router.put(
+    '/trip/edit/overview/placesToVisit/addPlace/:id',
+    verifyUser,
+    verifyTripMate,
+    addPlaceToVisit
 )
 
 export default router

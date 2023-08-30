@@ -43,12 +43,12 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
   places: Array<MapboxPlaceFeature> = [];
   private unsubscribe$ = new Subject<void>();
   @ViewChild('picker') picker!: MatDatepicker<any>;
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event) {
-    if (!this.hostElement.nativeElement.contains(event.target)) {
-      this.showResults = false;
-    }
-  }
+  // @HostListener('document:click', ['$event'])
+  // onDocumentClick(event: Event) {
+  //   if (!this.hostElement.nativeElement.contains(event.target)) {
+  //     this.showResults = false;
+  //   }
+  // }
   constructor(
     private hostElement: ElementRef,
     fb: FormBuilder,

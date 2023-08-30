@@ -1,12 +1,14 @@
+import { User } from './user.model';
+
 export interface Trip {
   _id?: string;
-  userId?: string;
+  userId?: User;
   name?: string;
   startDate?: Date;
   endDate?: Date;
   coverPhoto?: string;
   place?: Place;
-  tripMates?: string[];
+  tripMates?: User[];
   visibility?: string;
   overview?: Overview;
   itinerary?: Itinerary[];
@@ -26,12 +28,12 @@ export interface Overview {
 }
 
 export interface PlaceToVisit {
-  coordinates: number[];
-  name: string;
-  extendedName: string;
-  image: string;
-  description: string;
-  note: string;
+  coordinates?: [number, number];
+  name?: string;
+  extendedName?: string;
+  image?: string;
+  description?: string;
+  note?: string;
 }
 
 export interface Itinerary {

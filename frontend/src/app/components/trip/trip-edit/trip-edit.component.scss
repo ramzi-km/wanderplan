@@ -1,1 +1,8 @@
-
+.divider:before {
+  background-color: var(--secondary-color);
+  --tw-bg-opacity: 0.1;
+}
+.divider:after {
+  background-color: var(--secondary-color);
+  --tw-bg-opacity: 0.1;
+}

@@ -112,8 +112,11 @@ export async function getTripDetails(req, res) {
             .findById(tripId)
             .select('tripMates visibility')
         if (trip?.tripMates.includes(user._id)) {
-            trip = await tripModel.findById(tripId)
-
+            trip = await tripModel
+                .findById(tripId)
+                .populate('userId', '_id username name profilePic')
+                .populate('tripMates', '_id username name profilePic')
+                .exec()
             return res
                 .status(200)
                 .json({ message: 'Success', trip: trip, editable: true })
@@ -143,8 +146,7 @@ export async function changeTripName(req, res) {
             { name: name },
             { new: true }
         )
-        console.log(trip)
-        return res.status(200).json({ message: 'Success', tripName: trip.name })
+        return res.status(200).json({ message: 'success', tripName: trip.name })
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: 'Internal server error' })
@@ -184,6 +186,87 @@ export async function changeCoverPhoto(req, res) {
         return res
             .status(200)
             .json({ message: 'Success', coverPhoto: updatedTrip.coverPhoto })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+export async function updateDescription(req, res) {
+    try {
+        const tripId = req.trip._id
+        const description = req.body.description || ''
+        const trip = await tripModel.findByIdAndUpdate(
+            tripId,
+            { $set: { 'overview.description': description } },
+            { new: true }
+        )
+        return res.status(200).json({
+            message: 'success',
+            tripDescription: trip.overview.description,
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+export async function updateNotes(req, res) {
+    try {
+        const tripId = req.trip._id
+        const notes = req.body.notes || ''
+        const trip = await tripModel.findByIdAndUpdate(
+            tripId,
+            { $set: { 'overview.notes': notes } },
+            { new: true }
+        )
+        return res.status(200).json({
+            message: 'success',
+            overviewNotes: trip.overview.notes,
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+export async function addPlaceToVisit(req, res) {
+    try {
+        const tripId = req.trip._id
+        let place = req.body.place
+        if (!place?.name || !place.coordinates) {
+            res.status(422).json({ message: 'provide necessary information' })
+        }
+        const accessKey = process.env.UNSPLASH_KEY
+        const trimmedQuery = place?.name?.trim()
+        const descriptionPageResponse = await axios.get(
+            `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&list=search&srsearch=${encodeURIComponent(
+                trimmedQuery
+            )}`
+        )
+
+        const pageId = descriptionPageResponse.data.query.search[0].pageid
+        const descriptionResponse = await axios.get(
+            `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=extracts&list=&pageids=${pageId}&formatversion=2&exsentences=2&exintro=1&explaintext=1`
+        )
+
+        const fetchPhotoUrlResponse = await axios.get(
+            `https://api.unsplash.com/search/photos?client_id=${accessKey}&query=${trimmedQuery}`
+        )
+
+        const description = descriptionResponse.data.query.pages[0].extract
+        const photoUrl = fetchPhotoUrlResponse.data.results[0].urls.regular
+
+        place.description = description || ''
+        place.image = photoUrl || ''
+
+        console.log(place)
+        const trip = await tripModel.findByIdAndUpdate(
+            tripId,
+            { $push: { 'overview.placesToVisit': place } },
+            { new: true }
+        )
+        return res.status(200).json({
+            message: 'success',
+            place: trip.overview.placesToVisit.pop(),
+        })
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: 'Internal server error' })
