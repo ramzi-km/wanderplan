@@ -43,7 +43,7 @@ export class AdminLoginComponent {
         this.errMessage = null;
         this.loading = false;
         this.store.dispatch(AdminActions.adminLogin({ admin: res.admin }));
-        this.router.navigate(['/admen']);
+        this.router.navigate(['/admin']);
       },
       error: (errMessage: string) => {
         this.errMessage = errMessage;

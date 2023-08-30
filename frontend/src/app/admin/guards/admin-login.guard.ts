@@ -13,7 +13,7 @@ export const adminLoginGuard: CanActivateFn = (route, state) => {
       if (!isLoggedIn) {
         return true;
       } else {
-        router.navigate(['/admen']);
+        router.navigate(['/admin']);
         return false;
       }
     }),

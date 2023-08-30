@@ -1,4 +1,6 @@
 import axios from 'axios'
+import cloudinary from '../config/cloudinary.js'
+
 //------------------ models --------------------//
 
 import tripModel from '../models/tripModel.js'
@@ -69,7 +71,7 @@ export async function addNewTrip(req, res) {
                 extendedName: frontendData.place.extendedName,
                 coordinates: frontendData.place.coordinates,
             },
-            tripMates: [],
+            tripMates: [req.user.id],
             visibility: frontendData.visibility,
             overview: {
                 notes: '',
@@ -106,23 +108,82 @@ export async function getTripDetails(req, res) {
     try {
         const user = req.user
         const tripId = req.params.id
-        const owner = await tripModel.findById(tripId).select('userId')
-        if (owner?.userId?.equals(user._id)) {
-            const trip = await tripModel.findById(tripId)
+        let trip = await tripModel
+            .findById(tripId)
+            .select('tripMates visibility')
+        if (trip?.tripMates.includes(user._id)) {
+            trip = await tripModel.findById(tripId)
 
             return res
                 .status(200)
                 .json({ message: 'Success', trip: trip, editable: true })
+        } else if (trip.visibility == 'public') {
+            trip = await tripModel.findById(tripId).select('userId')
+            return res
+                .status(200)
+                .json({ message: 'success', trip: trip, editable: false })
         } else {
-            const trip = await tripModel.findById(tripId).select('userId')
-            if (trip) {
-                return res
-                    .status(200)
-                    .json({ message: 'success', trip: trip, editable: false })
-            }else{
-                return res.status(422).json({message:'invalid trip id'})
-            }
+            return res.status(422).json({ message: 'invalid trip id' })
         }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function changeTripName(req, res) {
+    try {
+        const tripId = req.params.id
+        const name = req.body.tripName
+        if (!name) {
+            res.status(422).json({ message: 'provide necessary information' })
+        }
+        const trip = await tripModel.findByIdAndUpdate(
+            tripId,
+            { name: name },
+            { new: true }
+        )
+        console.log(trip)
+        return res.status(200).json({ message: 'Success', tripName: trip.name })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+export async function changeCoverPhoto(req, res) {
+    try {
+        const trip = req.trip
+        const image = req.body.coverPhoto
+        if (!image) {
+            res.status(422).json({ message: 'provide necessary information' })
+        }
+        const previousCoverPhoto = trip.coverPhoto
+        const coverPhoto = await cloudinary.uploader.upload(image, {
+            folder: 'wanderplan',
+        })
+        const updatedTrip = await tripModel.findByIdAndUpdate(
+            trip.id,
+            { $set: { coverPhoto: coverPhoto.secure_url } },
+            {
+                new: true,
+            }
+        )
+
+        const defaultCoverPhotoUrl =
+            'https://res.cloudinary.com/dbmujhmpe/image/upload/v1692011176/wanderplan/default-image_th3auj.jpg'
+
+        if (previousCoverPhoto && previousCoverPhoto !== defaultCoverPhotoUrl) {
+            const publicId = previousCoverPhoto.split('/').pop().split('.')[0]
+            cloudinary.api
+                .delete_resources([`wanderplan/${publicId}`], {
+                    type: 'upload',
+                    resource_type: 'image',
+                })
+                .then((data) => console.log(data))
+        }
+        return res
+            .status(200)
+            .json({ message: 'Success', coverPhoto: updatedTrip.coverPhoto })
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: 'Internal server error' })

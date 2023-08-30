@@ -17,23 +17,21 @@ export class UserTripPlansComponent implements OnInit, OnDestroy {
   ) {}
   private ngUnsubscribe = new Subject<void>();
   userTrips: Array<any> = [];
+  loading = false;
   ngOnInit(): void {
+    this.loading = true;
     this.userService
       .getAllTrips()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
         next: (res) => {
           this.userTrips = res.trips;
+          this.loading = false;
         },
-        error: (errMessage:string) => {
-          // this.showToast(errMessage);
+        error: (errMessage: string) => {
+          this.loading = false;
         },
       });
-  }
-  showToast(message: string) {
-    this.toastr.error(message, 'Error!', {
-      timeOut: 3000,
-    });
   }
   navigateTo(id: string) {
     this.router.navigate(['trip/edit', id]);

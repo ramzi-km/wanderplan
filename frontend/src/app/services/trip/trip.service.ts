@@ -22,4 +22,16 @@ export class TripService {
       `${this.baseUrl}/trip/getDetails/${id}`,
     );
   }
+  changeName(id: string, body: { tripName: string }) {
+    return this.http.patch<{ tripName: string; message: string }>(
+      `${this.baseUrl}/trip/edit/name/${id}`,
+      body,
+    );
+  }
+  changeCoverphoto(id: string, body: { coverPhoto: string }) {
+    return this.http.patch<{ coverPhoto: string; message: string }>(
+      `${this.baseUrl}/trip/edit/coverPhoto/${id}`,
+      body,
+    );
+  }
 }

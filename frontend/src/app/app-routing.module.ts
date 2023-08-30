@@ -23,7 +23,7 @@ import { userAuthGuard } from './guards/user-auth.guard';
 
 const routes: Routes = [
   {
-    path: 'admen',
+    path: 'admin',
     loadChildren: () =>
       import('./admin/admin.module').then((m) => m.AdminModule),
   },

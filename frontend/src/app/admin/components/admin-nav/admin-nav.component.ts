@@ -59,7 +59,7 @@ export class AdminNavComponent {
     this.adminAuthService.adminLogout().subscribe({
       next: (res) => {
         this.store.dispatch(AdminActions.adminLogout());
-        this.router.navigate(['/admen/login']);
+        this.router.navigate(['/admin/login']);
       },
       error: (errMessage) => {
         console.log(errMessage);

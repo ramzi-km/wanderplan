@@ -3,6 +3,7 @@ const router = express.Router()
 
 //---------------middlewares-----------------//
 
+import verifyTripMate from '../middlewares/verifyTripMate.js'
 import verifyUser from '../middlewares/verifyUser.js'
 
 //--------------controllers-----------------//
@@ -35,6 +36,8 @@ import {
 
 import {
     addNewTrip,
+    changeCoverPhoto,
+    changeTripName,
     getTripDetails,
 } from '../controllers/tripPlanControllers.js'
 
@@ -65,5 +68,12 @@ router.get('/user/getAllTrips', verifyUser, getAllTrips)
 //----------user-trip-plans-----------------//
 router.post('/trip/create', verifyUser, addNewTrip)
 router.get('/trip/getDetails/:id', verifyUser, getTripDetails)
+router.patch('/trip/edit/name/:id', verifyUser, verifyTripMate, changeTripName)
+router.patch(
+    '/trip/edit/coverPhoto/:id',
+    verifyUser,
+    verifyTripMate,
+    changeCoverPhoto
+)
 
 export default router

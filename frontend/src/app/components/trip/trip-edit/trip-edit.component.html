@@ -45,19 +45,78 @@
         class="basis-1/2"
         *ngIf="trip$ | async as trip"
       >
-        <img
-          src="{{ trip.coverPhoto }}"
-          class="h-1/3 w-full object-cover"
-          alt=""
-        />
+        <div class="relative h-1/3 w-full">
+          <div *ngIf="coverPhotoLoading">
+            <div
+              class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 text-primary"
+            >
+              <span class="loading loading-spinner loading-lg"></span>
+            </div>
+          </div>
+          <img
+            src="{{ trip.coverPhoto }}"
+            class="h-full w-full object-cover"
+            alt=""
+          />
+          <input
+            accept=".jpg,.jpeg,.png"
+            type="file"
+            #fileInput
+            style="display: none"
+            (change)="onFileSelected($event)"
+          />
+          <button
+            type="button"
+            class="btn btn-circle btn-info btn-sm absolute right-5 top-5"
+            (click)="fileInput.click()"
+          >
+            <i class="fa-solid fa-pen"></i>
+          </button>
+        </div>
+
         <div class="flex flex-col items-center">
-          <div class="card -mt-10 w-4/5 bg-secondary shadow-xl">
+          <div class="card -mt-24 w-4/5 bg-secondary shadow-xl">
             <div class="card-body">
-              <h2 class="card-title text-textp">{{ trip.name }}</h2>
-              <div class="card-actions justify-end">
-                <button class="btn btn-primary text-textp">
+              <div class="flex">
+                <span
+                  *ngIf="headingLoading"
+                  class="loading loading-spinner loading-sm text-primary"
+                ></span>
+                <input
+                  type="text"
+                  [(ngModel)]="nameInput"
+                  class="input card-title input-ghost w-full max-w-md text-ellipsis text-3xl text-textp"
+                  (focus)="onHeadingFocus()"
+                  (blur)="onHeadingBlur()"
+                />
+              </div>
+
+              <button
+                [ngClass]="headingSaveBtn ? 'flex' : 'hidden'"
+                class="btn btn-primary btn-sm w-16 rounded-full"
+                (click)="saveHeading()"
+              >
+                Save
+              </button>
+              <div class="card-actions mt-8 justify-between">
+                <span class="text-texts">
+                  <i class="fa-regular fa-calendar mr-2"></i>
                   {{ [trip.startDate!, trip.endDate!] | dateRange }}
-                </button>
+                </span>
+                <div class="flex">
+                  <label
+                    tabindex="0"
+                    class="avatar tooltip mx-2"
+                    data-tip="hello"
+                  >
+                    <div class="w-8 rounded-full">
+                      <img src="../../../../assets/images/profile.png" />
+                    </div>
+                  </label>
+                  <button class="text-textp">
+                    <i class="fa-solid fa-user-plus"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -69,7 +128,7 @@
       <div
         id="map"
         [ngClass]="isDrawerOpen() ? 'w-[40%]' : 'w-1/2'"
-        class="fixed bottom-0 right-0 top-0 w-1/2"
+        class="fixed bottom-0 right-0 top-0 w-1/2 bg-yellow-200"
       >
         Map
       </div>

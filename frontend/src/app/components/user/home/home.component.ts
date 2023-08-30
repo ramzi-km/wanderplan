@@ -25,7 +25,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   recentTrips: Array<ShortTripInfo> = [];
   upcomingTrips: Array<ShortTripInfo> = [];
   errMessage!: string;
+  loading = false;
   ngOnInit(): void {
+    this.loading = true;
     this.userService
       .getRecentTrips()
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -33,9 +35,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         next: (res) => {
           this.recentTrips = res.recentTrips;
           this.upcomingTrips = res.upcomingTrips;
+          this.loading = false;
         },
         error: (errMessage) => {
           this.errMessage = errMessage;
+          this.loading = false;
         },
       });
 
