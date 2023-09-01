@@ -65,4 +65,29 @@ export const editTripReducer = createReducer(
       },
     },
   })),
+  on(tripEditActions.deletePlaceToVisit, (state, { placeIndex }) => ({
+    ...state,
+    trip: {
+      ...state.trip,
+      overview: {
+        ...state.trip.overview!,
+        placesToVisit: [
+          ...state.trip.overview!.placesToVisit!.slice(0, placeIndex),
+          ...state.trip.overview!.placesToVisit!.slice(placeIndex + 1),
+        ],
+      },
+    },
+  })),
+  on(tripEditActions.updatePlaceToVisit, (state, { placeIndex, place }) => ({
+    ...state,
+    trip: {
+      ...state.trip,
+      overview: {
+        ...state.trip.overview!,
+        placesToVisit: state!.trip!.overview!.placesToVisit.map(
+          (item, index) => (index === placeIndex ? place : item),
+        ),
+      },
+    },
+  })),
 );

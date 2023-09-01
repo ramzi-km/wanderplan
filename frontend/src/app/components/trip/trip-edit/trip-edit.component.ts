@@ -3,6 +3,7 @@ import {
   ElementRef,
   OnDestroy,
   OnInit,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
@@ -10,6 +11,7 @@ import { Store } from '@ngrx/store';
 import { environment } from 'environment';
 import mapboxgl from 'mapbox-gl';
 import { Subject, pipe, take, takeUntil } from 'rxjs';
+import { PlaceToVisit, Trip } from 'src/app/interfaces/trip.interface';
 import { TripService } from 'src/app/services/trip/trip.service';
 import * as tripEditActions from '../../../store/editingTrip/trip-edit.actions';
 import * as tripEditSelecctor from '../../../store/editingTrip/trip-edit.selectors';
@@ -25,7 +27,10 @@ export class TripEditComponent implements OnDestroy, OnInit {
   @ViewChild('itinerary') itinerary!: ElementRef;
   @ViewChild('budget') budget!: ElementRef;
 
-  coordinates!: [number, number];
+  map!: mapboxgl.Map;
+  markers: mapboxgl.Marker[] = [];
+  currentMarker!: mapboxgl.Marker;
+  trip!: Trip;
   headingSaveBtn = false;
   headingLoading = false;
   tripName: string | undefined = '';
@@ -44,39 +49,55 @@ export class TripEditComponent implements OnDestroy, OnInit {
   constructor(
     private store: Store,
     private tripService: TripService,
+    private renderer: Renderer2,
+    private el: ElementRef,
   ) {
     mapboxgl.accessToken = environment.MAPBOX_TOKEN;
     this.trip$.pipe(take(1)).subscribe({
       next: (trip) => {
-        this.coordinates = trip.place?.coordinates!;
+        this.trip = trip;
       },
     });
   }
   ngOnInit() {
-    const map = new mapboxgl.Map({
+    this.map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v12',
-      center: this.coordinates,
+      center: this.trip.place?.coordinates,
       zoom: 9,
     });
     this.trip$.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
       next: (trip) => {
-        this.coordinates = trip.place?.coordinates!;
+        this.trip = trip;
         this.tripName = trip.name;
         this.nameInput = trip.name!;
         this.tripId = trip._id!;
-        trip.overview?.placesToVisit.forEach((element) => {
-          new mapboxgl.Marker({
-            color: '#3FB1CE',
-          })
+        this.markers.forEach((marker) => marker.remove());
+        this.markers = [];
+        trip.overview?.placesToVisit.forEach((element, i) => {
+          const divElement = this.renderer.createElement('div');
+          this.renderer.addClass(divElement, 'marker');
+          const spanElement = this.renderer.createElement('span');
+          const bElement = this.renderer.createElement('b');
+          const text = this.renderer.createText('' + (i + 1));
+          this.renderer.appendChild(bElement, text);
+          this.renderer.appendChild(spanElement, bElement);
+          this.renderer.appendChild(divElement, spanElement);
+          this.renderer.appendChild(this.el.nativeElement, divElement);
+          const marker = new mapboxgl.Marker(divElement)
             .setLngLat(element.coordinates!)
             .setPopup(
               new mapboxgl.Popup().setHTML(
-                `<h1 class="text-lg">${element.name}</h1>
-                <p class="text-sm">${element.description}</p>`,
+                `<h1 class="text-lg font-bold">${element.name}</h1><br>
+                <div class="flex flex-col space-y-2"><img class="h-24 w-full rounded-lg object-cover"
+                src="${element.image}"><p class="text-sm">${element.description}</p>
+                
+                </div>
+                `,
               ),
             )
-            .addTo(map);
+            .addTo(this.map);
+          this.markers.push(marker);
         });
       },
     });
@@ -89,12 +110,6 @@ export class TripEditComponent implements OnDestroy, OnInit {
     this.headingSaveBtn = true;
   }
   onHeadingBlur() {
-    setTimeout(() => {
-      this.headingSaveBtn = false;
-      this.nameInput = this.tripName!;
-    }, 300);
-  }
-  saveHeading() {
     this.headingLoading = true;
     if (this.nameInput?.trim().length > 3 && this.nameInput !== this.tripName) {
       this.tripService
@@ -144,6 +159,19 @@ export class TripEditComponent implements OnDestroy, OnInit {
           this.coverPhotoLoading = false;
         },
       });
+  }
+  onAccordionClicked(place: PlaceToVisit) {
+    this.map.flyTo({ center: place.coordinates, zoom: 13 });
+    this.togglePopupByIndex(place.index!);
+  }
+  togglePopupByIndex(index: number) {
+    if (this.currentMarker) {
+      this.currentMarker!.togglePopup();
+    }
+    if (index >= 0 && index < this.markers.length) {
+      this.markers[index].togglePopup();
+      this.currentMarker = this.markers[index];
+    }
   }
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();

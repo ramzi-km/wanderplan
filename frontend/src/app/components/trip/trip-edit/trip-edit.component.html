@@ -143,13 +143,6 @@
                 />
               </div>
 
-              <button
-                [ngClass]="headingSaveBtn ? 'flex' : 'hidden'"
-                class="btn btn-primary btn-sm w-16 rounded-full"
-                (click)="saveHeading()"
-              >
-                Save
-              </button>
               <div class="card-actions mt-8 justify-between">
                 <span class="text-texts">
                   <i class="fa-regular fa-calendar mr-2"></i>
@@ -174,7 +167,10 @@
           </div>
           <div class="my-16 flex w-full flex-col items-center justify-center">
             <div class="w-full">
-              <app-overview [trip]="trip"></app-overview>
+              <app-overview
+                (accordionClicked)="onAccordionClicked($event)"
+                [trip]="trip"
+              ></app-overview>
             </div>
             <div class="divider bg-secondary"></div>
 
@@ -192,9 +188,7 @@
         id="map"
         [ngClass]="isDrawerOpen() ? 'w-[41%]' : 'w-1/2'"
         class="fixed bottom-0 right-0 top-20 w-1/2"
-      >
-        Map
-      </div>
+      ></div>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

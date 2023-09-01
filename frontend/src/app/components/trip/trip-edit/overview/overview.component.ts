@@ -1,9 +1,11 @@
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
   Input,
   OnDestroy,
   OnInit,
+  Output,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -15,7 +17,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { MapboxPlaceFeature } from 'src/app/interfaces/mapbox-interface';
-import { Trip } from 'src/app/interfaces/trip.interface';
+import { PlaceToVisit, Trip } from 'src/app/interfaces/trip.interface';
 import { MapboxService } from 'src/app/services/mapbox/mapbox.service';
 import { TripService } from 'src/app/services/trip/trip.service';
 import * as tripEditActions from '../../../../store/editingTrip/trip-edit.actions';
@@ -27,13 +29,16 @@ import * as tripEditActions from '../../../../store/editingTrip/trip-edit.action
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   @Input() trip: Trip | undefined;
+  @Output() accordionClicked: EventEmitter<any> = new EventEmitter<any>();
 
+  changeImageLoading = false;
   addPlaceToVisitLoading = false;
   descriptionLoading = false;
   notesLoading = false;
   showResults: boolean = false;
   inputControl = new FormControl();
   places: Array<MapboxPlaceFeature> = [];
+  imageLoadingindex!:number
   private ngUnsubscribe$ = new Subject<void>();
   constructor(
     private tripService: TripService,
@@ -113,7 +118,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     };
     this.addPlaceToVisitLoading = true;
     this.tripService
-      .addPlaceTovisit(this.trip?._id!, { place: place })
+      .addPlaceToVisit(this.trip?._id!, { place: place })
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe({
         next: (res) => {
@@ -145,6 +150,55 @@ export class OverviewComponent implements OnInit, OnDestroy {
       (event.target as HTMLInputElement).blur();
     }
   }
+  onPlacesToVisitClick(place: PlaceToVisit, index: number) {
+    place = { ...place, index };
+    this.accordionClicked.emit(place);
+  }
+  deletePlaceToVisit(placeIndex: number) {
+    this.tripService.deletePlace(this.trip?._id!, placeIndex).subscribe({
+      next: (res) => {
+        this.store.dispatch(tripEditActions.deletePlaceToVisit({ placeIndex }));
+      },
+      error: (errMessage) => {
+        console.log(errMessage);
+      },
+    });
+  }
+  onFileSelected(event: any, placeIndex: number): void {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const base64String = e.target.result;
+        this.changeImage(base64String, placeIndex);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  changeImage(base64String: string, placeIndex: number): void {
+    this.changeImageLoading = true;
+    this.imageLoadingindex=placeIndex
+    this.tripService
+      .updatePlaceToVisitPhoto(this.trip?._id!, placeIndex, {
+        image: base64String,
+      })
+      .pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe({
+        next: (res) => {
+          this.store.dispatch(
+            tripEditActions.updatePlaceToVisit({
+              placeIndex,
+              place: res.place,
+            }),
+          );
+          this.changeImageLoading = false;
+        },
+        error: (errMessage: string) => {
+          this.changeImageLoading = false;
+        },
+      });
+  }
+
   ngOnDestroy(): void {
     this.ngUnsubscribe$.next();
     this.ngUnsubscribe$.complete();

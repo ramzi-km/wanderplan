@@ -46,9 +46,23 @@ export class TripService {
       body,
     );
   }
-  addPlaceTovisit(id: string, body: { place: PlaceToVisit }) {
+  addPlaceToVisit(id: string, body: { place: PlaceToVisit }) {
     return this.http.put<{ place: PlaceToVisit; message: string }>(
       `${this.baseUrl}/trip/edit/overview/placesToVisit/addPlace/${id}`,
+      body,
+    );
+  }
+  deletePlace(tripId: string, placeIndex: number) {
+    const url = `${this.baseUrl}/trip/edit/${tripId}/overview/placesToVisit/deletePlace/${placeIndex}`;
+    return this.http.delete<{ place: PlaceToVisit; message: string }>(url);
+  }
+  updatePlaceToVisitPhoto(
+    tripId: string,
+    placeIndex: number,
+    body: { image: string },
+  ) {
+    return this.http.patch<{ place: PlaceToVisit; message: string }>(
+      `${this.baseUrl}/trip/edit/${tripId}/overview/placesToVisit/changePhoto/${placeIndex}`,
       body,
     );
   }

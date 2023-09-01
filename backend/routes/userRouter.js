@@ -38,7 +38,9 @@ import {
     addNewTrip,
     addPlaceToVisit,
     changeCoverPhoto,
+    changePlaceToVisitPhoto,
     changeTripName,
+    deletePlaceToVisit,
     getTripDetails,
     updateDescription,
     updateNotes,
@@ -95,6 +97,18 @@ router.put(
     verifyUser,
     verifyTripMate,
     addPlaceToVisit
+)
+router.patch(
+    '/trip/edit/:id/overview/placesToVisit/changePhoto/:placeIndex',
+    verifyUser,
+    verifyTripMate,
+    changePlaceToVisitPhoto
+)
+router.delete(
+    '/trip/edit/:id/overview/placesToVisit/deletePlace/:placeIndex',
+    verifyUser,
+    verifyTripMate,
+    deletePlaceToVisit
 )
 
 export default router

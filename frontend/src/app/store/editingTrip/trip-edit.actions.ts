@@ -25,3 +25,11 @@ export const addPlaceToVisit = createAction(
   '[TripEdit Component] addPlaceToVisit',
   props<{ place: PlaceToVisit }>(),
 );
+export const deletePlaceToVisit = createAction(
+  '[Overview Component] deletePlaceToVisit',
+  props<{ placeIndex: number }>(),
+);
+export const updatePlaceToVisit = createAction(
+  '[Overview Component] updatePlaceToVisit',
+  props<{ placeIndex: number, place: PlaceToVisit }>(),
+);

@@ -71,6 +71,7 @@ import { MainInterceptor } from './interceptors/main.interceptor';
 import { DateRangePipe } from './pipes/date-range.pipe';
 import { DaysToPipe } from './pipes/days-to.pipe';
 import { AutoResizeTextareaDirective } from './directives/auto-resize-textarea.directive';
+import { CarouselComponent } from './components/shared components/carousel/carousel.component';
 
 @NgModule({
   declarations: [
@@ -101,6 +102,7 @@ import { AutoResizeTextareaDirective } from './directives/auto-resize-textarea.d
     ItineraryComponent,
     BudgetComponent,
     AutoResizeTextareaDirective,
+    CarouselComponent,
   ],
   imports: [
     SocialLoginModule,

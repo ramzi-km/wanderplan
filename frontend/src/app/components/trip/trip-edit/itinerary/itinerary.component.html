@@ -1,2 +1,17 @@
-<p>itinerary works!</p>
-<div class="h-screen">hiel</div>
+<div class="w-full space-y-4 px-6">
+  <div class="flex justify-between p-6 pb-2">
+    <h1 class="text-2xl font-bold text-textp">Itinerary</h1>
+    <span class="btn btn-secondary rounded-full hover:cursor-default">
+      {{ [trip!.startDate!, trip!.endDate!] | dateRange }}
+    </span>
+  </div>
+  <section *ngFor="let day of trip?.itinerary">
+    <div class="collapse collapse-arrow bg-base-100 text-textp">
+      <input checked type="checkbox" />
+      <div class="collapse-title text-xl font-bold">
+        {{ day.Date | date }}
+      </div>
+      <div class="collapse-content"></div>
+    </div>
+  </section>
+</div>

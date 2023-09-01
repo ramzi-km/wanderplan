@@ -1,51 +1,59 @@
-<div class="relative h-screen" *ngIf="loading">
-  <div
-    class="absolute inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-90 text-primary"
-  >
-    <span class="loading loading-infinity w-24"></span>
-  </div>
-</div>
-<div
-  class="flex w-full flex-col items-center justify-center"
-  *ngIf="!userTrips[0]"
->
-  <img class="w-1/2" src="../../../../../assets/images/noTrips-removebg.png" />
-  <h1 class="text-xl text-textp">
-    You don't have any trips.<a class="text-blue-400" routerLink="/create/plan"
-      >start planning</a
+<main class="relative">
+  <div *ngIf="loading">
+    <div
+      class="absolute inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-90 text-primary"
     >
-  </h1>
-</div>
-<main class="grid grid-cols-1 gap-4 pt-10 md:grid-cols-2 lg:grid-cols-3">
-  <ng-container *ngFor="let trip of userTrips">
-    <div class="relative max-w-sm">
-      <button
-        class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
-      >
-        <i class="fa-solid fa-ellipsis"></i>
-      </button>
-      <a (click)="navigateTo(trip._id)">
-        <img
-          class="h-40 w-full rounded-lg object-cover"
-          src="{{ trip.coverPhoto }}"
-          alt=""
-        />
-      </a>
-      <div class="pt-3">
-        <a (click)="navigateTo(trip._id)">
-          <h5 class="mb-2 text-lg font-semibold tracking-tight text-textp">
-            {{ trip.name }}
-          </h5>
-        </a>
-        <p class="text-sm font-normal text-texts">
-          <span>&bull; {{ [trip.startDate, trip.endDate] | dateRange }}</span>
-          <span class="ml-5"
-            >&bull;
-            {{ trip.totalPlacesToVisit + trip.totalItineraryPlaces }}
-            places</span
-          >
-        </p>
-      </div>
+      <span class="loading loading-infinity w-24"></span>
     </div>
-  </ng-container>
+  </div>
+
+  <div
+    class="flex w-full flex-col items-center justify-center"
+    *ngIf="!userTrips[0]"
+  >
+    <img
+      class="w-1/2"
+      src="../../../../../assets/images/noTrips-removebg.png"
+    />
+    <h1 class="text-xl text-textp">
+      You don't have any trips.<a
+        class="text-blue-400"
+        routerLink="/create/plan"
+        >start planning</a
+      >
+    </h1>
+  </div>
+  <div class="grid grid-cols-1 gap-4 pt-10 md:grid-cols-2 lg:grid-cols-3">
+    <ng-container *ngFor="let trip of userTrips">
+      <div class="relative max-w-sm">
+        <button
+          class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
+        >
+          <i class="fa-solid fa-ellipsis"></i>
+        </button>
+        <a (click)="navigateTo(trip._id)">
+          <img
+            class="h-40 w-full rounded-lg object-cover"
+            src="{{ trip.coverPhoto }}"
+            alt=""
+          />
+        </a>
+        <div class="pt-3">
+          <a (click)="navigateTo(trip._id)">
+            <h5 class="mb-2 text-lg font-semibold tracking-tight text-textp">
+              {{ trip.name }}
+            </h5>
+          </a>
+          <p class="text-sm font-normal text-texts">
+            <span>&bull; {{ [trip.startDate, trip.endDate] | dateRange }}</span>
+            <span class="ml-5"
+              >&bull;
+              {{ trip.totalPlacesToVisit + trip.totalItineraryPlaces }}
+              places</span
+            >
+          </p>
+        </div>
+      </div>
+    </ng-container>
+  </div>
 </main>

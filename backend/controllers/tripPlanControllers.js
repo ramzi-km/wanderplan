@@ -257,7 +257,6 @@ export async function addPlaceToVisit(req, res) {
         place.description = description || ''
         place.image = photoUrl || ''
 
-        console.log(place)
         const trip = await tripModel.findByIdAndUpdate(
             tripId,
             { $push: { 'overview.placesToVisit': place } },
@@ -270,5 +269,68 @@ export async function addPlaceToVisit(req, res) {
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+export async function deletePlaceToVisit(req, res) {
+    try {
+        const trip = req.trip
+        const placeIndex = req.params.placeIndex
+        if (
+            placeIndex >= 0 &&
+            placeIndex < trip.overview.placesToVisit.length
+        ) {
+            trip.overview.placesToVisit.splice(placeIndex, 1)
+            await trip.save()
+            return res
+                .status(200)
+                .json({ message: 'Place deleted successfully' })
+        } else {
+            return res.status(400).json({ message: 'Invalid place index' })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'internal server error' })
+    }
+}
+export async function changePlaceToVisitPhoto(req, res) {
+    try {
+        const trip = req.trip
+        const placeIndex = req.params.placeIndex
+        let image = req.body.image
+        if (!image) {
+            res.status(422).json({ message: 'provide image' })
+        }
+        if (
+            placeIndex >= 0 &&
+            placeIndex < trip.overview.placesToVisit.length
+        ) {
+            const previousImage = trip.overview.placesToVisit[placeIndex].image
+            image = await cloudinary.uploader.upload(image, {
+                folder: 'wanderplan',
+            })
+            trip.overview.placesToVisit[placeIndex].image = image.secure_url
+            await trip.save()
+            const defaultImageUrl =
+                'https://res.cloudinary.com/dbmujhmpe/image/upload/v1692011176/wanderplan/default-image_th3auj.jpg'
+
+            if (previousImage && previousImage !== defaultImageUrl) {
+                const publicId = previousImage.split('/').pop().split('.')[0]
+                cloudinary.api
+                    .delete_resources([`wanderplan/${publicId}`], {
+                        type: 'upload',
+                        resource_type: 'image',
+                    })
+                    .then((data) => console.log(data))
+            }
+            const updatedPlace = trip.overview.placesToVisit[placeIndex]
+            return res
+                .status(200)
+                .json({ message: 'success', place: updatedPlace })
+        } else {
+            return res.status(400).json({ message: 'Invalid place index' })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'internal server error' })
     }
 }

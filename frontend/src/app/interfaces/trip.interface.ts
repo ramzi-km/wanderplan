@@ -34,6 +34,7 @@ export interface PlaceToVisit {
   image?: string;
   description?: string;
   note?: string;
+  index?: number;
 }
 
 export interface Itinerary {
