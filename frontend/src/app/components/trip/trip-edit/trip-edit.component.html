@@ -31,16 +31,23 @@
               "
             >
               <a
-                class="pr-2 text-lg font-semibold"
+                class="text-lg font-semibold"
+                (click)="$event.stopPropagation()"
                 (click)="scrollToSection(overview, 'overview')"
                 >Overview</a
               >
             </summary>
             <ul class="text-textp">
-              <li><a>Explore</a></li>
-              <li><a>Description</a></li>
-              <li><a>Notes</a></li>
-              <li><a>Places to visit</a></li>
+              <li (click)="scrollToOverviewSections('explore')">
+                <a>Explore</a>
+              </li>
+              <li (click)="scrollToOverviewSections('description')">
+                <a>Description</a>
+              </li>
+              <li (click)="scrollToOverviewSections('notes')"><a>Notes</a></li>
+              <li (click)="scrollToOverviewSections('ptv')">
+                <a>Places to visit</a>
+              </li>
             </ul>
           </details>
         </li>
@@ -54,13 +61,16 @@
               "
             >
               <a
-                class="pr-2 text-lg font-semibold"
+                class="text-lg font-semibold"
                 (click)="scrollToSection(itinerary, 'itinerary')"
                 >Itinerary</a
               >
             </summary>
             <ul class="text-textp" *ngIf="trip$ | async as trip">
-              <li *ngFor="let item of trip.itinerary">
+              <li
+                *ngFor="let item of trip.itinerary; let i = index"
+                (click)="scrollToDynamicSection('' + i)"
+              >
                 <a>{{ item.Date | date }}</a>
               </li>
             </ul>
@@ -76,7 +86,7 @@
               "
             >
               <a
-                class="pr-2 text-lg font-semibold"
+                class="text-lg font-semibold"
                 (click)="scrollToSection(budget, 'budget')"
                 >Budget</a
               >

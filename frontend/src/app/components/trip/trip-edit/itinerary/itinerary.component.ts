@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input } from '@angular/core';
 import { Trip } from 'src/app/interfaces/trip.interface';
 
 @Component({
@@ -8,4 +8,13 @@ import { Trip } from 'src/app/interfaces/trip.interface';
 })
 export class ItineraryComponent {
   @Input() trip: Trip | undefined;
+  constructor(private elementRef: ElementRef) {}
+  scrollToSection(sectionId: string) {
+    const sectionElement = this.elementRef.nativeElement.querySelector(
+      `.section-${sectionId}`,
+    );
+    if (sectionElement) {
+      sectionElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 }

@@ -1,11 +1,12 @@
 import {
-  AfterViewInit,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -38,12 +39,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
   showResults: boolean = false;
   inputControl = new FormControl();
   places: Array<MapboxPlaceFeature> = [];
-  imageLoadingindex!:number
+  imageLoadingindex!: number;
   private ngUnsubscribe$ = new Subject<void>();
   constructor(
     private tripService: TripService,
     private store: Store,
     private mapboxService: MapboxService,
+    private elementRef: ElementRef,
   ) {}
   ngOnInit(): void {
     this.inputControl.valueChanges
@@ -59,6 +61,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
       .subscribe((response) => {
         this.places = response.features;
       });
+  }
+  scrollToSection(sectionId: string) {
+    const sectionElement = this.elementRef.nativeElement.querySelector(
+      `.section-${sectionId}`,
+    );
+    if (sectionElement) {
+      sectionElement.scrollIntoView({ behavior: 'smooth' });
+    }
   }
   updateDescription(newValue: string) {
     if (newValue !== this.trip?.overview?.description) {
@@ -177,7 +187,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
   changeImage(base64String: string, placeIndex: number): void {
     this.changeImageLoading = true;
-    this.imageLoadingindex=placeIndex
+    this.imageLoadingindex = placeIndex;
     this.tripService
       .updatePlaceToVisitPhoto(this.trip?._id!, placeIndex, {
         image: base64String,

@@ -5,7 +5,10 @@
       {{ [trip!.startDate!, trip!.endDate!] | dateRange }}
     </span>
   </div>
-  <section *ngFor="let day of trip?.itinerary">
+  <section
+    *ngFor="let day of trip?.itinerary; let i = index"
+    [class]="'section-' + i + ' scroll-m-20'"
+  >
     <div class="collapse collapse-arrow bg-base-100 text-textp">
       <input checked type="checkbox" />
       <div class="collapse-title text-xl font-bold">

@@ -251,11 +251,14 @@ export async function addPlaceToVisit(req, res) {
             `https://api.unsplash.com/search/photos?client_id=${accessKey}&query=${trimmedQuery}`
         )
 
-        const description = descriptionResponse.data.query.pages[0].extract
-        const photoUrl = fetchPhotoUrlResponse.data.results[0].urls.regular
-
-        place.description = description || ''
-        place.image = photoUrl || ''
+        const description = descriptionResponse.data?.query?.pages[0]?.extract
+        const photoUrl = fetchPhotoUrlResponse.data?.results[0]?.urls?.regular
+        if (description) {
+            place.description = description
+        }
+        if (photoUrl) {
+            place.image = photoUrl
+        }
 
         const trip = await tripModel.findByIdAndUpdate(
             tripId,

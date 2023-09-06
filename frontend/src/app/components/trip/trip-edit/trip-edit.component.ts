@@ -15,6 +15,8 @@ import { PlaceToVisit, Trip } from 'src/app/interfaces/trip.interface';
 import { TripService } from 'src/app/services/trip/trip.service';
 import * as tripEditActions from '../../../store/editingTrip/trip-edit.actions';
 import * as tripEditSelecctor from '../../../store/editingTrip/trip-edit.selectors';
+import { ItineraryComponent } from './itinerary/itinerary.component';
+import { OverviewComponent } from './overview/overview.component';
 
 @Component({
   selector: 'app-trip-edit',
@@ -26,7 +28,14 @@ export class TripEditComponent implements OnDestroy, OnInit {
   @ViewChild('overview') overview!: ElementRef;
   @ViewChild('itinerary') itinerary!: ElementRef;
   @ViewChild('budget') budget!: ElementRef;
-
+  @ViewChild(OverviewComponent) appOverview!: OverviewComponent;
+  @ViewChild(ItineraryComponent) appItinerary!: ItineraryComponent;
+  scrollToOverviewSections(sectionId: string) {
+    this.appOverview.scrollToSection(sectionId);
+  }
+  scrollToDynamicSection(sectionId: string) {
+    this.appItinerary.scrollToSection(sectionId);
+  }
   map!: mapboxgl.Map;
   markers: mapboxgl.Marker[] = [];
   currentMarker!: mapboxgl.Marker;

@@ -6,8 +6,9 @@ swiper-container {
 swiper-container::part(button-prev) {
   background-color: white;
   color: black;
-  width: 38px;
-  height: 38px;
+  padding: 8px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
 }
 
@@ -15,7 +16,8 @@ swiper-container::part(button-prev) {
 swiper-container::part(button-next) {
   background-color: white;
   color: black;
-  width: 38px;
-  height: 38px;
+  padding: 8px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
 }
