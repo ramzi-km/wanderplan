@@ -19,7 +19,8 @@ export async function addNewTrip(req, res) {
             )}`
         )
 
-        const pageId = updateDescriptionPageResponse.data.query.search[0].pageid
+        const pageId =
+            updateDescriptionPageResponse?.data?.query?.search[0]?.pageid
         const updateDescriptionResponse = await axios.get(
             `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=extracts&list=&pageids=${pageId}&formatversion=2&exsentences=3&exintro=1&explaintext=1`
         )
@@ -28,8 +29,8 @@ export async function addNewTrip(req, res) {
             `https://api.unsplash.com/search/photos?client_id=${accessKey}&query=${trimmedQuery}`
         )
         const description =
-            updateDescriptionResponse.data.query.pages[0].extract
-        const photoUrl = fetchPhotoUrlResponse.data.results[0].urls.regular
+            updateDescriptionResponse?.data?.query?.pages[0]?.extract
+        const photoUrl = fetchPhotoUrlResponse?.data?.results[0]?.urls?.regular
 
         // Calculate the number of days
         const startDate = new Date(frontendData.startDate)
@@ -93,10 +94,15 @@ export async function addNewTrip(req, res) {
         // Create the new trip
         const newTrip = new tripModel(newTripData)
         const savedTrip = await newTrip.save()
+        const trip = await tripModel
+            .findById(savedTrip._id)
+            .populate('userId', '_id username name profilePic')
+            .populate('tripMates', '_id username name profilePic')
+            .exec()
 
         res.status(201).json({
             message: 'New trip added',
-            trip: savedTrip,
+            trip: trip,
         })
     } catch (error) {
         console.error('Error adding new trip:', error)
@@ -242,7 +248,7 @@ export async function addPlaceToVisit(req, res) {
             )}`
         )
 
-        const pageId = descriptionPageResponse.data.query.search[0].pageid
+        const pageId = descriptionPageResponse?.data?.query?.search[0]?.pageid
         const descriptionResponse = await axios.get(
             `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=extracts&list=&pageids=${pageId}&formatversion=2&exsentences=2&exintro=1&explaintext=1`
         )
@@ -325,6 +331,31 @@ export async function changePlaceToVisitPhoto(req, res) {
                     })
                     .then((data) => console.log(data))
             }
+            const updatedPlace = trip.overview.placesToVisit[placeIndex]
+            return res
+                .status(200)
+                .json({ message: 'success', place: updatedPlace })
+        } else {
+            return res.status(400).json({ message: 'Invalid place index' })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'internal server error' })
+    }
+}
+export async function updatePlaceToVisitDescription(req, res) {
+    try {
+        const trip = req.trip
+        const placeIndex = req.params.placeIndex
+        let description = req.body.description || ''
+
+        if (
+            placeIndex >= 0 &&
+            placeIndex < trip.overview.placesToVisit.length
+        ) {
+            trip.overview.placesToVisit[placeIndex].description = description
+            await trip.save()
+
             const updatedPlace = trip.overview.placesToVisit[placeIndex]
             return res
                 .status(200)

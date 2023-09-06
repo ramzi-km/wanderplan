@@ -6,15 +6,152 @@
     </span>
   </div>
   <section
-    *ngFor="let day of trip?.itinerary; let i = index"
-    [class]="'section-' + i + ' scroll-m-20'"
+    *ngFor="let day of trip?.itinerary; let itineraryI = index"
+    [class]="'section-' + itineraryI + ' scroll-m-20'"
   >
     <div class="collapse collapse-arrow bg-base-100 text-textp">
       <input checked type="checkbox" />
       <div class="collapse-title text-xl font-bold">
-        {{ day.Date | date }}
+        {{ day.Date | customDateFormat }}
       </div>
-      <div class="collapse-content"></div>
+      <div class="collapse-content">
+        <div class="mb-8 flex">
+          <input
+            type="text"
+            placeholder="Add subheading"
+            class="input input-ghost input-sm w-full max-w-sm text-ellipsis text-lg text-textp"
+            #subheadingInput
+            (blur)="
+              saveSubheading(day.subHeading, subheadingInput.value, itineraryI)
+            "
+            [value]="day.subHeading"
+          />
+          <span
+            *ngIf="
+              subheadingSaving.value && subheadingSaving.index == itineraryI
+            "
+            class="loading loading-spinner loading-sm ml-2 text-primary"
+          ></span>
+        </div>
+        <div
+          *ngFor="let place of day.places; let placeI = index"
+          class="my-3 flex flex-row space-x-2"
+        >
+          <div class="collapse collapse-open basis-2/3 bg-secondary">
+            <input type="checkbox" />
+
+            <div class="exclude-this collapse-title text-xl font-medium">
+              <button
+                type="button"
+                class="btn btn-circle btn-sm bg-blue-600 text-white"
+              >
+                {{ placeI + 1 }}
+              </button>
+              {{ place.name }}
+            </div>
+            <div class="collapse-content text-textp">
+              <textarea
+                (click)="$event.stopPropagation()"
+                #placeDescTextArea
+                class="textarea w-full bg-base-100"
+                appAutoResizeTextarea
+                placeholder="Write a description about this place"
+                >{{ place.description }}</textarea
+              >
+              <div class="flex justify-end">
+                saving
+                <span class="loading loading-dots loading-xs ml-1 mt-2"></span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-1 w-full basis-1/3 space-y-2">
+            <div class="relative h-32 w-full">
+              <img
+                class="h-32 w-full rounded-lg object-cover"
+                src="{{ place.image }}"
+                alt=""
+              />
+              <div>
+                <div
+                  class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 text-primary"
+                >
+                  <span class="loading loading-spinner loading-lg"></span>
+                </div>
+              </div>
+            </div>
+
+            <input
+              accept=".jpg,.jpeg,.png"
+              type="file"
+              #fileInput
+              style="display: none"
+            />
+            <button
+              type="button"
+              class="btn btn-success btn-outline btn-sm w-full rounded-full normal-case"
+              (click)="fileInput.click()"
+            >
+              <i class="fa-solid fa-pen"></i>
+              Change photo
+            </button>
+            <button
+              type="button"
+              class="btn btn-error btn-sm w-full rounded-full normal-case text-white"
+            >
+              <i class="fa-solid fa-trash-can"></i>
+              Delete place
+            </button>
+          </div>
+        </div>
+
+        <div
+          *ngIf="addPlaceLoading.value && addPlaceLoading.index == itineraryI"
+          class="collapse collapse-open my-3 bg-secondary"
+        >
+          <input type="checkbox" />
+          <div
+            class="exclude-this collapse-title text-xl font-medium text-textg"
+          >
+            <span class="loading loading-dots loading-md ml-5"></span>
+          </div>
+          <div
+            class="collapse-content flex items-center justify-center text-textg"
+          >
+            <span class="loading loading-spinner loading-md"></span>
+          </div>
+        </div>
+
+        <div class="input-with-icon flex w-full">
+          <span class="m-2 text-2xl text-textg">
+            <i class="fa-solid fa-location-dot"></i>
+          </span>
+          <input
+            type="text"
+            [formControl]="inputControl"
+            placeholder="Add a place"
+            class="input flex-grow bg-secondary"
+            (focus)="onFocus(itineraryI)"
+            (blur)="blurResults()"
+            (keydown)="onKeyDown($event, itineraryI)"
+          />
+        </div>
+        <ul
+          class="ml-8 mt-2 w-auto max-w-full rounded border border-gray-300 bg-secondary shadow-lg"
+          *ngIf="
+            places.length > 0 && showResults && showResultsIndex == itineraryI
+          "
+        >
+          <li
+            class="cursor-pointer px-4 py-2 text-textp hover:bg-gray-300"
+            *ngFor="let place of places; let i = index"
+            [class.bg-gray-300]="i === selectedPlaceIndex"
+            (click)="selectPlace(place, itineraryI)"
+          >
+            <p>{{ place.text }}</p>
+            <span class="text-sm text-texts">{{ place.place_name }}</span>
+          </li>
+        </ul>
+      </div>
     </div>
   </section>
 </div>

@@ -32,7 +32,7 @@ import {
     uploadProfile,
 } from '../controllers/userControllers.js'
 
-//------tripPlanConrollers--------//
+//------------tripPlanConrollers-------------//
 
 import {
     addNewTrip,
@@ -44,9 +44,14 @@ import {
     getTripDetails,
     updateDescription,
     updateNotes,
+    updatePlaceToVisitDescription,
 } from '../controllers/tripPlanControllers.js'
 
 //----------------------------------------------//
+
+//------------itinerary-management-controllers-------------//
+import { updateSubheading } from '../controllers/itineraryManagementControllers.js'
+//------------------------------------------//
 
 //------------user-auth------------------//
 
@@ -60,7 +65,7 @@ router.post('/login', postLogin)
 router.post('/googleLogin', postGoogleLogin)
 router.post('/logout', logout)
 
-//----------user-profile------------------//
+//----------------------user-profile-------------------//
 
 router.get('/user', verifyUser, getUser)
 router.patch('/user', verifyUser, updateUser)
@@ -70,7 +75,8 @@ router.patch('/resetPassword', verifyUser, resetPassword)
 router.get('/user/getRecentTrips', verifyUser, getRecentAndUpcomingTrips)
 router.get('/user/getAllTrips', verifyUser, getAllTrips)
 
-//----------user-trip-plans-----------------//
+//--------------------user-trip-plans--------------------//
+
 router.post('/trip/create', verifyUser, addNewTrip)
 router.get('/trip/getDetails/:id', verifyUser, getTripDetails)
 router.patch('/trip/edit/name/:id', verifyUser, verifyTripMate, changeTripName)
@@ -104,11 +110,24 @@ router.patch(
     verifyTripMate,
     changePlaceToVisitPhoto
 )
+router.patch(
+    '/trip/edit/:id/overview/placesToVisit/updateDescription/:placeIndex',
+    verifyUser,
+    verifyTripMate,
+    updatePlaceToVisitDescription
+)
 router.delete(
     '/trip/edit/:id/overview/placesToVisit/deletePlace/:placeIndex',
     verifyUser,
     verifyTripMate,
     deletePlaceToVisit
+)
+//------------------itinerary-management-------------------//
+router.patch(
+    '/trip/edit/:id/itinerary/:itineraryIndex/subHeading',
+    verifyUser,
+    verifyTripMate,
+    updateSubheading
 )
 
 export default router

@@ -145,6 +145,7 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
         },
         error: (errMessage) => {
           console.log(errMessage);
+          this.loading = false;
         },
       });
     }

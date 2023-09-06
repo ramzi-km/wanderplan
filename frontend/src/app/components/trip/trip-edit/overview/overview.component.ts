@@ -32,6 +32,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
   @Input() trip: Trip | undefined;
   @Output() accordionClicked: EventEmitter<any> = new EventEmitter<any>();
 
+  placeToVisitDescriptionSaving = false;
+  descriptionSavingIndex!: number;
   changeImageLoading = false;
   addPlaceToVisitLoading = false;
   descriptionLoading = false;
@@ -173,6 +175,37 @@ export class OverviewComponent implements OnInit, OnDestroy {
         console.log(errMessage);
       },
     });
+  }
+  updatePlaceToVisitDescription(
+    oldValue: string,
+    newValue: string,
+    placeIndex: number,
+  ) {
+    console.log(oldValue, newValue, placeIndex);
+    if (newValue !== oldValue) {
+      this.placeToVisitDescriptionSaving = true;
+      this.descriptionSavingIndex = placeIndex;
+      this.tripService
+        .updatePlaceToVisitDescription(this.trip?._id!, placeIndex, {
+          description: newValue,
+        })
+        .pipe(takeUntil(this.ngUnsubscribe$))
+        .subscribe({
+          next: (res) => {
+            this.store.dispatch(
+              tripEditActions.updatePlaceToVisit({
+                placeIndex,
+                place: res.place,
+              }),
+            );
+            this.placeToVisitDescriptionSaving = false;
+          },
+          error: (errMessage) => {
+            console.log(errMessage);
+            this.placeToVisitDescriptionSaving = false;
+          },
+        });
+    }
   }
   onFileSelected(event: any, placeIndex: number): void {
     const file = event.target.files[0];

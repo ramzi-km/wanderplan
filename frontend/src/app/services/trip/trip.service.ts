@@ -56,6 +56,17 @@ export class TripService {
     const url = `${this.baseUrl}/trip/edit/${tripId}/overview/placesToVisit/deletePlace/${placeIndex}`;
     return this.http.delete<{ place: PlaceToVisit; message: string }>(url);
   }
+  updatePlaceToVisitDescription(
+    tripId: string,
+    placeIndex: number,
+    body: { description: string },
+  ) {
+    return this.http.patch<{ place: PlaceToVisit; message: string }>(
+      `${this.baseUrl}/trip/edit/${tripId}/overview/placesToVisit/updateDescription/${placeIndex}`,
+      body,
+    );
+  }
+
   updatePlaceToVisitPhoto(
     tripId: string,
     placeIndex: number,

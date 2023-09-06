@@ -72,6 +72,8 @@ import { DateRangePipe } from './pipes/date-range.pipe';
 import { DaysToPipe } from './pipes/days-to.pipe';
 import { AutoResizeTextareaDirective } from './directives/auto-resize-textarea.directive';
 import { CarouselComponent } from './components/shared components/carousel/carousel.component';
+import { CustomDateFormatPipe } from './pipes/custom-date-format.pipe';
+import { CustomDateFormat2Pipe } from './pipes/custom-date-format2.pipe';
 
 @NgModule({
   declarations: [
@@ -103,6 +105,8 @@ import { CarouselComponent } from './components/shared components/carousel/carou
     BudgetComponent,
     AutoResizeTextareaDirective,
     CarouselComponent,
+    CustomDateFormatPipe,
+    CustomDateFormat2Pipe,
   ],
   imports: [
     SocialLoginModule,

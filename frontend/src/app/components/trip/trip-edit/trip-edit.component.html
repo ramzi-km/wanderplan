@@ -1,12 +1,4 @@
 <button
-  *ngIf="isDrawerOpen()"
-  class="btn btn-secondary fixed bottom-0 z-10 rounded-e-md rounded-s-none pr-6 text-textp"
-  (click)="drawer.toggle()"
->
-  <i class="fa-solid fa-angles-left"></i>
-  Hide sidebar
-</button>
-<button
   *ngIf="!isDrawerOpen()"
   class="btn btn-primary fixed top-20 z-10 rounded-e-md rounded-s-none text-textp"
   (click)="drawer.toggle()"
@@ -19,9 +11,17 @@
     mode="side"
     opened
     #drawer
-    class="mt-20"
+    class="relative mt-20"
   >
-    <mat-nav-list class="space-y-2">
+    <button
+      *ngIf="isDrawerOpen()"
+      class="btn btn-secondary absolute bottom-0 z-10 w-auto rounded-e-md rounded-s-none text-textp"
+      (click)="drawer.toggle()"
+    >
+      <i class="fa-solid fa-angles-left"></i>
+      Hide sidebar
+    </button>
+    <mat-nav-list class="mb-12 space-y-2">
       <ul class="menu rounded-box">
         <li>
           <details open>
@@ -71,7 +71,7 @@
                 *ngFor="let item of trip.itinerary; let i = index"
                 (click)="scrollToDynamicSection('' + i)"
               >
-                <a>{{ item.Date | date }}</a>
+                <a>{{ item.Date | customDateFormat2 }}</a>
               </li>
             </ul>
           </details>
@@ -148,7 +148,6 @@
                   type="text"
                   [(ngModel)]="nameInput"
                   class="input card-title input-ghost w-full max-w-md text-ellipsis text-3xl text-textp"
-                  (focus)="onHeadingFocus()"
                   (blur)="onHeadingBlur()"
                 />
               </div>

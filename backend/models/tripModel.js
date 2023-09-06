@@ -62,7 +62,10 @@ const tripSchema = new Schema({
     itinerary: [
         {
             Date: Date,
-            subHeading: String,
+            subHeading: {
+                type: String,
+                default: '',
+            },
             places: [itineraryPlaceSchema],
         },
     ],
