@@ -28,6 +28,7 @@ export interface Overview {
 }
 
 export interface PlaceToVisit {
+  _id?: string;
   coordinates?: [number, number];
   name?: string;
   extendedName?: string;
@@ -40,17 +41,18 @@ export interface PlaceToVisit {
 export interface Itinerary {
   _id?: string;
   Date: Date;
-  subHeading: string;
-  places: ItineraryPlace[];
+  subheading?: string;
+  places?: ItineraryPlace[];
 }
 
 export interface ItineraryPlace {
-  name: string;
+  _id?: string;
+  name?: string;
   image: string;
-  description: string;
-  note: string;
-  coordinates: number[];
-  extendedName: string;
+  description?: string;
+  note?: string;
+  coordinates: [number, number];
+  extendedName?: string;
   startTime?: Date;
   endTime?: Date;
   expense?: string;

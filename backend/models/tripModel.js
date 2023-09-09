@@ -21,9 +21,19 @@ const placeToVisitSchema = new Schema({
 
 const itineraryPlaceSchema = new Schema({
     name: String,
-    image: String,
-    description: String,
-    note: String,
+    image: {
+        type: String,
+        default:
+            'https://res.cloudinary.com/dbmujhmpe/image/upload/v1692011176/wanderplan/default-image_th3auj.jpg',
+    },
+    description: {
+        type: String,
+        default: '',
+    },
+    note: {
+        type: String,
+        default: '',
+    },
     coordinates: [Number],
     extendedName: String,
     startTime: Date,
@@ -62,7 +72,7 @@ const tripSchema = new Schema({
     itinerary: [
         {
             Date: Date,
-            subHeading: {
+            subheading: {
                 type: String,
                 default: '',
             },

@@ -184,7 +184,10 @@
             <div class="divider bg-secondary"></div>
 
             <div #itinerary class="w-full scroll-m-20">
-              <app-itinerary [trip]="trip"></app-itinerary>
+              <app-itinerary
+                (accordionClicked)="onAccordionClicked2($event)"
+                [trip]="trip"
+              ></app-itinerary>
             </div>
             <div class="divider bg-secondary"></div>
             <div #budget class="w-full scroll-m-20">

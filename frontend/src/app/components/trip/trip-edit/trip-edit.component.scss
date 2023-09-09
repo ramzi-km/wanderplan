@@ -6,20 +6,20 @@
   background-color: var(--secondary-color);
   --tw-bg-opacity: 0.1;
 }
-.marker {
+.marker,
+.marker2 {
   width: 0;
   height: 0;
 }
 
-.marker span {
+.marker span,
+.marker2 span {
   display: flex;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  width: 40px;
-  height: 40px;
+
   color: #fff;
-  background: rgb(37 99 235 );
   border: solid 2px;
   border-radius: 0 70% 55%;
   box-shadow: 0 0 4px #000;
@@ -27,7 +27,17 @@
   transform-origin: 0 0;
   transform: rotateZ(-135deg);
 }
-
-.marker b {
+.marker span {
+  background: rgb(37 99 235 / var(--tw-bg-opacity));
+  width: 40px;
+  height: 40px;
+}
+.marker2 span {
+  background: rgb(220 38 38 / var(--tw-bg-opacity));
+  width: 35px;
+  height: 35px;
+}
+.marker b,
+.marker2 b {
   transform: rotateZ(135deg);
 }

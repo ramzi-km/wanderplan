@@ -1,5 +1,9 @@
 import { createAction, props } from '@ngrx/store';
-import { PlaceToVisit, Trip } from 'src/app/interfaces/trip.interface';
+import {
+  ItineraryPlace,
+  PlaceToVisit,
+  Trip,
+} from 'src/app/interfaces/trip.interface';
 
 export const setTripEdit = createAction(
   '[TripEdit Component] setTripEdit',
@@ -31,5 +35,13 @@ export const deletePlaceToVisit = createAction(
 );
 export const updatePlaceToVisit = createAction(
   '[Overview Component] updatePlaceToVisit',
-  props<{ placeIndex: number, place: PlaceToVisit }>(),
+  props<{ placeIndex: number; place: PlaceToVisit }>(),
+);
+export const updateSubheading = createAction(
+  '[Itinerary Component] updateSubheading',
+  props<{ dayIndex: number; subheading: string }>(),
+);
+export const addItineraryPlace = createAction(
+  '[Itinerary Component] addPlace',
+  props<{ place: ItineraryPlace,dayIndex:number }>(),
 );

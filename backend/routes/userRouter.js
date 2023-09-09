@@ -50,7 +50,10 @@ import {
 //----------------------------------------------//
 
 //------------itinerary-management-controllers-------------//
-import { updateSubheading } from '../controllers/itineraryManagementControllers.js'
+import {
+    addPlace,
+    updateSubheading,
+} from '../controllers/itineraryManagementControllers.js'
 //------------------------------------------//
 
 //------------user-auth------------------//
@@ -124,10 +127,16 @@ router.delete(
 )
 //------------------itinerary-management-------------------//
 router.patch(
-    '/trip/edit/:id/itinerary/:itineraryIndex/subHeading',
+    '/trip/edit/:id/itinerary/:itineraryIndex/subheading',
     verifyUser,
     verifyTripMate,
     updateSubheading
+)
+router.post(
+    '/trip/:id/itinerary/:itineraryId/place',
+    verifyUser,
+    verifyTripMate,
+    addPlace
 )
 
 export default router
