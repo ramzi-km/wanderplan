@@ -110,4 +110,23 @@ export const editTripReducer = createReducer(
       ),
     },
   })),
+  on(
+    tripEditActions.updateItineraryPlace,
+    (state, { dayIndex, placeIndex, place }) => ({
+      ...state,
+      trip: {
+        ...state.trip,
+        itinerary: state!.trip!.itinerary!.map((item, index) =>
+          index === dayIndex
+            ? {
+                ...item,
+                places: item.places?.map((p, idx) =>
+                  idx === placeIndex ? place : p,
+                ),
+              }
+            : item,
+        ),
+      },
+    }),
+  ),
 );

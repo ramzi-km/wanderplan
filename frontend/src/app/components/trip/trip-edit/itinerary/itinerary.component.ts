@@ -59,11 +59,13 @@ export class ItineraryComponent {
   };
   changeImageLoading = {
     value: false,
-    id: '',
+    dayIndex: 0,
+    placeIndex: 0,
   };
   descriptionSaving = {
     value: false,
-    id: '',
+    dayIndex: 0,
+    placeIndex: 0,
   };
 
   ngOnInit(): void {
@@ -164,6 +166,79 @@ export class ItineraryComponent {
     place = { ...place };
     this.accordionClicked.emit(place);
   }
+
+  updatePlaceDescription(
+    oldValue: string,
+    newValue: string,
+    dayIndex: number,
+    placeIndex: number,
+  ) {
+    if (newValue !== oldValue) {
+      this.descriptionSaving = { value: true, dayIndex, placeIndex };
+      this.itineraryManagementService
+        .updatePlaceDescription(this.trip?._id!, dayIndex, placeIndex, {
+          description: newValue,
+        })
+        .pipe(takeUntil(this.ngUnsubscribe$))
+        .subscribe({
+          next: (res) => {
+            this.store.dispatch(
+              tripEditActions.updateItineraryPlace({
+                dayIndex,
+                placeIndex,
+                place: res.place,
+              }),
+            );
+            this.descriptionSaving = { value: false, dayIndex, placeIndex };
+          },
+          error: (errMessage) => {
+            console.log(errMessage);
+            this.descriptionSaving = { value: false, dayIndex, placeIndex };
+          },
+        });
+    }
+  }
+  onFileSelected(event: any, dayIndex: number, placeIndex: number): void {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const base64String = e.target.result;
+        this.changeImage(base64String, dayIndex, placeIndex);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  changeImage(
+    base64String: string,
+    dayIndex: number,
+    placeIndex: number,
+  ): void {
+    this.changeImageLoading = { value: true, dayIndex, placeIndex };
+    this.itineraryManagementService
+      .updatePlaceImage(this.trip?._id!, dayIndex, placeIndex, {
+        image: base64String,
+      })
+      .pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe({
+        next: (res) => {
+          console.log(res);
+          this.store.dispatch(
+            tripEditActions.updateItineraryPlace({
+              dayIndex,
+              placeIndex,
+              place: res.place,
+            }),
+          );
+          this.changeImageLoading = { value: false, dayIndex, placeIndex };
+        },
+        error: (errMessage: string) => {
+          this.changeImageLoading = { value: false, dayIndex, placeIndex };
+        },
+      });
+  }
+
   ngOnDestroy(): void {
     this.ngUnsubscribe$.next();
     this.ngUnsubscribe$.complete();

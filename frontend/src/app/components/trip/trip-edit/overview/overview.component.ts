@@ -180,7 +180,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     newValue: string,
     placeIndex: number,
   ) {
-    console.log(oldValue, newValue, placeIndex);
     if (newValue !== oldValue) {
       this.placeToVisitDescriptionSaving = true;
       this.descriptionSavingIndex = placeIndex;

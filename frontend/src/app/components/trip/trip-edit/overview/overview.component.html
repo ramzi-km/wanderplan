@@ -1,8 +1,8 @@
-<div class="w-full space-y-4 px-4">
+<div class="w-full space-y-4 px-6">
   <section class="section-explore w-full scroll-m-20">
     <div class="collapse collapse-arrow w-full bg-base-100 text-textp">
       <input checked type="checkbox" />
-      <div class="collapse-title text-xl font-medium">Explore</div>
+      <div class="collapse-title text-xl font-semibold">Explore</div>
       <div class="collapse-content">
         <div class="flex justify-end">
           <a class="m-3 font-semibold text-texts hover:underline">Browse all</a>
@@ -14,7 +14,7 @@
   <section class="section-description scroll-m-20">
     <div class="collapse-arrow collapse bg-base-100 text-textp">
       <input checked type="checkbox" />
-      <div class="collapse-title text-xl font-medium">Description</div>
+      <div class="collapse-title text-xl font-semibold">Description</div>
       <div class="collapse-content">
         <textarea
           #descriptionTextarea
@@ -33,7 +33,7 @@
   <section class="section-notes scroll-m-20">
     <div class="collapse-arrow collapse bg-base-100 text-textp">
       <input checked type="checkbox" />
-      <div class="collapse-title text-xl font-medium">Notes</div>
+      <div class="collapse-title text-xl font-semibold">Notes</div>
       <div class="collapse-content">
         <textarea
           #notesTextArea
@@ -52,7 +52,7 @@
   <section class="section-ptv scroll-m-20">
     <div class="collapse-arrow collapse bg-base-100 text-textp">
       <input checked type="checkbox" />
-      <div class="collapse-title text-xl font-medium">Places to visit</div>
+      <div class="collapse-title text-xl font-semibold">Places to visit</div>
       <div class="collapse-content">
         <div
           *ngFor="let place of trip?.overview?.placesToVisit; let i = index"

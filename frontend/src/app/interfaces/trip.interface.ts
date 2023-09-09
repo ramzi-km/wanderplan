@@ -53,8 +53,10 @@ export interface ItineraryPlace {
   note?: string;
   coordinates: [number, number];
   extendedName?: string;
-  startTime?: Date;
-  endTime?: Date;
+  time?: {
+    startTime: Date;
+    endTime: Date;
+  };
   expense?: string;
 }
 

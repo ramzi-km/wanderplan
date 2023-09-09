@@ -52,6 +52,8 @@ import {
 //------------itinerary-management-controllers-------------//
 import {
     addPlace,
+    updatePlaceDescription,
+    updatePlaceImage,
     updateSubheading,
 } from '../controllers/itineraryManagementControllers.js'
 //------------------------------------------//
@@ -137,6 +139,28 @@ router.post(
     verifyUser,
     verifyTripMate,
     addPlace
+)
+router.patch(
+    '/trip/:id/itinerary/:dayIndex/place/:placeIndex/description',
+    verifyUser,
+    verifyTripMate,
+    updatePlaceDescription
+)
+router.patch(
+    '/trip/:id/itinerary/:dayIndex/place/:placeIndex/image',
+    verifyUser,
+    verifyTripMate,
+    updatePlaceImage
+)
+router.patch(
+    '/trip/:id/itinerary/:dayIndex/place/:placeIndex/note',
+    verifyUser,
+    verifyTripMate
+)
+router.delete(
+    '/trip/:id/itinerary/:dayIndex/place/:placeIndex',
+    verifyUser,
+    verifyTripMate
 )
 
 export default router

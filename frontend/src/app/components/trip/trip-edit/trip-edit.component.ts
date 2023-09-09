@@ -74,12 +74,12 @@ export class TripEditComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
-    this.map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v12',
-      center: this.trip.place?.coordinates,
-      zoom: 9,
-    });
+    // this.map = new mapboxgl.Map({
+    //   container: 'map',
+    //   style: 'mapbox://styles/mapbox/streets-v12',
+    //   center: this.trip.place?.coordinates,
+    //   zoom: 9,
+    // });
     this.trip$.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
       next: (trip) => {
         this.trip = trip;

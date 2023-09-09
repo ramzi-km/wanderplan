@@ -31,4 +31,30 @@ export class ItineraryManagementService {
       body,
     );
   }
+  updatePlaceDescription(
+    tripId: string,
+    dayIndex: number,
+    placeIndex: number,
+    body: {
+      description: string;
+    },
+  ) {
+    return this.http.patch<{ place: ItineraryPlace; message: string }>(
+      `${this.baseUrl}/trip/${tripId}/itinerary/${dayIndex}/place/${placeIndex}/description`,
+      body,
+    );
+  }
+  updatePlaceImage(
+    tripId: string,
+    dayIndex: number,
+    placeIndex: number,
+    body: {
+      image: string;
+    },
+  ) {
+    return this.http.patch<{ place: ItineraryPlace; message: string }>(
+      `${this.baseUrl}/trip/${tripId}/itinerary/${dayIndex}/place/${placeIndex}/image`,
+      body,
+    );
+  }
 }
