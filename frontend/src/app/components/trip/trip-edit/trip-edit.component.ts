@@ -254,6 +254,12 @@ export class TripEditComponent implements OnDestroy, OnInit {
       this.currentMarker = this.markers2[index];
     }
   }
+  showAddTripmateModal() {
+    const addTripmateModal = document.getElementById(
+      'addTripmateModal',
+    ) as HTMLDialogElement;
+    addTripmateModal.showModal();
+  }
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

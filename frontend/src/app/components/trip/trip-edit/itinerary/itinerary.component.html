@@ -85,21 +85,56 @@
                   <i class="fa-solid fa-note-sticky"></i>
                 </span>
                 <textarea
+                  (click)="$event.stopPropagation()"
                   #notesTextArea
                   class="textarea w-full bg-base-100"
                   appAutoResizeTextarea
                   placeholder="Write or paste notes here"
+                  (blur)="
+                    updatePlaceNotes(
+                      place.note!,
+                      notesTextArea.value,
+                      dayIndex,
+                      placeIndex
+                    )
+                  "
                   >{{ place.note }}</textarea
                 >
+                <div
+                  *ngIf="
+                    notesSaving.value &&
+                    notesSaving.dayIndex == dayIndex &&
+                    notesSaving.placeIndex == placeIndex
+                  "
+                  class="flex justify-end"
+                >
+                  saving
+                  <span
+                    class="loading loading-dots loading-xs ml-1 mt-2"
+                  ></span>
+                </div>
               </div>
 
               <div class="mb-2 mt-4 flex items-center justify-start space-x-3">
                 <button
-                  *ngIf="!place.time"
+                  *ngIf="!place.time; else timeTemplate"
+                  type="button"
+                  (click)="showAddTimeModal(dayIndex, placeIndex)"
                   class="btn btn-outline btn-xs rounded-full bg-indigo-600 text-xs normal-case text-white"
                 >
-                  <i class="fa-regular fa-clock"></i> Add time</button
-                ><button
+                  <i class="fa-regular fa-clock"></i> Add time
+                </button>
+                <ng-template #timeTemplate>
+                  <button
+                    type="button"
+                    (click)="showAddTimeModal(dayIndex, placeIndex)"
+                    class="btn btn-outline btn-xs rounded-full bg-indigo-600 text-xs normal-case text-white"
+                  >
+                    <i class="fa-regular fa-clock"></i>
+                    {{ place.time?.startTime }} - {{ place.time?.endTime }}
+                  </button>
+                </ng-template>
+                <button
                   class="btn btn-outline btn-xs hidden rounded-full bg-indigo-600 text-xs normal-case text-white"
                 >
                   <i class="fa-solid fa-paperclip"></i> Attach</button
@@ -150,6 +185,7 @@
             </button>
             <button
               type="button"
+              (click)="showDeletePlace(dayIndex, placeIndex)"
               class="btn btn-error btn-sm w-full rounded-full normal-case text-white"
             >
               <i class="fa-solid fa-trash-can"></i>
@@ -208,4 +244,119 @@
       </div>
     </div>
   </section>
+  <dialog id="addTimeModal" class="modal">
+    <form
+      class="modal-box w-auto bg-secondary"
+      [formGroup]="addTimeForm"
+      (ngSubmit)="submitAddTimeForm()"
+    >
+      <button
+        type="button"
+        (click)="closeAddTimeModal()"
+        class="btn btn-circle btn-ghost btn-sm absolute right-4 top-4"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="px-5">
+        <div class="form-control w-auto">
+          <label class="label">
+            <span class="label-text font-semibold text-textp">Start time</span>
+          </label>
+          <select
+            formControlName="startTime"
+            class="select select-bordered w-60 overflow-y-scroll text-textp"
+          >
+            <option disabled>start time</option>
+            <option *ngFor="let item of timeArray" [value]="item">
+              {{ item }}
+            </option>
+            >
+          </select>
+        </div>
+        <div class="form-control w-auto">
+          <label class="label">
+            <span class="label-text font-semibold text-textp">End time</span>
+          </label>
+          <select
+            formControlName="endTime"
+            class="select select-bordered overflow-y-scroll text-textp"
+          >
+            <option disabled>end time</option>
+            <option *ngFor="let item of timeArray" [value]="item">
+              {{ item }}
+            </option>
+          </select>
+        </div>
+        <label class="text-sm text-red-500" *ngIf="addTimeErrMessage"
+          >{{ addTimeErrMessage }}
+        </label>
+        <div class="form-control mt-6">
+          <button
+            [disabled]="addTimeForm.invalid"
+            type="submit"
+            class="btn btn-primary text-textp"
+          >
+            Submit
+            <span
+              *ngIf="addTimeLoading"
+              class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+            ></span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="deletePlaceModal" class="modal">
+    <div
+      class="modal-box relative h-full w-full max-w-md bg-secondary p-4 md:h-auto"
+    >
+      <!-- Modal content -->
+      <div class="relative p-4 text-center sm:p-5">
+        <button
+          (click)="closeDeletePlace()"
+          type="button"
+          class="absolute right-2.5 top-2.5 ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <svg
+          class="mx-auto mb-3.5 h-11 w-11 text-gray-400 dark:text-gray-500"
+          aria-hidden="true"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+        <p class="mb-4 text-textp">
+          Are you sure you want to delete this item?
+        </p>
+        <div class="flex items-center justify-center space-x-4">
+          <button
+            (click)="closeDeletePlace()"
+            type="button"
+            class="btn btn-success btn-outline btn-sm"
+          >
+            No, cancel
+          </button>
+          <button
+            (click)="deletePlace()"
+            type="submit"
+            class="btn btn-error btn-sm bg-red-600 text-white"
+          >
+            Yes, I'm sure
+            <span
+              *ngIf="deletePlaceLoading"
+              class="loading loading-spinner loading-sm ml-2 text-white"
+            ></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </dialog>
 </div>

@@ -59,3 +59,7 @@ export const updateItineraryPlace = createAction(
   '[Itinerary Component] updatePlace',
   props<{ dayIndex: number; placeIndex: number; place: ItineraryPlace }>(),
 );
+export const deleteItineraryPlace = createAction(
+  '[Itinerary Component] deletePlace',
+  props<{ dayIndex: number; placeIndex: number }>(),
+);

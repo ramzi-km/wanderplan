@@ -116,6 +116,34 @@ export async function updatePlaceDescription(req, res) {
         res.status(500).json({ message: 'internal server error' })
     }
 }
+export async function updatePlaceNotes(req, res) {
+    try {
+        const trip = req.trip
+        const notes = req.body.notes
+        const dayIndex = req.params.dayIndex
+        const placeIndex = req.params.placeIndex
+        if (
+            dayIndex < 0 ||
+            dayIndex >= trip.itinerary.length ||
+            placeIndex < 0 ||
+            placeIndex >= trip.itinerary[dayIndex].places.length
+        ) {
+            return res
+                .status(400)
+                .json({ message: 'invalid dayIndex or placeIndex' })
+        }
+
+        trip.itinerary[dayIndex].places[placeIndex].note = notes
+        await trip.save()
+        const updatedPlace = trip.itinerary[dayIndex].places[placeIndex]
+        res.status(200).json({
+            message: 'place note updated successfully',
+            place: updatedPlace,
+        })
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' })
+    }
+}
 
 export async function updatePlaceImage(req, res) {
     try {
@@ -161,6 +189,59 @@ export async function updatePlaceImage(req, res) {
             place: updatedPlace,
         })
     } catch (error) {
+        res.status(500).json({ message: 'internal server error' })
+    }
+}
+export async function updatePlaceTime(req, res) {
+    try {
+        const trip = req.trip
+        const time = req.body.time
+        const dayIndex = req.params.dayIndex
+        const placeIndex = req.params.placeIndex
+        if (
+            dayIndex < 0 ||
+            dayIndex >= trip.itinerary.length ||
+            placeIndex < 0 ||
+            placeIndex >= trip.itinerary[dayIndex].places.length
+        ) {
+            return res
+                .status(400)
+                .json({ message: 'invalid dayIndex or placeIndex' })
+        }
+
+        trip.itinerary[dayIndex].places[placeIndex].time = time
+        await trip.save()
+        const updatedPlace = trip.itinerary[dayIndex].places[placeIndex]
+        res.status(200).json({
+            message: 'place time updated successfully',
+            place: updatedPlace,
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'internal server error' })
+    }
+}
+export async function deleteItineraryPlace(req, res) {
+    try {
+        const trip = req.trip
+        const dayIndex = req.params.dayIndex
+        const placeIndex = req.params.placeIndex
+        if (
+            dayIndex < 0 ||
+            dayIndex >= trip.itinerary.length ||
+            placeIndex < 0 ||
+            placeIndex >= trip.itinerary[dayIndex].places.length
+        ) {
+            return res
+                .status(400)
+                .json({ message: 'invalid dayIndex or placeIndex' })
+        }
+
+        trip.itinerary[dayIndex].places.splice(placeIndex, 1)
+        await trip.save()
+        return res.status(200).json({ message: 'Place deleted successfully' })
+    } catch (error) {
+        console.log(error)
         res.status(500).json({ message: 'internal server error' })
     }
 }

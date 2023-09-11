@@ -37,8 +37,8 @@ const itineraryPlaceSchema = new Schema({
     coordinates: [Number],
     extendedName: String,
     time: {
-        startTime: Date,
-        endTime: Date,
+        startTime: String,
+        endTime: String,
     },
     attachment: String,
     expense: { type: Schema.Types.ObjectId, ref: 'Expense' },

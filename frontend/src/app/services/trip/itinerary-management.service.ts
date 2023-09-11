@@ -44,6 +44,19 @@ export class ItineraryManagementService {
       body,
     );
   }
+  updatePlaceNotes(
+    tripId: string,
+    dayIndex: number,
+    placeIndex: number,
+    body: {
+      notes: string;
+    },
+  ) {
+    return this.http.patch<{ place: ItineraryPlace; message: string }>(
+      `${this.baseUrl}/trip/${tripId}/itinerary/${dayIndex}/place/${placeIndex}/note`,
+      body,
+    );
+  }
   updatePlaceImage(
     tripId: string,
     dayIndex: number,
@@ -55,6 +68,24 @@ export class ItineraryManagementService {
     return this.http.patch<{ place: ItineraryPlace; message: string }>(
       `${this.baseUrl}/trip/${tripId}/itinerary/${dayIndex}/place/${placeIndex}/image`,
       body,
+    );
+  }
+  updatePlaceTime(
+    tripId: string,
+    dayIndex: number,
+    placeIndex: number,
+    body: {
+      time: { startTime: string; endTime: string };
+    },
+  ) {
+    return this.http.patch<{ place: ItineraryPlace; message: string }>(
+      `${this.baseUrl}/trip/${tripId}/itinerary/${dayIndex}/place/${placeIndex}/time`,
+      body,
+    );
+  }
+  deletePlace(tripId: string, dayIndex: number, placeIndex: number) {
+    return this.http.delete<{ message: string }>(
+      `${this.baseUrl}/trip/${tripId}/itinerary/${dayIndex}/place/${placeIndex}`,
     );
   }
 }

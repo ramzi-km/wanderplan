@@ -167,13 +167,96 @@
                       <img src="{{ trip.userId?.profilePic }}" />
                     </div>
                   </label>
-                  <button class="text-textp">
-                    <i class="fa-solid fa-user-plus"></i>
-                  </button>
+
+                  <label
+                    tabindex="0"
+                    class="tooltip mx-2"
+                    [attr.data-tip]="'add tripmate'"
+                  >
+                    <button
+                      (click)="showAddTripmateModal()"
+                      class="btn btn-circle btn-ghost btn-sm text-textp"
+                    >
+                      <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                  </label>
                 </div>
               </div>
             </div>
           </div>
+          <dialog id="addTripmateModal" class="modal">
+            <div class="modal-box bg-secondary text-textp">
+              <form method="dialog">
+                <button
+                  class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2"
+                >
+                  ✕
+                </button>
+              </form>
+              <form class="p-3">
+                <label
+                  for="default-search"
+                  class="sr-only mb-2 text-sm font-medium"
+                  >Search</label
+                >
+                <div class="relative">
+                  <div
+                    class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+                  >
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </div>
+                  <input
+                    type="search"
+                    id="default-search"
+                    class="block w-full rounded-lg border border-gray-300 bg-base-100 p-4 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="Search user"
+                    required
+                  />
+                </div>
+                <ul
+                  class="w-full rounded-md border border-gray-300 bg-secondary shadow-lg shadow-base-100"
+                >
+                  <li class="cursor-pointer border-b px-4 py-1 text-textp">
+                    <div class="mr-3 flex items-center">
+                      <label class="avatar">
+                        <div class="h-10 w-10 rounded-full">
+                          <img src="{{ trip.userId?.profilePic }}" />
+                        </div>
+                      </label>
+                      <div>
+                        <p>ramzi10</p>
+                        <span class="text-sm text-texts">ramzi k.m</span>
+                      </div>
+                      <div class="ml-auto">
+                        <!-- <label class="text-green-500">Invited</label> -->
+                        <label class="link-hover text-red-500">Invite</label>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="cursor-pointer  px-4 py-1 text-textp">
+                    <div class="mr-3 flex items-center">
+                      <label class="avatar">
+                        <div class="h-10 w-10 rounded-full">
+                          <img src="{{ trip.userId?.profilePic }}" />
+                        </div>
+                      </label>
+                      <div>
+                        <p>ramzi10</p>
+                        <span class="text-sm text-texts">ramzi k.m</span>
+                      </div>
+                      <div class="ml-auto">
+                        <!-- <label class="text-green-500">Invited</label> -->
+                        <label class="link-hover text-red-500">Invite</label>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </form>
+            </div>
+            <form method="dialog" class="modal-backdrop">
+              <button>close</button>
+            </form>
+          </dialog>
           <div class="my-16 flex w-full flex-col items-center justify-center">
             <div class="w-full">
               <app-overview
