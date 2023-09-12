@@ -4,6 +4,7 @@ import cloudinary from '../config/cloudinary.js'
 //------------------ models --------------------//
 
 import tripModel from '../models/tripModel.js'
+import userModel from '../models/userModel.js'
 
 //-----------------------------------------------//
 
@@ -63,7 +64,7 @@ export async function addNewTrip(req, res) {
 
         // Construct the new trip data
         const newTripData = {
-            userId: req.user.id,
+            admin: req.user.id,
             name: `Trip to ${frontendData.place.name}`,
             startDate: startDate,
             endDate: endDate,
@@ -96,7 +97,11 @@ export async function addNewTrip(req, res) {
         const savedTrip = await newTrip.save()
         const trip = await tripModel
             .findById(savedTrip._id)
-            .populate('userId', '_id username name profilePic')
+            .populate({
+                path: 'admin',
+                select: '_id username name profilePic',
+                as: 'admin',
+            })
             .populate('tripMates', '_id username name profilePic')
             .exec()
 
@@ -120,14 +125,16 @@ export async function getTripDetails(req, res) {
         if (trip?.tripMates.includes(user._id)) {
             trip = await tripModel
                 .findById(tripId)
-                .populate('userId', '_id username name profilePic')
+                .populate('admin', '_id username name profilePic')
                 .populate('tripMates', '_id username name profilePic')
                 .exec()
+
+            console.log(trip)
             return res
                 .status(200)
                 .json({ message: 'Success', trip: trip, editable: true })
         } else if (trip.visibility == 'public') {
-            trip = await tripModel.findById(tripId).select('userId')
+            trip = await tripModel.findById(tripId).select('adminId')
             return res
                 .status(200)
                 .json({ message: 'success', trip: trip, editable: false })
@@ -136,6 +143,39 @@ export async function getTripDetails(req, res) {
         }
     } catch (error) {
         console.log(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function inviteTripMate(req, res) {
+    try {
+        const admin = req.user
+        const trip = req.trip
+        const tripMateId = req.body.userId
+        const tripMate = await userModel.findById(tripMateId)
+
+        if (!tripMate) {
+            return res.status(404).json({ message: 'Trip mate not found' })
+        }
+        if (trip.invitedTripMates.includes(tripMateId)) {
+            return res
+                .status(400)
+                .json({ message: 'Trip mate is already invited' })
+        }
+        trip.invitedTripMates.push(tripMateId)
+        const notification = {
+            type: 'tripInvite',
+            content: `You have been invited to join the trip "${trip.name}" by ${admin.username}.`,
+            sender: admin._id,
+            trip: trip._id,
+        }
+        tripMate.notifications.push(notification)
+        await Promise.all([trip.save(), tripMate.save()])
+        return res.status(200).json({
+            message: 'Trip mate invited successfully',
+            invitedTripMates: trip.invitedTripMates,
+        })
+    } catch (error) {
         return res.status(500).json({ message: 'Internal server error' })
     }
 }

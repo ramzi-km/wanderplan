@@ -1,3 +1,5 @@
+import { ShortTripInfo } from './short-trip.interface';
+
 export interface User {
   _id?: string;
   name?: string;
@@ -5,7 +7,16 @@ export interface User {
   email?: string;
   mobile?: string;
   profilePic?: string;
-  notifications?: Array<any>;
-  history?: Array<any>;
+  notifications?: Notification[];
   ban?: boolean;
+}
+export interface Notification {
+  _id?: string;
+  type: string;
+  content: string;
+  timestamp?: Date;
+  sender: User;
+  trip: ShortTripInfo;
+  status?: string;
+  read?: boolean;
 }

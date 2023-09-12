@@ -1,11 +1,11 @@
 import tripModel from '../models/tripModel.js'
 
-export default async function verifyTripMate(req, res, next) {
+export default async function verifyTripAdmin(req, res, next) {
     try {
         const user = req.user
         const tripId = req.params.id
         const trip = await tripModel.findById(tripId)
-        if (!trip?.tripMates.includes(user.id)) {
+        if (!trip.admin.equals(user._id)) {
             return res.status(422).json({ message: 'Access denied' })
         }
         req.user = user

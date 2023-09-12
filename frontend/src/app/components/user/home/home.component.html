@@ -28,7 +28,7 @@
           </div>
           <div
             class="flex w-full items-center justify-center"
-            *ngIf="!upcomingTrips[0] && !recentTrips[0]"
+            *ngIf="!upcomingTrips[0]"
           >
             <img
               class="w-1/2 md:w-1/3"
@@ -73,46 +73,6 @@
                       >&bull;{{
                         upcomingTrip.totalPlacesToVisit +
                           upcomingTrip.totalItineraryPlaces
-                      }}
-                      places</span
-                    >
-                  </p>
-                </div>
-              </div></swiper-slide
-            >
-            <swiper-slide *ngFor="let recentTrip of recentTrips"
-              ><div class="relative max-w-sm">
-                <button
-                  class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
-                >
-                  <i class="fa-solid fa-ellipsis"></i>
-                </button>
-                <a (click)="navigateTo(recentTrip._id)">
-                  <img
-                    class="h-40 w-full rounded-lg object-cover"
-                    src="{{ recentTrip.coverPhoto }}"
-                    alt=""
-                  />
-                </a>
-                <div class="pt-3">
-                  <a (click)="navigateTo(recentTrip._id)">
-                    <h5
-                      class="mb-2 text-lg font-semibold tracking-tight text-textp"
-                    >
-                      {{ recentTrip.name }}
-                    </h5>
-                  </a>
-                  <p class="text-sm font-normal text-texts">
-                    <span
-                      >&bull;
-                      {{
-                        [recentTrip.startDate, recentTrip.endDate] | dateRange
-                      }}</span
-                    >
-                    <span class="ml-5"
-                      >&bull;{{
-                        recentTrip.totalPlacesToVisit +
-                          recentTrip.totalItineraryPlaces
                       }}
                       places</span
                     >

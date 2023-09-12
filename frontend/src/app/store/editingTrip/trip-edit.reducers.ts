@@ -45,6 +45,13 @@ export const editTripReducer = createReducer(
       },
     },
   })),
+  on(tripEditActions.updateInvitedTripmates, (state, { invitedTripmates }) => ({
+    ...state,
+    trip: {
+      ...state.trip,
+      invitedTripMates: invitedTripmates,
+    },
+  })),
   on(tripEditActions.updateOverviewNotes, (state, { notes }) => ({
     ...state,
     trip: {

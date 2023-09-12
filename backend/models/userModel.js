@@ -1,5 +1,30 @@
 import { Schema, model } from 'mongoose'
 
+const notificationSchema = new Schema({
+    type: {
+        type: String,
+        required: true,
+    },
+    content: {
+        type: String,
+        required: true,
+    },
+    timestamp: {
+        type: Date,
+        default: Date.now(),
+    },
+    sender: { type: Schema.Types.ObjectId, ref: 'User' },
+    trip: { type: Schema.Types.ObjectId, ref: 'Trip' },
+    status: {
+        type: String,
+        default: 'pending',
+    },
+    read: {
+        type: Boolean,
+        default: false,
+    },
+})
+
 // Declare the Schema of the Mongo model
 var userSchema = new Schema({
     name: {
@@ -32,11 +57,7 @@ var userSchema = new Schema({
         default: false,
     },
     notifications: {
-        type: Array,
-    },
-    history: {
-        type: [{ type: Schema.Types.ObjectId, ref: 'Trip' }],
-        default: [],
+        type: [notificationSchema],
     },
     ban: {
         type: Boolean,

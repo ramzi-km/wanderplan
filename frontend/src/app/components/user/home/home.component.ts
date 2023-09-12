@@ -22,18 +22,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject<void>();
   user$ = this.store.select(UserSelector.selectUser);
   isLoggedIn$ = this.store.select(UserSelector.selectIsLoggedIn);
-  recentTrips: Array<ShortTripInfo> = [];
   upcomingTrips: Array<ShortTripInfo> = [];
   errMessage!: string;
   loading = false;
   ngOnInit(): void {
     this.loading = true;
     this.userService
-      .getRecentTrips()
+      .getUpcomingTrips()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
         next: (res) => {
-          this.recentTrips = res.recentTrips;
           this.upcomingTrips = res.upcomingTrips;
           this.loading = false;
         },

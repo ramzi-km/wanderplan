@@ -1,7 +1,8 @@
 import { Component, HostListener } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, map, takeUntil } from 'rxjs';
+import { User } from 'src/app/interfaces/user.model';
 import { UserAuthService } from 'src/app/services/user/user-auth.service';
 import * as UserActions from '../../../store/user/user.actions';
 import * as UserSelector from '../../../store/user/user.selectors';
@@ -22,12 +23,22 @@ export class NavComponent {
     private router: Router,
     private userAuthService: UserAuthService,
     private store: Store,
-  ) {}
+  ) {
+    this.user$ = this.store.select(UserSelector.selectUser);
+    this.unreadNotifications$ = this.user$.pipe(
+      map((user) => {
+        if (user && user.notifications) {
+          return user.notifications.some((notification) => !notification.read);
+        }
+        return false;
+      }),
+    );
+  }
   private ngUnsubscribe = new Subject<void>();
 
-  user$ = this.store.select(UserSelector.selectUser);
+  user$: Observable<User>;
   isLoggedIn$ = this.store.select(UserSelector.selectIsLoggedIn);
-
+  unreadNotifications$: Observable<boolean>;
   ngOnInit() {
     // Subscribe to the NavigationEnd event of the Router.
     this.router.events.subscribe((event) => {

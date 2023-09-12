@@ -45,7 +45,7 @@ const itineraryPlaceSchema = new Schema({
 })
 
 const tripSchema = new Schema({
-    userId: { type: Schema.Types.ObjectId, ref: 'User' },
+    admin: { type: Schema.Types.ObjectId, ref: 'User' },
     name: String,
     startDate: Date,
     endDate: Date,
@@ -60,6 +60,7 @@ const tripSchema = new Schema({
         coordinates: [Number],
     },
     tripMates: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    invitedTripMates: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     visibility: {
         type: String,
         default: 'private',

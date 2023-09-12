@@ -161,25 +161,27 @@
                   <label
                     tabindex="0"
                     class="avatar tooltip mx-2"
-                    [attr.data-tip]="trip.userId?.name"
+                    [attr.data-tip]="trip.admin?.name"
                   >
                     <div class="w-8 rounded-full">
-                      <img src="{{ trip.userId?.profilePic }}" />
+                      <img src="{{ trip.admin?.profilePic }}" />
                     </div>
                   </label>
-
-                  <label
-                    tabindex="0"
-                    class="tooltip mx-2"
-                    [attr.data-tip]="'add tripmate'"
-                  >
-                    <button
-                      (click)="showAddTripmateModal()"
-                      class="btn btn-circle btn-ghost btn-sm text-textp"
+                  <ng-container *ngIf="user$ | async as user">
+                    <label
+                      *ngIf="trip.admin?._id == user._id"
+                      tabindex="0"
+                      class="tooltip mx-2"
+                      [attr.data-tip]="'add tripmate'"
                     >
-                      <i class="fa-solid fa-user-plus"></i>
-                    </button>
-                  </label>
+                      <button
+                        (click)="showAddTripmateModal()"
+                        class="btn btn-circle btn-ghost btn-sm text-textp"
+                      >
+                        <i class="fa-solid fa-user-plus"></i>
+                      </button>
+                    </label>
+                  </ng-container>
                 </div>
               </div>
             </div>
@@ -206,6 +208,7 @@
                     <i class="fa-solid fa-magnifying-glass"></i>
                   </div>
                   <input
+                    [formControl]="userSearchControl"
                     type="search"
                     id="default-search"
                     class="block w-full rounded-lg border border-gray-300 bg-base-100 p-4 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500"
@@ -214,39 +217,52 @@
                   />
                 </div>
                 <ul
-                  class="w-full rounded-md border border-gray-300 bg-secondary shadow-lg shadow-base-100"
+                  *ngIf="userSearchResults.length > 0"
+                  class="my-2 w-full rounded-md border border-gray-300 bg-secondary shadow-lg shadow-base-100"
                 >
-                  <li class="cursor-pointer border-b px-4 py-1 text-textp">
+                  <li
+                    *ngFor="
+                      let user of userSearchResults;
+                      let userIndex = index
+                    "
+                    class="cursor-pointer border-b px-4 py-1 text-textp"
+                  >
                     <div class="mr-3 flex items-center">
                       <label class="avatar">
                         <div class="h-10 w-10 rounded-full">
-                          <img src="{{ trip.userId?.profilePic }}" />
+                          <img src="{{ user.profilePic }}" />
                         </div>
                       </label>
-                      <div>
-                        <p>ramzi10</p>
-                        <span class="text-sm text-texts">ramzi k.m</span>
+                      <div class="ml-2">
+                        <p>{{ user.username }}</p>
+                        <span class="text-sm text-texts">{{ user.name }}</span>
                       </div>
                       <div class="ml-auto">
                         <!-- <label class="text-green-500">Invited</label> -->
-                        <label class="link-hover text-red-500">Invite</label>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="cursor-pointer px-4 py-1 text-textp">
-                    <div class="mr-3 flex items-center">
-                      <label class="avatar">
-                        <div class="h-10 w-10 rounded-full">
-                          <img src="{{ trip.userId?.profilePic }}" />
-                        </div>
-                      </label>
-                      <div>
-                        <p>ramzi10</p>
-                        <span class="text-sm text-texts">ramzi k.m</span>
-                      </div>
-                      <div class="ml-auto">
-                        <!-- <label class="text-green-500">Invited</label> -->
-                        <label class="link-hover text-red-500">Invite</label>
+                        <label
+                          *ngIf="
+                            !trip.invitedTripMates?.includes(user._id!) &&
+                            !user.member
+                          "
+                          (click)="inviteTripmate(userIndex, user._id!)"
+                          class="link-hover text-red-500"
+                          >Invite</label
+                        >
+                        <span
+                          *ngIf="
+                            inviteTripmateLoading.value &&
+                            inviteTripmateLoading.index == userIndex
+                          "
+                          class="loading loading-spinner loading-xs ml-2 mt-1 text-primary"
+                        ></span>
+                        <label
+                          *ngIf="trip.invitedTripMates?.includes(user._id!)"
+                          class="text-green-600"
+                          >Invited</label
+                        >
+                        <label *ngIf="user.member" class="text-gray-400"
+                          >Member</label
+                        >
                       </div>
                     </div>
                   </li>

@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt'
-import mongoose from 'mongoose'
 import cloudinary from '../config/cloudinary.js'
 
 //------------------ models --------------------//
@@ -11,9 +10,51 @@ import userModel from '../models/userModel.js'
 
 export async function getUser(req, res) {
     try {
-        res.status(200).json({ user: req.user })
+        const userId = req.user.id
+        const user = await userModel
+            .findOne({ _id: userId })
+            .select('-password')
+            .populate({
+                path: 'notifications',
+                populate: [
+                    {
+                        path: 'sender',
+                        model: 'User',
+                        select: 'name profilePic username _id',
+                    },
+                    {
+                        path: 'trip',
+                        model: 'Trip',
+                        select: 'name _id',
+                    },
+                ],
+            })
+            .exec()
+        console.log(user)
+        res.status(200).json({ user: user })
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' })
+    }
+}
+
+export async function searchUsers(req, res) {
+    try {
+        const searchTerm = req.query.username
+        const regexPattern = new RegExp(searchTerm, 'i')
+        const fieldsToReturn = 'name username profilePic email'
+        const users = await userModel
+            .find({
+                $or: [
+                    { name: { $regex: regexPattern } },
+                    { username: { $regex: regexPattern } },
+                ],
+            })
+            .select(fieldsToReturn)
+            .limit(5)
+
+        res.status(200).json({ users: users })
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' })
     }
 }
 
@@ -114,7 +155,7 @@ export async function resetPassword(req, res) {
                 { email: user.email },
                 { password: passwordHash }
             )
-            console.log(user.password);
+            console.log(user.password)
             return res.status(200).json({ message: 'success' })
         } else {
             const comparison = await bcrypt.compare(
@@ -133,7 +174,7 @@ export async function resetPassword(req, res) {
         }
     } catch (error) {
         console.log(error)
-        res.status(500).json({ message: 'internal server error' })
+        res.status(500).json({ message: 'Internal server error' })
     }
 }
 
@@ -144,7 +185,7 @@ export async function getAllTrips(req, res) {
             .aggregate([
                 {
                     $match: {
-                        $or: [{ userId: user._id }, { tripMates: user._id }],
+                        $or: [{ admin: user._id }, { tripMates: user._id }],
                     },
                 },
                 {
@@ -165,7 +206,6 @@ export async function getAllTrips(req, res) {
                 },
                 {
                     $project: {
-                        userId: 1,
                         _id: 1,
                         name: 1,
                         coverPhoto: 1,
@@ -183,7 +223,7 @@ export async function getAllTrips(req, res) {
     }
 }
 
-export async function getRecentAndUpcomingTrips(req, res) {
+export async function getUpcomingTrips(req, res) {
     try {
         const user = req.user
         let today = new Date()
@@ -202,7 +242,7 @@ export async function getRecentAndUpcomingTrips(req, res) {
             .aggregate([
                 {
                     $match: {
-                        $or: [{ userId: user._id }, { tripMates: user._id }],
+                        tripMates: user._id,
                         startDate: {
                             $lte: next10Days,
                         },
@@ -241,55 +281,54 @@ export async function getRecentAndUpcomingTrips(req, res) {
             ])
             .exec()
 
-        const recent = await userModel
-            .aggregate([
-                { $match: { _id: user._id } },
-                {
-                    $project: {
-                        history: 1,
-                    },
-                },
-            ])
-            .exec()
+        // const recent = await userModel
+        //     .aggregate([
+        //         { $match: { _id: user._id } },
+        //         {
+        //             $project: {
+        //                 history: 1,
+        //             },
+        //         },
+        //     ])
+        //     .exec()
 
-        const recentArr = [...recent[0].history]
+        // const recentArr = [...recent[0].history]
 
-        const recentTrips = await tripModel.aggregate([
-            {
-                $match: {
-                    _id: {
-                        $in: recentArr.map(
-                            (id) => new mongoose.Types.ObjectId(id)
-                        ),
-                    },
-                },
-            },
-            {
-                $addFields: {
-                    totalPlacesToVisit: {
-                        $size: '$overview.placesToVisit',
-                    },
-                    totalItineraryPlaces: {
-                        $sum: '$itinerary.places.length',
-                    },
-                },
-            },
-            {
-                $project: {
-                    _id: 1,
-                    name: 1,
-                    coverPhoto: 1,
-                    startDate: 1,
-                    endDate: 1,
-                    totalPlacesToVisit: 1,
-                    totalItineraryPlaces: 1,
-                },
-            },
-        ])
+        // const recentTrips = await tripModel.aggregate([
+        //     {
+        //         $match: {
+        //             _id: {
+        //                 $in: recentArr.map(
+        //                     (id) => new mongoose.Types.ObjectId(id)
+        //                 ),
+        //             },
+        //         },
+        //     },
+        //     {
+        //         $addFields: {
+        //             totalPlacesToVisit: {
+        //                 $size: '$overview.placesToVisit',
+        //             },
+        //             totalItineraryPlaces: {
+        //                 $sum: '$itinerary.places.length',
+        //             },
+        //         },
+        //     },
+        //     {
+        //         $project: {
+        //             _id: 1,
+        //             name: 1,
+        //             coverPhoto: 1,
+        //             startDate: 1,
+        //             endDate: 1,
+        //             totalPlacesToVisit: 1,
+        //             totalItineraryPlaces: 1,
+        //         },
+        //     },
+        // ])
 
         res.status(200).json({
             message: 'success',
-            recentTrips: recentTrips,
             upcomingTrips: tripsWithin10Days,
         })
     } catch (error) {

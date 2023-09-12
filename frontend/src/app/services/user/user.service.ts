@@ -29,16 +29,19 @@ export class UserService {
       profile,
     );
   }
-  getRecentTrips() {
+  getUpcomingTrips() {
     return this.http.get<{
-      recentTrips: ShortTripInfo[];
       upcomingTrips: ShortTripInfo[];
       message: string;
-    }>(`${this.baseUrl}/user/getRecentTrips`);
+    }>(`${this.baseUrl}/user/upcomingTrips`);
   }
   getAllTrips() {
     return this.http.get<{ trips: ShortTripInfo[] }>(
       `${this.baseUrl}/user/getAllTrips`,
     );
+  }
+  searchUsers(searchTerm: string) {
+    const url = `${this.baseUrl}/user/search?username=${searchTerm}`;
+    return this.http.get<{ users: User[] }>(url);
   }
 }

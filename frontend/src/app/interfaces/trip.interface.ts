@@ -2,13 +2,14 @@ import { User } from './user.model';
 
 export interface Trip {
   _id?: string;
-  userId?: User;
+  admin?: User;
   name?: string;
   startDate?: Date;
   endDate?: Date;
   coverPhoto?: string;
   place?: Place;
   tripMates?: User[];
+  invitedTripMates?: string[];
   visibility?: string;
   overview?: Overview;
   itinerary?: Itinerary[];

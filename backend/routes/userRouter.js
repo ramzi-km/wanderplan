@@ -3,6 +3,7 @@ const router = express.Router()
 
 //---------------middlewares-----------------//
 
+import verifyTripAdmin from '../middlewares/verifyTripAdmin.js'
 import verifyTripMate from '../middlewares/verifyTripMate.js'
 import verifyUser from '../middlewares/verifyUser.js'
 
@@ -25,9 +26,10 @@ import {
 
 import {
     getAllTrips,
-    getRecentAndUpcomingTrips,
+    getUpcomingTrips,
     getUser,
     resetPassword,
+    searchUsers,
     updateUser,
     uploadProfile,
 } from '../controllers/userControllers.js'
@@ -42,6 +44,7 @@ import {
     changeTripName,
     deletePlaceToVisit,
     getTripDetails,
+    inviteTripMate,
     updateDescription,
     updateNotes,
     updatePlaceToVisitDescription,
@@ -75,18 +78,26 @@ router.post('/logout', logout)
 
 //----------------------user-profile-------------------//
 
+router.get('/user/search', verifyUser, searchUsers)
+
 router.get('/user', verifyUser, getUser)
 router.patch('/user', verifyUser, updateUser)
 router.post('/user/uploadProfile', verifyUser, uploadProfile)
 router.patch('/resetPassword', verifyUser, resetPassword)
 
-router.get('/user/getRecentTrips', verifyUser, getRecentAndUpcomingTrips)
+router.get('/user/upcomingTrips', verifyUser, getUpcomingTrips)
 router.get('/user/getAllTrips', verifyUser, getAllTrips)
 
 //--------------------user-trip-plans--------------------//
 
 router.post('/trip/create', verifyUser, addNewTrip)
 router.get('/trip/getDetails/:id', verifyUser, getTripDetails)
+router.post(
+    '/trip/:id/inviteTripmate',
+    verifyUser,
+    verifyTripAdmin,
+    inviteTripMate
+)
 router.patch('/trip/edit/name/:id', verifyUser, verifyTripMate, changeTripName)
 router.patch(
     '/trip/edit/coverPhoto/:id',

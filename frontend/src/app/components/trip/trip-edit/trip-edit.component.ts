@@ -6,19 +6,31 @@ import {
   Renderer2,
   ViewChild,
 } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Store } from '@ngrx/store';
 import { environment } from 'environment';
 import mapboxgl from 'mapbox-gl';
-import { Subject, pipe, take, takeUntil } from 'rxjs';
+import {
+  Subject,
+  debounceTime,
+  distinctUntilChanged,
+  pipe,
+  switchMap,
+  take,
+  takeUntil,
+} from 'rxjs';
 import {
   ItineraryPlace,
   PlaceToVisit,
   Trip,
 } from 'src/app/interfaces/trip.interface';
+import { User } from 'src/app/interfaces/user.model';
 import { TripService } from 'src/app/services/trip/trip.service';
+import { UserService } from 'src/app/services/user/user.service';
 import * as tripEditActions from '../../../store/editingTrip/trip-edit.actions';
-import * as tripEditSelecctor from '../../../store/editingTrip/trip-edit.selectors';
+import * as tripEditSelector from '../../../store/editingTrip/trip-edit.selectors';
+import * as userSelector from '../../../store/user/user.selectors';
 import { ItineraryComponent } from './itinerary/itinerary.component';
 import { OverviewComponent } from './overview/overview.component';
 
@@ -40,6 +52,11 @@ export class TripEditComponent implements OnDestroy, OnInit {
   scrollToDynamicSection(sectionId: string) {
     this.appItinerary.scrollToSection(sectionId);
   }
+  scrollToSection(section: ElementRef, sectionName: string): void {
+    section.nativeElement.scrollIntoView({ behavior: 'smooth' });
+    this.activeSection = sectionName;
+  }
+
   map!: mapboxgl.Map;
   markers: mapboxgl.Marker[] = [];
   markers2: mapboxgl.Marker[] = [];
@@ -52,18 +69,21 @@ export class TripEditComponent implements OnDestroy, OnInit {
   coverPhotoLoading = false;
   activeSection: string = 'overview';
   showOverview = true;
+  userSearchControl = new FormControl();
+  userSearchResults: Array<User & { member?: boolean }> = [];
+  inviteTripmateLoading = {
+    value: false,
+    index: 0,
+  };
   private ngUnsubscribe = new Subject<void>();
-
-  scrollToSection(section: ElementRef, sectionName: string): void {
-    section.nativeElement.scrollIntoView({ behavior: 'smooth' });
-    this.activeSection = sectionName;
-  }
-
+  trip$ = this.store.select(tripEditSelector.selectEditingTrip);
+  user$ = this.store.select(userSelector.selectUser);
   constructor(
     private store: Store,
     private tripService: TripService,
     private renderer: Renderer2,
     private el: ElementRef,
+    private userService: UserService,
   ) {
     mapboxgl.accessToken = environment.MAPBOX_TOKEN;
     this.trip$.pipe(take(1)).subscribe({
@@ -74,6 +94,30 @@ export class TripEditComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
+    this.userSearchControl.valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap((username: string) => {
+          // Cancel previous request and start a new one
+          return this.userService.searchUsers(username);
+        }),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe({
+        next: (res) => {
+          this.userSearchResults = [];
+          res.users.forEach((user) => {
+            const member = this.trip.tripMates?.some(
+              (u) => u._id === user._id!,
+            );
+            this.userSearchResults.push({ ...user, member });
+          });
+        },
+        error: (errMessage) => {
+          console.log(errMessage);
+        },
+      });
     // this.map = new mapboxgl.Map({
     //   container: 'map',
     //   style: 'mapbox://styles/mapbox/streets-v12',
@@ -145,7 +189,6 @@ export class TripEditComponent implements OnDestroy, OnInit {
       },
     });
   }
-  trip$ = this.store.select(tripEditSelecctor.selectEditingTrip);
   isDrawerOpen(): boolean {
     return this.drawer?.opened || false;
   }
@@ -259,6 +302,26 @@ export class TripEditComponent implements OnDestroy, OnInit {
       'addTripmateModal',
     ) as HTMLDialogElement;
     addTripmateModal.showModal();
+  }
+  inviteTripmate(index: number, userId: string) {
+    this.inviteTripmateLoading = { value: true, index };
+    this.tripService
+      .inviteTripMate(this.tripId, { userId })
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (res) => {
+          this.store.dispatch(
+            tripEditActions.updateInvitedTripmates({
+              invitedTripmates: res.invitedTripMates,
+            }),
+          );
+          this.inviteTripmateLoading = { value: false, index };
+        },
+        error: (errMessage) => {
+          console.log(errMessage);
+          this.inviteTripmateLoading = { value: false, index };
+        },
+      });
   }
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();

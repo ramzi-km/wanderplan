@@ -24,6 +24,10 @@ export const updateDescription = createAction(
   '[TripEdit Component] updateDescription',
   props<{ description: string }>(),
 );
+export const updateInvitedTripmates = createAction(
+  '[TripEdit Component] updateInvitedTripmates',
+  props<{ invitedTripmates: string[] }>(),
+);
 
 export const updateOverviewNotes = createAction(
   '[TripEdit Component] updateOverviewNotes',

@@ -22,6 +22,12 @@ export class TripService {
       `${this.baseUrl}/trip/getDetails/${id}`,
     );
   }
+  inviteTripMate(tripId: string, body: { userId: string }) {
+    return this.http.post<{ invitedTripMates: string[]; message: string }>(
+      `${this.baseUrl}/trip/${tripId}/inviteTripmate`,
+      body,
+    );
+  }
   changeName(id: string, body: { tripName: string }) {
     return this.http.patch<{ tripName: string; message: string }>(
       `${this.baseUrl}/trip/edit/name/${id}`,
