@@ -1,3 +1,4 @@
+import categoryModel from '../models/categoryModel.js'
 import userModel from '../models/userModel.js'
 
 export async function getAllUsers(req, res) {
@@ -23,6 +24,36 @@ export async function blockUser(req, res) {
                 message: 'user with the provided id does not exist',
             })
         }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function addCategory(req, res) {
+    try {
+        const categoryName = req.body.categoryName.toLowerCase()
+        const categoryIcon = req.body.categoryIcon
+        const existingCategory = await categoryModel.findOne({
+            name: categoryName,
+        })
+        if (existingCategory) {
+            return res.status(403).json({ message: 'category already exist' })
+        }
+        const newCategory = await categoryModel.create({
+            name: categoryName,
+            icon: categoryIcon,
+        })
+        res.status(200).json({ message: 'success', category: newCategory })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+export async function getAllCategories(req, res) {
+    try {
+        const categories = await categoryModel.find().lean()
+        res.status(200).json({ message: 'success', categories: categories })
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: 'Internal server error' })

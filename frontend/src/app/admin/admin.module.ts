@@ -14,6 +14,7 @@ import { adminEffects } from './store/admin/admin.effects';
 import { adminReducer } from './store/admin/admin.reducers';
 import { usersEffects } from './store/users/users.effects';
 import { usersReducer } from './store/users/users.reducers';
+import { CategoryManagementComponent } from './components/category-management/category-management.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { usersReducer } from './store/users/users.reducers';
     AdminLoginComponent,
     AdminNavComponent,
     UserManagementComponent,
+    CategoryManagementComponent,
   ],
   imports: [
     CommonModule,

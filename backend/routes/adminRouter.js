@@ -4,7 +4,12 @@ import {
     postAdminLogin,
     postAdminLogout,
 } from '../controllers/adminAuthControllers.js'
-import { blockUser, getAllUsers } from '../controllers/adminControllers.js'
+import {
+    addCategory,
+    blockUser,
+    getAllCategories,
+    getAllUsers,
+} from '../controllers/adminControllers.js'
 import verifyAdmin from '../middlewares/verifyAdmin.js'
 const router = express.Router()
 
@@ -13,5 +18,8 @@ router.post('/logout', postAdminLogout)
 router.get('/data', verifyAdmin, getAdminData)
 router.get('/allUsers', verifyAdmin, getAllUsers)
 router.patch('/blockUser/:id', verifyAdmin, blockUser)
+
+router.get('/categories', verifyAdmin, getAllCategories)
+router.post('/category', verifyAdmin, addCategory)
 
 export default router

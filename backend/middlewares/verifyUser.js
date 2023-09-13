@@ -14,7 +14,24 @@ export default async function verifyUser(req, res, next) {
         const decoded = jwt.verify(token, secret)
 
         // Check if the decoded user ID exists in the database
-        const user = await userModel.findOne({ _id: decoded._id })
+        const user = await userModel
+            .findOne({ _id: decoded._id })
+            .populate({
+                path: 'notifications',
+                populate: [
+                    {
+                        path: 'sender',
+                        model: 'User',
+                        select: 'name profilePic username _id',
+                    },
+                    {
+                        path: 'trip',
+                        model: 'Trip',
+                        select: 'name _id',
+                    },
+                ],
+            })
+            .exec()
         if (!user) {
             res.cookie('userToken', '', { maxAge: 0 })
             return res.status(401).json({ message: 'User not found.' })

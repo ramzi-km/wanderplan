@@ -44,4 +44,8 @@ export class UserService {
     const url = `${this.baseUrl}/user/search?username=${searchTerm}`;
     return this.http.get<{ users: User[] }>(url);
   }
+  acceptTripInvitation(tripId: string, notificationId: string) {
+    const url = `${this.baseUrl}/user/acceptTripInvitation/${tripId}/${notificationId}`;
+    return this.http.post<{ user: User; message: string }>(url, {});
+  }
 }

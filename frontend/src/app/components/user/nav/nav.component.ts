@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { Observable, Subject, map, takeUntil } from 'rxjs';
 import { User } from 'src/app/interfaces/user.model';
 import { UserAuthService } from 'src/app/services/user/user-auth.service';
+import { UserService } from 'src/app/services/user/user.service';
 import * as UserActions from '../../../store/user/user.actions';
 import * as UserSelector from '../../../store/user/user.selectors';
 declare const google: any;
@@ -23,6 +24,7 @@ export class NavComponent {
     private router: Router,
     private userAuthService: UserAuthService,
     private store: Store,
+    private userService: UserService,
   ) {
     this.user$ = this.store.select(UserSelector.selectUser);
     this.unreadNotifications$ = this.user$.pipe(
@@ -39,6 +41,10 @@ export class NavComponent {
   user$: Observable<User>;
   isLoggedIn$ = this.store.select(UserSelector.selectIsLoggedIn);
   unreadNotifications$: Observable<boolean>;
+  acceptIvitationLoading = {
+    value: false,
+    id: '',
+  };
   ngOnInit() {
     // Subscribe to the NavigationEnd event of the Router.
     this.router.events.subscribe((event) => {
@@ -91,5 +97,31 @@ export class NavComponent {
     // Test if the current route matches the pattern
     const shouldExclude = excludedRoutePattern.test(this.router.url);
     return !shouldExclude;
+  }
+
+  acceptTripInvitation(tripId: string, notificationId: string) {
+    this.acceptIvitationLoading = {
+      value: true,
+      id: notificationId,
+    };
+    this.userService
+      .acceptTripInvitation(tripId, notificationId)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (res) => {
+          this.store.dispatch(UserActions.getUserSuccess({ user: res.user }));
+          this.acceptIvitationLoading = {
+            value: false,
+            id: '',
+          };
+        },
+        error: (errMessage) => {
+          console.log(errMessage);
+          this.acceptIvitationLoading = {
+            value: false,
+            id: '',
+          };
+        },
+      });
   }
 }

@@ -25,6 +25,7 @@ import {
 //--------user-controllers-------//
 
 import {
+    acceptTripInvitation,
     getAllTrips,
     getUpcomingTrips,
     getUser,
@@ -87,6 +88,11 @@ router.patch('/resetPassword', verifyUser, resetPassword)
 
 router.get('/user/upcomingTrips', verifyUser, getUpcomingTrips)
 router.get('/user/getAllTrips', verifyUser, getAllTrips)
+router.post(
+    '/user/acceptTripInvitation/:tripId/:notificationId',
+    verifyUser,
+    acceptTripInvitation
+)
 
 //--------------------user-trip-plans--------------------//
 

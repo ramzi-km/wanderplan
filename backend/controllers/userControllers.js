@@ -30,7 +30,6 @@ export async function getUser(req, res) {
                 ],
             })
             .exec()
-        console.log(user)
         res.status(200).json({ user: user })
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' })
@@ -89,6 +88,22 @@ export async function updateUser(req, res) {
                     }
                 )
                 .select('-password')
+                .populate({
+                    path: 'notifications',
+                    populate: [
+                        {
+                            path: 'sender',
+                            model: 'User',
+                            select: 'name profilePic username _id',
+                        },
+                        {
+                            path: 'trip',
+                            model: 'Trip',
+                            select: 'name _id',
+                        },
+                    ],
+                })
+                .exec()
 
             res.status(200).json({ user: user, message: 'success' })
         }
@@ -118,6 +133,22 @@ export async function uploadProfile(req, res) {
                 }
             )
             .select('-password')
+            .populate({
+                path: 'notifications',
+                populate: [
+                    {
+                        path: 'sender',
+                        model: 'User',
+                        select: 'name profilePic username _id',
+                    },
+                    {
+                        path: 'trip',
+                        model: 'Trip',
+                        select: 'name _id',
+                    },
+                ],
+            })
+            .exec()
 
         // Default profile picture URL
         const defaultProfilePicUrl =
@@ -149,7 +180,6 @@ export async function resetPassword(req, res) {
             return res.status(404).json({ message: 'provide password' })
         }
         const passwordHash = await bcrypt.hash(newPassword, 10)
-        console.log(user)
         if (user.googleLogin && !user.password) {
             await userModel.findOneAndUpdate(
                 { email: user.email },
@@ -220,6 +250,43 @@ export async function getAllTrips(req, res) {
         res.status(200).json({ trips: trips })
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' })
+    }
+}
+
+export async function acceptTripInvitation(req, res) {
+    try {
+        const user = req.user
+        const tripId = req.params.tripId
+        const notificationId = req.params.notificationId
+        const trip = await tripModel.findOne({
+            _id: tripId,
+            invitedTripMates: user.id,
+        })
+        if (!trip) {
+            return res
+                .status(400)
+                .json({ message: 'Trip not found or user is not invited.' })
+        }
+        trip.tripMates.push(user.id)
+        trip.invitedTripMates.pull(user.id)
+
+        await trip.save()
+
+        if (user) {
+            const notification = user.notifications.id(notificationId)
+
+            if (notification) {
+                notification.status = 'accepted'
+                await user.save()
+            }
+        }
+
+        res.status(200).json({
+            message: 'Trip invitation accepted successfully.',
+            user: user,
+        })
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' })
     }
 }
 

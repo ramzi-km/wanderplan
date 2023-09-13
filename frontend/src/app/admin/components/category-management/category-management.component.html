@@ -1,0 +1,225 @@
+<div class="p-5">
+  <div>
+    <button (click)="showAddCategoryModal()" class="btn btn-primary text-textp">
+      <i class="fa-solid fa-plus"></i> Add category
+    </button>
+    <dialog id="addCategoryModal" class="modal">
+      <form
+        class="modal-box bg-secondary"
+        [formGroup]="addCategoryForm"
+        (ngSubmit)="submitAddCategoryForm()"
+      >
+        <div class="my-4 text-center text-2xl font-semibold">
+          <p>Add category</p>
+        </div>
+        <button
+          type="button"
+          (click)="closeAddCategoryModal()"
+          class="btn btn-circle btn-ghost btn-sm absolute right-4 top-4"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div
+          *ngIf="addCategoryErrMessage"
+          class="alert alert-error mt-3 flex h-10"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 shrink-0 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>{{ addCategoryErrMessage }}</span>
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Category Name</span>
+          </label>
+          <input
+            type="text"
+            placeholder="new category name"
+            class="input input-bordered"
+            formControlName="categoryName"
+            required
+          />
+          <div
+            class="text-sm text-red-500"
+            *ngIf="fc['categoryName'].touched && fc['categoryName'].invalid"
+          >
+            <label *ngIf="fc['categoryName'].errors?.['required']"
+              >category name is required
+            </label>
+            <label *ngIf="fc['categoryName'].errors?.['customMinLength']">
+              category name must be atleast 3 characters</label
+            >
+          </div>
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Icon</span>
+          </label>
+          <input
+            type="text"
+            placeholder="font awesome icon class name"
+            class="input input-bordered"
+            formControlName="categoryIcon"
+          />
+          <div
+            class="text-sm text-red-500"
+            *ngIf="fc['categoryIcon'].touched && fc['categoryIcon'].invalid"
+          >
+            <label *ngIf="fc['categoryIcon'].errors?.['required']"
+              >icon is required
+            </label>
+            <label *ngIf="fc['categoryIcon'].errors?.['customMinLength']">
+              icon class name must be atleast 4 characters</label
+            >
+          </div>
+        </div>
+        <div class="form-control mt-6">
+          <button
+            [disabled]="addCategoryForm.invalid"
+            type="submit"
+            class="btn btn-primary text-textp"
+          >
+            Submit
+            <span
+              *ngIf="addCategoryLoading"
+              class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+            ></span>
+          </button>
+        </div>
+      </form>
+    </dialog>
+  </div>
+  <div class="mx-1 my-4">
+    <label
+      for="default-search"
+      class="sr-only mb-2 text-sm font-medium text-textg"
+      >Search</label
+    >
+    <div class="relative">
+      <div
+        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+      >
+        <svg
+          class="h-4 w-4 text-gray-500"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 20 20"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+          />
+        </svg>
+      </div>
+      <input
+        type="text"
+        id="default-search"
+        class="block w-full rounded-lg border border-textg bg-secondary p-4 pl-10 text-sm text-textp focus:border-blue-500 focus:ring-blue-500"
+        placeholder="Search username, email..."
+        [(ngModel)]="searchText"
+      />
+      <button
+        type="submit"
+        class="absolute bottom-2.5 right-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
+      >
+        Search
+      </button>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto rounded-xl">
+    <div
+      *ngIf="categories.length <= 0"
+      class="flex h-20 items-center justify-center bg-secondary text-2xl font-semibold"
+    >
+      No categories to display
+    </div>
+
+    <table
+      *ngIf="categories.length > 0"
+      class="table border border-textg bg-secondary text-textp"
+    >
+      <!-- head -->
+      <thead>
+        <tr>
+          <th class="font-bold text-textp">N.O</th>
+          <th class="font-bold text-textp">Icon</th>
+          <th class="font-bold text-textp">Name</th>
+          <th class="font-bold text-textp">Created at</th>
+          <th class="font-bold text-textp">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody *ngFor="let category of categories; let i = index">
+        <!-- row 1 -->
+        <tr
+          *ngIf="
+            searchText.trim() == '' ||
+            category.name?.toLocaleLowerCase()?.includes(searchText.trim())
+          "
+        >
+          <td>{{ i + 1 }}</td>
+          <td class="text-2xl text-textg">
+            <i [ngClass]="category.icon"></i>
+          </td>
+          <td class="font-bold capitalize">{{ category.name }}</td>
+          <td class="font-medium">{{ category.createdAt | date }}</td>
+          <td>
+            <div class="flex items-center space-x-3">
+              <button
+                class="btn btn-sm bg-blue-600 text-gray-100 hover:bg-gray-200 hover:text-blue-600"
+              >
+                <i class="fa-solid fa-pen"></i> Edit
+              </button>
+              <ng-container *ngIf="category.unList">
+                <button
+                  class="btn btn-sm bg-primary text-gray-100 hover:bg-gray-200 hover:text-primary"
+                >
+                  <i class="fa-solid fa-unlock"></i> list
+                </button>
+              </ng-container>
+              <ng-container *ngIf="!category.unList">
+                <button
+                  class="btn btn-sm bg-red-600 text-gray-100 hover:bg-gray-200 hover:text-red-600"
+                >
+                  <i class="fa-solid fa-ban"></i> Unlist
+                </button>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      <!-- foot -->
+      <tfoot>
+        <tr>
+          <th>N.O</th>
+          <th>Icon</th>
+          <th>Name</th>
+          <th>Actions</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div *ngIf="loading">
+    <div
+      class="fixed inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-60 text-primary"
+    >
+      <span class="loading loading-infinity w-24"></span>
+    </div>
+  </div>
+</div>

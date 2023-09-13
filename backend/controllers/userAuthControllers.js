@@ -223,12 +223,27 @@ export async function postLogin(req, res) {
                             sameSite: 'none',
                             maxAge: 3 * 24 * 1000 * 60 * 60, // 3 day
                         })
-                        const resUser = await userModel.findOne(
-                            {
+                        const resUser = await userModel
+                            .findOne({
                                 email: user.email,
-                            },
-                            { password: 0, __v: 0 }
-                        )
+                            })
+                            .select('-password')
+                            .populate({
+                                path: 'notifications',
+                                populate: [
+                                    {
+                                        path: 'sender',
+                                        model: 'User',
+                                        select: 'name profilePic username _id',
+                                    },
+                                    {
+                                        path: 'trip',
+                                        model: 'Trip',
+                                        select: 'name _id',
+                                    },
+                                ],
+                            })
+                            .exec()
                         return res.json({ user: resUser })
                     } else {
                         return res
@@ -259,10 +274,25 @@ export async function postGoogleLogin(req, res) {
         const payload = ticket.getPayload()
         if (payload.email_verified) {
             const { name, email, picture } = payload
-            const user = await userModel.findOne(
-                { email },
-                { password: 0, __v: 0 }
-            )
+            const user = await userModel
+                .findOne({ email })
+                .select('-password')
+                .populate({
+                    path: 'notifications',
+                    populate: [
+                        {
+                            path: 'sender',
+                            model: 'User',
+                            select: 'name profilePic username _id',
+                        },
+                        {
+                            path: 'trip',
+                            model: 'Trip',
+                            select: 'name _id',
+                        },
+                    ],
+                })
+                .exec()
             if (!user) {
                 let username = ''
                 let nameTaken = false
