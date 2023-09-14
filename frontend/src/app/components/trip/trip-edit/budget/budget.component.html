@@ -1,2 +1,40 @@
-<p>budget works!</p>
-<div class="h-screen">hiel</div>
+<div class="flex w-full flex-col items-center justify-center space-y-4 px-6">
+  <div class="flex w-full justify-between p-6 pb-2">
+    <h1 class="text-3xl font-bold text-textp">Budgeting</h1>
+    <button class="btn btn-primary rounded-full normal-case text-textp">
+      <i class="fa-solid fa-plus mr-2"></i> Add expense
+    </button>
+  </div>
+  <div class="card -ml-4 w-5/6 bg-secondary shadow-xl">
+    <div class="card-body space-y-2">
+      <h2 class="card-title text-4xl font-medium text-textp">
+        INR<i class="fa-solid fa-indian-rupee-sign mr-2 text-3xl"></i><span *ngIf="!trip?.budget?.limit">0</span>
+      </h2>
+      <div class="flex w-full flex-col items-end">
+        <span class="font-medium text-textg"
+          >Budget: <i class="fa-solid fa-indian-rupee-sign"></i> 0</span
+        >
+        <progress
+          class="progress progress-error w-full"
+          value="66"
+          max="100"
+        ></progress>
+      </div>
+
+      <div class="card-actions justify-start">
+        <button class="btn btn-success btn-sm rounded-full normal-case">
+          <i class="fa-solid fa-pen"></i> Edit budget
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="collapse collapse-arrow bg-base-100 text-textp">
+    <input checked type="checkbox" />
+    <div class="collapse-title text-xl font-medium">Expenses</div>
+    <div class="collapse-content">
+      <div *ngIf="trip?.budget?.expenses?.length! <= 0" class="text-textg">
+        You haven't added any expenses yet.
+      </div>
+    </div>
+  </div>
+</div>
