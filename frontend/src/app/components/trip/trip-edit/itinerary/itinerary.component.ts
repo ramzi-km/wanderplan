@@ -23,7 +23,6 @@ import { MapboxPlaceFeature } from 'src/app/interfaces/mapbox-interface';
 import { ItineraryPlace, Trip } from 'src/app/interfaces/trip.interface';
 import { MapboxService } from 'src/app/services/mapbox/mapbox.service';
 import { ItineraryManagementService } from 'src/app/services/trip/itinerary-management.service';
-import { noSpace } from 'src/app/validators/noSpace.validators';
 import * as tripEditActions from '../../../../store/editingTrip/trip-edit.actions';
 
 @Component({

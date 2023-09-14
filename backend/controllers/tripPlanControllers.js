@@ -127,8 +127,8 @@ export async function getTripDetails(req, res) {
                 .findById(tripId)
                 .populate('admin', '_id username name profilePic')
                 .populate('tripMates', '_id username name profilePic')
+                .populate('budget.expenses')
                 .exec()
-
             console.log(trip)
             return res
                 .status(200)

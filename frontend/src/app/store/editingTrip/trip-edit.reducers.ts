@@ -153,4 +153,11 @@ export const editTripReducer = createReducer(
       },
     }),
   ),
+  on(tripEditActions.updateBudget, (state, { budget }) => ({
+    ...state,
+    trip: {
+      ...state.trip,
+      budget: budget,
+    },
+  })),
 );

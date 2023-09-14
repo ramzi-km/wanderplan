@@ -114,6 +114,7 @@ export class NavComponent {
             value: false,
             id: '',
           };
+          this.router.navigate(['trip/edit', tripId]);
         },
         error: (errMessage) => {
           console.log(errMessage);

@@ -7,7 +7,7 @@ import verifyTripAdmin from '../middlewares/verifyTripAdmin.js'
 import verifyTripMate from '../middlewares/verifyTripMate.js'
 import verifyUser from '../middlewares/verifyUser.js'
 
-//--------------controllers-----------------//
+//-------------------------controllers------------------------------//
 
 //---------user-auth-controllers---//
 import {
@@ -51,8 +51,6 @@ import {
     updatePlaceToVisitDescription,
 } from '../controllers/tripPlanControllers.js'
 
-//----------------------------------------------//
-
 //------------itinerary-management-controllers-------------//
 import {
     addPlace,
@@ -63,9 +61,18 @@ import {
     updatePlaceTime,
     updateSubheading,
 } from '../controllers/itineraryManagementControllers.js'
-//------------------------------------------//
 
-//------------user-auth------------------//
+//------------budget-management-controllers-------------//
+
+import {
+    addExpense,
+    getAllExpenseCategories,
+    setBudget,
+} from '../controllers/budgetMangagementControllers.js'
+
+//-------------------------------------------------------------------------//
+
+//----------------------user-auth-----------------------//
 
 router.post('/signUp', postSignup)
 router.post('/verifySignup', signupVerify)
@@ -191,5 +198,15 @@ router.delete(
     verifyTripMate,
     deleteItineraryPlace
 )
+
+//------------------budget-management-------------------//
+
+router.get(
+    '/trip/budget/expenseCategories',
+    verifyUser,
+    getAllExpenseCategories
+)
+router.post('/trip/:id/budget/expense', verifyUser, verifyTripMate, addExpense)
+router.post('/trip/:id/budget/limit', verifyUser, verifyTripMate, setBudget)
 
 export default router

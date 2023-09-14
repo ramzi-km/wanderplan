@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import {
+  Budget,
   ItineraryPlace,
   PlaceToVisit,
   Trip,
@@ -66,4 +67,8 @@ export const updateItineraryPlace = createAction(
 export const deleteItineraryPlace = createAction(
   '[Itinerary Component] deletePlace',
   props<{ dayIndex: number; placeIndex: number }>(),
+);
+export const updateBudget = createAction(
+  '[Budget Component] updateBudget',
+  props<{ budget: Budget }>(),
 );

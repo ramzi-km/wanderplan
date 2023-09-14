@@ -84,7 +84,7 @@ const tripSchema = new Schema({
         },
     ],
     budget: {
-        limit: { type: Number, default: 0 },
+        limit: { type: Number },
         expenses: [{ type: Schema.Types.ObjectId, ref: 'Expense' }],
     },
 })

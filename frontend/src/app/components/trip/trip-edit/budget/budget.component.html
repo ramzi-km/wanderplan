@@ -1,28 +1,39 @@
 <div class="flex w-full flex-col items-center justify-center space-y-4 px-6">
   <div class="flex w-full justify-between p-6 pb-2">
     <h1 class="text-3xl font-bold text-textp">Budgeting</h1>
-    <button class="btn btn-primary rounded-full normal-case text-textp">
+    <button
+      (click)="showAddExpenseModal()"
+      class="btn btn-primary rounded-full normal-case text-textp"
+    >
       <i class="fa-solid fa-plus mr-2"></i> Add expense
     </button>
   </div>
   <div class="card -ml-4 w-5/6 bg-secondary shadow-xl">
     <div class="card-body space-y-2">
       <h2 class="card-title text-4xl font-medium text-textp">
-        INR<i class="fa-solid fa-indian-rupee-sign mr-2 text-3xl"></i><span *ngIf="!trip?.budget?.limit">0</span>
+        INR<i class="fa-solid fa-indian-rupee-sign mr-2 text-3xl"></i
+        ><span>{{ totalAmount }}</span>
       </h2>
-      <div class="flex w-full flex-col items-end">
+      <div
+        *ngIf="trip?.budget?.limit !== undefined"
+        class="flex w-full flex-col items-end"
+      >
         <span class="font-medium text-textg"
-          >Budget: <i class="fa-solid fa-indian-rupee-sign"></i> 0</span
-        >
+          >Budget: <i class="fa-solid fa-indian-rupee-sign"></i
+          >{{ trip?.budget?.limit }}
+        </span>
         <progress
           class="progress progress-error w-full"
-          value="66"
-          max="100"
+          [value]="totalAmount"
+          [max]="trip?.budget?.limit"
         ></progress>
       </div>
 
       <div class="card-actions justify-start">
-        <button class="btn btn-success btn-sm rounded-full normal-case">
+        <button
+          (click)="showSetBudgetModal()"
+          class="btn btn-success btn-sm rounded-full normal-case"
+        >
           <i class="fa-solid fa-pen"></i> Edit budget
         </button>
       </div>
@@ -35,6 +46,208 @@
       <div *ngIf="trip?.budget?.expenses?.length! <= 0" class="text-textg">
         You haven't added any expenses yet.
       </div>
+      <ul
+        *ngIf="trip?.budget?.expenses?.length! > 0"
+        class="my-2 w-full rounded-md border border-gray-300 bg-secondary shadow-lg shadow-base-100"
+      >
+        <li
+          *ngFor="
+            let expense of trip?.budget?.expenses;
+            let expenseIndex = index
+          "
+          class="cursor-pointer border-b px-4 py-1 text-textp"
+        >
+          <div class="mr-3 flex items-center">
+            <span class="text-textg">
+              <i [ngClass]="expense.category?.icon"></i>
+            </span>
+            <div class="ml-2">
+              <p>{{ expense.description }}</p>
+              <span class="text-sm text-texts">{{ expense.date | date }}</span>
+            </div>
+            <div class="ml-auto flex items-center space-x-3">
+              <span class="text-lg font-semibold"
+                ><i class="fa-solid fa-indian-rupee-sign"></i>
+                {{ expense.amount }}</span
+              >
+              <label
+                tabindex="0"
+                class="avatar tooltip"
+                [attr.data-tip]="'paid by ' + expense.paidBy?.name"
+              >
+                <div class="h-10 w-10 rounded-full">
+                  <img src="{{ expense.paidBy?.profilePic }}" />
+                </div>
+              </label>
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
+<dialog id="addExpenseModal" class="modal">
+  <form
+    class="modal-box bg-secondary text-textp"
+    [formGroup]="addExpenseForm"
+    (ngSubmit)="submitAddExpenseForm()"
+  >
+    <div class="my-4 text-center text-2xl font-semibold">
+      <p>Add expense</p>
+    </div>
+    <button
+      type="button"
+      (click)="closeAddExpenseModal()"
+      class="btn btn-circle btn-ghost btn-sm absolute right-4 top-4"
+    >
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div *ngIf="addExpenseErrMessage" class="alert alert-error mt-3 flex h-10">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 shrink-0 stroke-current"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span>{{ addExpenseErrMessage }}</span>
+    </div>
+
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text">Amount</span>
+      </label>
+      <input
+        type="number"
+        placeholder="₹ INR"
+        class="input input-bordered"
+        formControlName="amount"
+        required
+      />
+    </div>
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text">Description</span>
+      </label>
+      <input
+        type="text"
+        placeholder="description"
+        class="input input-bordered"
+        formControlName="description"
+      />
+    </div>
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text">Category</span>
+      </label>
+      <select class="select select-bordered w-full" formControlName="category">
+        <option disabled [ngValue]="null">Select a category</option>
+        <option [ngValue]="category" *ngFor="let category of expenseCategories">
+          {{ category.name }}
+        </option>
+      </select>
+    </div>
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text">Date</span>
+      </label>
+      <select class="select select-bordered w-full" formControlName="date">
+        <option disabled [ngValue]="null">Select a date</option>
+        <option [ngValue]="date" *ngFor="let date of dates">
+          {{ date | date }}
+        </option>
+      </select>
+    </div>
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text">Paid by:</span>
+      </label>
+      <select class="select select-bordered w-full" formControlName="paidBy">
+        <option disabled [ngValue]="null">Select a tripmate</option>
+        <option [ngValue]="tripmate" *ngFor="let tripmate of trip?.tripMates">
+          {{ tripmate.username }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-control mt-6">
+      <button
+        [disabled]="addExpenseForm.invalid"
+        type="submit"
+        class="btn btn-primary text-textp"
+      >
+        Submit
+        <span
+          *ngIf="addExpenseLoading"
+          class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+        ></span>
+      </button>
+    </div>
+  </form>
+</dialog>
+<dialog id="setBudgetModal" class="modal">
+  <form
+    class="modal-box bg-secondary"
+    [formGroup]="setBudgetForm"
+    (ngSubmit)="submitSetBudgetForm()"
+  >
+    <div class="my-4 text-center text-2xl font-semibold">
+      <p>Set budget</p>
+    </div>
+    <button
+      type="button"
+      (click)="closeSetBudgetModal()"
+      class="btn btn-circle btn-ghost btn-sm absolute right-4 top-4"
+    >
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div *ngIf="setBudgetErrorMessage" class="alert alert-error mt-3 flex h-10">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 shrink-0 stroke-current"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span>{{ setBudgetErrorMessage }}</span>
+    </div>
+
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text">Amount</span>
+      </label>
+      <input
+        type="number"
+        placeholder="₹ INR"
+        class="input input-bordered"
+        formControlName="amount"
+        required
+      />
+    </div>
+    <div class="form-control mt-6">
+      <button
+        [disabled]="setBudgetForm.invalid"
+        type="submit"
+        class="btn btn-primary text-textp"
+      >
+        Submit
+        <span
+          *ngIf="setBudgetLoading"
+          class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+        ></span>
+      </button>
+    </div>
+  </form>
+</dialog>

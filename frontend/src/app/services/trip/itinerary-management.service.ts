@@ -1,12 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environment';
-import {
-  Itinerary,
-  ItineraryPlace,
-  Place,
-  Trip,
-} from 'src/app/interfaces/trip.interface';
+import { ItineraryPlace, Place } from 'src/app/interfaces/trip.interface';
 
 @Injectable({
   providedIn: 'root',

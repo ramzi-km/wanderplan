@@ -63,5 +63,20 @@ export interface ItineraryPlace {
 
 export interface Budget {
   limit: number;
-  expenses: string[];
+  expenses: BudgetExpense[];
+}
+export interface BudgetExpense {
+  _id?: string;
+  amount?: number;
+  category?: Category;
+  description?: string;
+  date?: Date;
+  paidBy?: User;
+}
+
+export interface Category {
+  _id?: string;
+  name?: string;
+  icon?: string;
+  unList?: boolean;
 }

@@ -3,10 +3,10 @@ import { Schema, model } from 'mongoose'
 
 const expenseSchema = new Schema({
     amount: Number,
-    category: { type: Schema.Types.ObjectId, ref: 'Category' }, 
+    category: Object,
     description: String,
     date: Date,
-    paidBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    paidBy: Object,
 })
 
 const Expense = model('Expense', expenseSchema)
