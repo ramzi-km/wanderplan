@@ -21,11 +21,23 @@ export const editTripReducer = createReducer(
     loading: false,
     trip,
   })),
+  on(tripEditActions.deleteTripEdit, (state) => ({
+    trip: {},
+    loading: false,
+    error: null,
+  })),
   on(tripEditActions.updateTripName, (state, { name }) => ({
     ...state,
     trip: {
       ...state.trip,
       name: name,
+    },
+  })),
+  on(tripEditActions.updateVisibility, (state, { visibility }) => ({
+    ...state,
+    trip: {
+      ...state.trip,
+      visibility,
     },
   })),
   on(tripEditActions.updateCoverPhoto, (state, { coverPhoto }) => ({

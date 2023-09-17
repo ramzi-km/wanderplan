@@ -34,6 +34,12 @@ export class TripService {
       body,
     );
   }
+  changeVisibility(tripId: string, body: { visibility: string }) {
+    return this.http.patch<{ visibility: string; message: string }>(
+      `${this.baseUrl}/trip/${tripId}/visibility`,
+      body,
+    );
+  }
   changeCoverphoto(id: string, body: { coverPhoto: string }) {
     return this.http.patch<{ coverPhoto: string; message: string }>(
       `${this.baseUrl}/trip/edit/coverPhoto/${id}`,
@@ -81,6 +87,11 @@ export class TripService {
     return this.http.patch<{ place: PlaceToVisit; message: string }>(
       `${this.baseUrl}/trip/edit/${tripId}/overview/placesToVisit/changePhoto/${placeIndex}`,
       body,
+    );
+  }
+  deleteTrip(tripId: string) {
+    return this.http.delete<{ message: string }>(
+      `${this.baseUrl}/trip/${tripId}`,
     );
   }
 }

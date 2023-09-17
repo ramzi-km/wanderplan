@@ -10,10 +10,15 @@ export const setTripEdit = createAction(
   '[TripEdit Component] setTripEdit',
   props<{ trip: Readonly<Trip> }>(),
 );
+export const deleteTripEdit = createAction('[TripEdit Component] deleteTrip');
 
 export const updateTripName = createAction(
   '[TripEdit Component] UpdateName',
   props<{ name: string }>(),
+);
+export const updateVisibility = createAction(
+  '[TripEdit Component] UpdateVisibility',
+  props<{ visibility: string }>(),
 );
 
 export const updateCoverPhoto = createAction(

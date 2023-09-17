@@ -5,6 +5,9 @@ export default async function verifyTripAdmin(req, res, next) {
         const user = req.user
         const tripId = req.params.id
         const trip = await tripModel.findById(tripId)
+        if (!trip) {
+            return res.status(422).json({ message: 'Trip not found' })
+        }
         if (!trip.admin.equals(user._id)) {
             return res.status(422).json({ message: 'Access denied' })
         }

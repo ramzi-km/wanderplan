@@ -133,7 +133,7 @@ export async function getTripDetails(req, res) {
             return res
                 .status(200)
                 .json({ message: 'Success', trip: trip, editable: true })
-        } else if (trip.visibility == 'public') {
+        } else if (trip?.visibility == 'public') {
             trip = await tripModel.findById(tripId).select('adminId')
             return res
                 .status(200)
@@ -193,6 +193,26 @@ export async function changeTripName(req, res) {
             { new: true }
         )
         return res.status(200).json({ message: 'success', tripName: trip.name })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+export async function changeTripVisibility(req, res) {
+    try {
+        const tripId = req.params.id
+        const visibility = req.body.visibility
+        if (!visibility) {
+            res.status(422).json({ message: 'provide necessary information' })
+        }
+        const trip = await tripModel.findByIdAndUpdate(
+            tripId,
+            { visibility: visibility },
+            { new: true }
+        )
+        return res
+            .status(200)
+            .json({ message: 'success', visibility: trip.visibility })
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: 'Internal server error' })
@@ -406,5 +426,15 @@ export async function updatePlaceToVisitDescription(req, res) {
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: 'internal server error' })
+    }
+}
+export async function deleteTrip(req, res) {
+    try {
+        const tripId = req.trip.id
+        await tripModel.findByIdAndRemove(tripId)
+        res.status(200).json({ message: 'Trip deleted successfully' })
+    } catch (error) {
+        console.error('Error deleting trip:', error)
+        res.status(500).json({ message: 'Internal server error' })
     }
 }

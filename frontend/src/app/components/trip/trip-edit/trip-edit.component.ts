@@ -6,8 +6,14 @@ import {
   Renderer2,
   ViewChild,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { environment } from 'environment';
 import mapboxgl from 'mapbox-gl';
@@ -75,6 +81,14 @@ export class TripEditComponent implements OnDestroy, OnInit {
     value: false,
     index: 0,
   };
+  removeTripmateLoading = {
+    value: false,
+    index: 0,
+  };
+  deleteTripLoading = false;
+  editTripPrivacyForm: FormGroup;
+  editPrivacyLoading = false;
+  editTripPrivacyErrorMessage = '';
   private ngUnsubscribe = new Subject<void>();
   trip$ = this.store.select(tripEditSelector.selectEditingTrip);
   user$ = this.store.select(userSelector.selectUser);
@@ -84,12 +98,17 @@ export class TripEditComponent implements OnDestroy, OnInit {
     private renderer: Renderer2,
     private el: ElementRef,
     private userService: UserService,
+    private router: Router,
+    fb: FormBuilder,
   ) {
     mapboxgl.accessToken = environment.MAPBOX_TOKEN;
     this.trip$.pipe(take(1)).subscribe({
       next: (trip) => {
         this.trip = trip;
       },
+    });
+    this.editTripPrivacyForm = fb.group({
+      visibility: [`${this.trip.visibility}`, [Validators.required]],
     });
   }
 
@@ -322,6 +341,78 @@ export class TripEditComponent implements OnDestroy, OnInit {
           this.inviteTripmateLoading = { value: false, index };
         },
       });
+  }
+  showDeleteTripModal() {
+    const deleteTripModal = document.getElementById(
+      'deleteTripModal',
+    ) as HTMLDialogElement;
+    deleteTripModal.showModal();
+  }
+  closeDeleteTripModal() {
+    const deleteTripModal = document.getElementById(
+      'deleteTripModal',
+    ) as HTMLDialogElement;
+    deleteTripModal.close();
+  }
+  deleteTrip() {
+    this.deleteTripLoading = true;
+    this.tripService
+      .deleteTrip(this.tripId)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: () => {
+          this.store.dispatch(tripEditActions.deleteTripEdit());
+          this.deleteTripLoading = false;
+          this.router.navigate(['/home']);
+        },
+        error: (errMessage) => {
+          this.deleteTripLoading = false;
+          console.log(errMessage);
+        },
+      });
+  }
+  showEditTripPrivacyModal() {
+    const editTripPrivacyModal = document.getElementById(
+      'editTripPrivacyModal',
+    ) as HTMLDialogElement;
+    editTripPrivacyModal.showModal();
+  }
+  closeEditTripPrivacyModal() {
+    const editTripPrivacyModal = document.getElementById(
+      'editTripPrivacyModal',
+    ) as HTMLDialogElement;
+    editTripPrivacyModal.close();
+  }
+  changeTripPrivacy() {
+    const newValue = this.editTripPrivacyForm.value.visibility;
+    const oldValue = this.trip.visibility;
+    if (newValue !== oldValue) {
+      this.editPrivacyLoading = true;
+      this.tripService
+        .changeVisibility(this.tripId, this.editTripPrivacyForm.value)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe({
+          next: (res) => {
+            this.store.dispatch(
+              tripEditActions.updateVisibility({ visibility: res.visibility }),
+            );
+            this.editPrivacyLoading = false;
+            this.closeEditTripPrivacyModal();
+          },
+          error: (errMessage) => {
+            this.editTripPrivacyErrorMessage = errMessage;
+            this.editPrivacyLoading = true;
+          },
+        });
+    } else {
+      this.closeEditTripPrivacyModal();
+    }
+  }
+  showViewTripmatesModal() {
+    const viewTripmatesModal = document.getElementById(
+      'viewTripmatesModal',
+    ) as HTMLDialogElement;
+    viewTripmatesModal.showModal();
   }
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();

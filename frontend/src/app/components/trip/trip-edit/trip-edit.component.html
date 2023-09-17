@@ -137,37 +137,286 @@
         </div>
 
         <div class="flex flex-col items-center">
-          <div class="card -mt-24 w-4/5 bg-secondary shadow-xl">
-            <div class="card-body">
-              <div class="flex">
-                <span
-                  *ngIf="headingLoading"
-                  class="loading loading-spinner loading-sm text-primary"
-                ></span>
-                <input
-                  type="text"
-                  [(ngModel)]="nameInput"
-                  class="input card-title input-ghost w-full max-w-md text-ellipsis text-3xl text-textp"
-                  (blur)="onHeadingBlur()"
-                />
-              </div>
-
-              <div class="card-actions mt-8 justify-between">
-                <span class="text-texts">
-                  <i class="fa-regular fa-calendar mr-2"></i>
-                  {{ [trip.startDate!, trip.endDate!] | dateRange }}
-                </span>
+          <ng-container *ngIf="user$ | async as user">
+            <div class="card -mt-24 w-4/5 bg-secondary shadow-xl">
+              <div class="card-body">
                 <div class="flex">
-                  <label
-                    tabindex="0"
-                    class="avatar tooltip mx-2"
-                    [attr.data-tip]="trip.admin?.name"
-                  >
-                    <div class="w-8 rounded-full">
-                      <img src="{{ trip.admin?.profilePic }}" />
+                  <span
+                    *ngIf="headingLoading"
+                    class="loading loading-spinner loading-sm text-primary"
+                  ></span>
+                  <input
+                    type="text"
+                    [(ngModel)]="nameInput"
+                    class="input card-title input-ghost w-full max-w-md text-ellipsis text-3xl text-textp"
+                    (blur)="onHeadingBlur()"
+                  />
+                  <div class="dropdown dropdown-left ml-auto">
+                    <label
+                      tabindex="0"
+                      class="btn btn-circle btn-ghost btn-sm m-1 text-textp"
+                      ><i class="fa-solid fa-ellipsis"></i
+                    ></label>
+                    <ul
+                      tabindex="0"
+                      class="menu dropdown-content rounded-box z-[1] w-40 bg-base-100 p-2 text-textp shadow"
+                    >
+                      <li>
+                        <a (click)="showViewTripmatesModal()"
+                          ><i class="fa-solid fa-users"></i> Tripmates</a
+                        >
+                      </li>
+                      <li>
+                        <a (click)="showEditTripPrivacyModal()"
+                          ><i class="fa-regular fa-eye"></i> Visibility</a
+                        >
+                      </li>
+                      <li *ngIf="trip.admin?._id == user._id">
+                        <a (click)="showDeleteTripModal()"
+                          ><i class="fa-regular fa-trash-can"></i> Delete this
+                          trip</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!---------- view tripmates modal ------------->
+
+                <dialog id="viewTripmatesModal" class="modal">
+                  <div class="modal-box bg-secondary text-textp">
+                    <form method="dialog">
+                      <button
+                        class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2"
+                      >
+                        ✕
+                      </button>
+                    </form>
+                    <div class="p-3">
+                      <h3 class="text-center text-2xl font-bold">Tripmates</h3>
+                      <ul
+                        class="my-2 max-h-80 w-full overflow-auto rounded-md border border-gray-300 bg-secondary shadow-lg shadow-base-100"
+                      >
+                        <li
+                          *ngFor="
+                            let tripmate of trip.tripMates;
+                            let tripmateIndex = index
+                          "
+                          class="cursor-pointer border-b px-4 py-1 text-textp"
+                        >
+                          <div class="mr-3 flex items-center">
+                            <label class="avatar">
+                              <div class="h-10 w-10 rounded-full">
+                                <img src="{{ tripmate.profilePic }}" />
+                              </div>
+                            </label>
+                            <div class="ml-2">
+                              <p>
+                                {{ tripmate.username
+                                }}<span *ngIf="tripmate._id == user._id"
+                                  >(you)</span
+                                >
+                              </p>
+                              <span class="text-sm text-texts">{{
+                                tripmate.name
+                              }}</span>
+                            </div>
+                            <div class="ml-auto">
+                              <label
+                                *ngIf="trip.admin?._id == user._id"
+                                class="link-hover text-red-500"
+                                >Remove</label
+                              >
+                              <span
+                                *ngIf="
+                                  removeTripmateLoading.value &&
+                                  removeTripmateLoading.index == tripmateIndex
+                                "
+                                class="loading loading-spinner loading-xs ml-2 mt-1 text-primary"
+                              ></span>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                      <button
+                        *ngIf="trip.admin?._id !== user._id"
+                        class="btn btn-error w-full rounded-full"
+                      >
+                        Leave trip
+                      </button>
                     </div>
-                  </label>
-                  <ng-container *ngIf="user$ | async as user">
+                  </div>
+                  <form method="dialog" class="modal-backdrop">
+                    <button>close</button>
+                  </form>
+                </dialog>
+
+                <!---------- tripmates modal end------------->
+
+                <!---------- delete trip modal ------------->
+                <dialog id="deleteTripModal" class="modal">
+                  <div
+                    class="modal-box relative h-full w-full max-w-md bg-secondary p-4 md:h-auto"
+                  >
+                    <!-- Modal content -->
+                    <div class="relative p-4 text-center sm:p-5">
+                      <button
+                        (click)="closeDeleteTripModal()"
+                        type="button"
+                        class="absolute right-2.5 top-2.5 ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900"
+                      >
+                        <i class="fa-solid fa-xmark"></i>
+                      </button>
+                      <svg
+                        class="mx-auto mb-3.5 h-11 w-11 text-gray-400 dark:text-gray-500"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                      <p class="mb-4 text-textp">
+                        Are you sure you want to permanently delete "{{
+                          trip.name
+                        }}" ? This action is not reversible!
+                      </p>
+                      <div class="flex items-center justify-center space-x-4">
+                        <button
+                          (click)="closeDeleteTripModal()"
+                          type="button"
+                          class="btn btn-success btn-outline btn-sm"
+                        >
+                          No, cancel
+                        </button>
+                        <button
+                          (click)="deleteTrip()"
+                          type="submit"
+                          class="btn btn-error btn-sm bg-red-600 text-white"
+                        >
+                          Yes, I'm sure
+                          <span
+                            *ngIf="deleteTripLoading"
+                            class="loading loading-spinner loading-sm ml-2 text-white"
+                          ></span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </dialog>
+                <!---------- delete trip modal end ------------->
+
+                <!---------- edit trip visibility modal------------->
+
+                <dialog id="editTripPrivacyModal" class="modal">
+                  <form
+                    class="modal-box bg-secondary text-textp"
+                    [formGroup]="editTripPrivacyForm"
+                    (ngSubmit)="changeTripPrivacy()"
+                  >
+                    <div class="my-4 text-center text-2xl font-semibold">
+                      <p>Privacy</p>
+                    </div>
+                    <button
+                      type="button"
+                      (click)="closeEditTripPrivacyModal()"
+                      class="btn btn-circle btn-ghost btn-sm absolute right-4 top-4"
+                    >
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <div
+                      *ngIf="editTripPrivacyErrorMessage"
+                      class="alert alert-error mt-3 flex h-10"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-6 w-6 shrink-0 stroke-current"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      <span>{{ editTripPrivacyErrorMessage }}</span>
+                    </div>
+
+                    <div class="form-control">
+                      <label class="label cursor-pointer">
+                        <span class="label-text text-lg font-semibold"
+                          >Private<br /><span
+                            class="text-sm font-medium text-textg"
+                            >Only you and your tripmates can view</span
+                          ></span
+                        >
+                        <input
+                          type="radio"
+                          formControlName="visibility"
+                          class="radio checked:bg-red-500"
+                          value="private"
+                        />
+                      </label>
+                    </div>
+                    <div class="form-control">
+                      <label class="label cursor-pointer">
+                        <span class="label-text text-lg font-semibold"
+                          >Public<br /><span
+                            class="text-sm font-medium text-textg"
+                            >Anyone can view</span
+                          ></span
+                        >
+                        <input
+                          type="radio"
+                          formControlName="visibility"
+                          class="radio checked:bg-blue-500"
+                          value="public"
+                        />
+                      </label>
+                    </div>
+                    <div class="form-control mt-6">
+                      <button
+                        [disabled]="editTripPrivacyForm.invalid"
+                        type="submit"
+                        class="btn btn-primary text-textp"
+                      >
+                        Save
+                        <span
+                          *ngIf="editPrivacyLoading"
+                          class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+                        ></span>
+                      </button>
+                    </div>
+                  </form>
+                </dialog>
+
+                <!---------- edit trip visibility modal end ------------->
+
+                <div class="card-actions mt-8 justify-between">
+                  <span class="text-texts">
+                    <i class="fa-regular fa-calendar mr-2"></i>
+                    {{ [trip.startDate!, trip.endDate!] | dateRange }}
+                  </span>
+                  <div class="flex">
+                    <label
+                      tabindex="0"
+                      class="avatar tooltip mx-2"
+                      [attr.data-tip]="
+                        trip.admin?._id == user._id
+                          ? 'Admin (you)'
+                          : 'Admin (' + trip.admin?.name + ')'
+                      "
+                    >
+                      <div class="w-8 rounded-full">
+                        <img src="{{ trip.admin?.profilePic }}" />
+                      </div>
+                    </label>
                     <label
                       *ngIf="trip.admin?._id == user._id"
                       tabindex="0"
@@ -181,11 +430,11 @@
                         <i class="fa-solid fa-user-plus"></i>
                       </button>
                     </label>
-                  </ng-container>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </ng-container>
           <dialog id="addTripmateModal" class="modal">
             <div class="modal-box bg-secondary text-textp">
               <form method="dialog">

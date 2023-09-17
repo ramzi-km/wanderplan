@@ -43,7 +43,9 @@ import {
     changeCoverPhoto,
     changePlaceToVisitPhoto,
     changeTripName,
+    changeTripVisibility,
     deletePlaceToVisit,
+    deleteTrip,
     getTripDetails,
     inviteTripMate,
     updateDescription,
@@ -114,6 +116,12 @@ router.post(
 )
 router.patch('/trip/edit/name/:id', verifyUser, verifyTripMate, changeTripName)
 router.patch(
+    '/trip/:id/visibility',
+    verifyUser,
+    verifyTripMate,
+    changeTripVisibility
+)
+router.patch(
     '/trip/edit/coverPhoto/:id',
     verifyUser,
     verifyTripMate,
@@ -155,6 +163,8 @@ router.delete(
     verifyTripMate,
     deletePlaceToVisit
 )
+router.delete('/trip/:id', verifyUser, verifyTripAdmin, deleteTrip)
+
 //------------------itinerary-management-------------------//
 router.patch(
     '/trip/edit/:id/itinerary/:itineraryIndex/subheading',
