@@ -66,6 +66,7 @@ import {
 
 import {
     addExpense,
+    deleteExpense,
     getAllExpenseCategories,
     setBudget,
 } from '../controllers/budgetMangagementControllers.js'
@@ -207,6 +208,12 @@ router.get(
     getAllExpenseCategories
 )
 router.post('/trip/:id/budget/expense', verifyUser, verifyTripMate, addExpense)
+router.delete(
+    '/trip/:id/budget/expense/:expenseId',
+    verifyUser,
+    verifyTripMate,
+    deleteExpense
+)
 router.post('/trip/:id/budget/limit', verifyUser, verifyTripMate, setBudget)
 
 export default router

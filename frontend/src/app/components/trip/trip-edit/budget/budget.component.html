@@ -39,7 +39,7 @@
       </div>
     </div>
   </div>
-  <div class="collapse collapse-arrow bg-base-100 text-textp">
+  <div class="collapse-arrow collapse bg-base-100 text-textp">
     <input checked type="checkbox" />
     <div class="collapse-title text-xl font-medium">Expenses</div>
     <div class="collapse-content">
@@ -48,38 +48,51 @@
       </div>
       <ul
         *ngIf="trip?.budget?.expenses?.length! > 0"
-        class="my-2 w-full rounded-md border border-gray-300 bg-secondary shadow-lg shadow-base-100"
+        class="my-2 w-full space-y-2"
       >
         <li
           *ngFor="
             let expense of trip?.budget?.expenses;
             let expenseIndex = index
           "
-          class="cursor-pointer border-b px-4 py-1 text-textp"
+          class=""
         >
-          <div class="mr-3 flex items-center">
-            <span class="text-textg">
-              <i [ngClass]="expense.category?.icon"></i>
-            </span>
-            <div class="ml-2">
-              <p>{{ expense.description }}</p>
-              <span class="text-sm text-texts">{{ expense.date | date }}</span>
+          <div class="flex w-full flex-row items-center space-x-1">
+            <div
+              class="mr-3 flex flex-grow items-center rounded-md bg-secondary px-6 py-2 text-textp"
+            >
+              <span class="text-2xl text-textg">
+                <i [ngClass]="expense.category?.icon"></i>
+              </span>
+              <div class="ml-4">
+                <p>{{ expense.description }}</p>
+                <span class="text-sm text-texts"
+                  >{{ expense.date | date }} .
+                  {{ expense.category?.name }}</span
+                >
+              </div>
+              <div class="ml-auto flex items-center space-x-3">
+                <span class="text-lg font-semibold"
+                  ><i class="fa-solid fa-indian-rupee-sign"></i>
+                  {{ expense.amount }}</span
+                >
+                <label
+                  tabindex="0"
+                  class="avatar tooltip"
+                  [attr.data-tip]="'paid by ' + expense.paidBy?.name"
+                >
+                  <div class="h-10 w-10 rounded-full">
+                    <img src="{{ expense.paidBy?.profilePic }}" />
+                  </div>
+                </label>
+              </div>
             </div>
-            <div class="ml-auto flex items-center space-x-3">
-              <span class="text-lg font-semibold"
-                ><i class="fa-solid fa-indian-rupee-sign"></i>
-                {{ expense.amount }}</span
-              >
-              <label
-                tabindex="0"
-                class="avatar tooltip"
-                [attr.data-tip]="'paid by ' + expense.paidBy?.name"
-              >
-                <div class="h-10 w-10 rounded-full">
-                  <img src="{{ expense.paidBy?.profilePic }}" />
-                </div>
-              </label>
-            </div>
+            <button
+              (click)="deleteExpense(expense._id!)"
+              class="btn btn-circle btn-ghost btn-sm"
+            >
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
           </div>
         </li>
       </ul>
@@ -193,7 +206,7 @@
 </dialog>
 <dialog id="setBudgetModal" class="modal">
   <form
-    class="modal-box bg-secondary"
+    class="modal-box bg-secondary text-textp"
     [formGroup]="setBudgetForm"
     (ngSubmit)="submitSetBudgetForm()"
   >

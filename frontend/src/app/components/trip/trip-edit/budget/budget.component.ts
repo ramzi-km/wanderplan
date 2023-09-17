@@ -133,6 +133,21 @@ export class BudgetComponent implements OnInit, OnDestroy {
         },
       });
   }
+  deleteExpense(expenseId: string) {
+    this.budgetManagementService
+      .deleteExpense(this.trip?._id!, expenseId)
+      .pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe({
+        next: (res) => {
+          this.store.dispatch(
+            tripEditActions.updateBudget({ budget: res.budget }),
+          );
+        },
+        error: (errMessage) => {
+          console.log(errMessage);
+        },
+      });
+  }
   showSetBudgetModal() {
     this.setBudgetForm.reset();
     this.setBudgetErrorMessage = '';
