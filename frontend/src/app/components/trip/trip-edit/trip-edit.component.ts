@@ -85,6 +85,7 @@ export class TripEditComponent implements OnDestroy, OnInit {
     value: false,
     index: 0,
   };
+  leaveTripLoading = false;
   deleteTripLoading = false;
   editTripPrivacyForm: FormGroup;
   editPrivacyLoading = false;
@@ -339,6 +340,41 @@ export class TripEditComponent implements OnDestroy, OnInit {
         error: (errMessage) => {
           console.log(errMessage);
           this.inviteTripmateLoading = { value: false, index };
+        },
+      });
+  }
+  removeTripMate(index: number, tripMateId: string) {
+    this.removeTripmateLoading = { value: true, index };
+    this.tripService
+      .removeTripMate(this.tripId, tripMateId)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (res) => {
+          this.store.dispatch(
+            tripEditActions.updateTripMates({ tripMates: res.tripMates }),
+          );
+          this.removeTripmateLoading = { value: false, index };
+        },
+        error: (errMessage) => {
+          console.log(errMessage);
+          this.removeTripmateLoading = { value: false, index };
+        },
+      });
+  }
+  leaveTrip() {
+    this.leaveTripLoading = true;
+    this.tripService
+      .leaveTrip(this.trip._id!)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: () => {
+          this.store.dispatch(tripEditActions.deleteTripEdit());
+          this.leaveTripLoading = false;
+          this.router.navigate(['/home']);
+        },
+        error: (errMessage) => {
+          console.log(errMessage);
+          this.leaveTripLoading = false;
         },
       });
   }

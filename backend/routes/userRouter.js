@@ -48,6 +48,8 @@ import {
     deleteTrip,
     getTripDetails,
     inviteTripMate,
+    leaveTrip,
+    removeTripMate,
     updateDescription,
     updateNotes,
     updatePlaceToVisitDescription,
@@ -114,6 +116,13 @@ router.post(
     verifyTripAdmin,
     inviteTripMate
 )
+router.delete(
+    '/trip/:id/removeTripmate/:tripMateId',
+    verifyUser,
+    verifyTripAdmin,
+    removeTripMate
+)
+router.delete('/trip/:id/leaveTrip', verifyUser, verifyTripMate, leaveTrip)
 router.patch('/trip/edit/name/:id', verifyUser, verifyTripMate, changeTripName)
 router.patch(
     '/trip/:id/visibility',

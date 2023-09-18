@@ -151,7 +151,7 @@
                     class="input card-title input-ghost w-full max-w-md text-ellipsis text-3xl text-textp"
                     (blur)="onHeadingBlur()"
                   />
-                  <div class="dropdown dropdown-left ml-auto">
+                  <div class="dropdown-left dropdown ml-auto">
                     <label
                       tabindex="0"
                       class="btn btn-circle btn-ghost btn-sm m-1 text-textp"
@@ -221,10 +221,16 @@
                                 tripmate.name
                               }}</span>
                             </div>
-                            <div class="ml-auto">
+                            <div
+                              *ngIf="trip.admin?._id == user._id"
+                              class="ml-auto"
+                            >
                               <label
-                                *ngIf="trip.admin?._id == user._id"
-                                class="link-hover text-red-500"
+                                (click)="
+                                  removeTripMate(tripmateIndex, tripmate._id!)
+                                "
+                                *ngIf="trip.admin?._id !== tripmate._id"
+                                class="btn btn-error btn-xs rounded-full bg-red-500 normal-case text-white"
                                 >Remove</label
                               >
                               <span
@@ -240,9 +246,14 @@
                       </ul>
                       <button
                         *ngIf="trip.admin?._id !== user._id"
+                        (click)="leaveTrip()"
                         class="btn btn-error w-full rounded-full"
                       >
                         Leave trip
+                        <span
+                          *ngIf="leaveTripLoading"
+                          class="loading loading-spinner loading-xs ml-2 mt-1 text-white"
+                        ></span>
                       </button>
                     </div>
                   </div>

@@ -5,6 +5,7 @@ import {
   PlaceToVisit,
   Trip,
 } from 'src/app/interfaces/trip.interface';
+import { User } from 'src/app/interfaces/user.model';
 
 export const setTripEdit = createAction(
   '[TripEdit Component] setTripEdit',
@@ -33,6 +34,10 @@ export const updateDescription = createAction(
 export const updateInvitedTripmates = createAction(
   '[TripEdit Component] updateInvitedTripmates',
   props<{ invitedTripmates: string[] }>(),
+);
+export const updateTripMates = createAction(
+  '[TripEdit Component] updateTripMates',
+  props<{ tripMates: User[] }>(),
 );
 
 export const updateOverviewNotes = createAction(

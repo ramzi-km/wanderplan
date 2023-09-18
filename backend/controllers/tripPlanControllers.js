@@ -179,6 +179,68 @@ export async function inviteTripMate(req, res) {
         return res.status(500).json({ message: 'Internal server error' })
     }
 }
+export async function removeTripMate(req, res) {
+    const tripId = req.params.id
+    const tripMateId = req.params.tripMateId
+    try {
+        const trip = await tripModel.findById(tripId)
+
+        if (!trip) {
+            return res.status(404).json({ message: 'Trip not found' })
+        }
+
+        if (trip.admin.toString() === tripMateId) {
+            return res
+                .status(403)
+                .json({ message: 'Cannot remove the trip admin' })
+        }
+
+        const updatedTripMates = trip.tripMates.filter(
+            (mate) => mate.toString() !== tripMateId
+        )
+
+        trip.tripMates = updatedTripMates
+        await trip.save()
+        await trip.populate('tripMates', '_id username name profilePic')
+
+        return res.status(200).json({
+            message: 'Trip mate removed successfully',
+            tripMates: trip.tripMates,
+        })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+export async function leaveTrip(req, res) {
+    const tripId = req.params.id
+    const userId = req.user.id
+    try {
+        const trip = await tripModel.findById(tripId)
+
+        if (!trip) {
+            return res.status(404).json({ message: 'Trip not found' })
+        }
+        if (trip.admin.toString() === userId) {
+            return res
+                .status(403)
+                .json({ message: 'Trip admin cannot leave trip' })
+        }
+
+        trip.tripMates = trip.tripMates.filter(
+            (mate) => mate.toString() !== userId
+        )
+
+        await trip.save()
+
+        return res.status(200).json({
+            message: 'left trip successfully',
+        })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
 
 export async function changeTripName(req, res) {
     try {

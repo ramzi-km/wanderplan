@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'environment';
 import { CreateTrip } from 'src/app/interfaces/create-trip.interface';
 import { PlaceToVisit, Trip } from 'src/app/interfaces/trip.interface';
+import { User } from 'src/app/interfaces/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,16 @@ export class TripService {
     return this.http.post<{ invitedTripMates: string[]; message: string }>(
       `${this.baseUrl}/trip/${tripId}/inviteTripmate`,
       body,
+    );
+  }
+  removeTripMate(tripId: string, tripMateId: string) {
+    return this.http.delete<{ tripMates: User[]; message: string }>(
+      `${this.baseUrl}/trip/${tripId}/removeTripmate/${tripMateId}`,
+    );
+  }
+  leaveTrip(tripId: string) {
+    return this.http.delete<{ message: string }>(
+      `${this.baseUrl}/trip/${tripId}/leaveTrip`,
     );
   }
   changeName(id: string, body: { tripName: string }) {
