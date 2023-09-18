@@ -151,7 +151,7 @@
                     class="input card-title input-ghost w-full max-w-md text-ellipsis text-3xl text-textp"
                     (blur)="onHeadingBlur()"
                   />
-                  <div class="dropdown-left dropdown ml-auto">
+                  <div class="dropdown dropdown-left ml-auto">
                     <label
                       tabindex="0"
                       class="btn btn-circle btn-ghost btn-sm m-1 text-textp"
@@ -560,6 +560,26 @@
         [ngClass]="isDrawerOpen() ? 'w-[41%]' : 'w-1/2'"
         class="fixed bottom-0 right-0 top-20 w-1/2"
       ></div>
+      <button
+        class="btn fixed bottom-14 right-14"
+        onclick="chatModal.showModal()"
+      >
+        open
+      </button>
+      <dialog id="chatModal" class="modal modal-top md:modal-middle">
+        <div class="modal-box bg-secondary text-textp">
+          <form method="dialog">
+            <button
+              class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2"
+            >
+              ✕
+            </button>
+          </form>
+          <div>
+            <app-group-chat></app-group-chat>
+          </div>
+        </div>
+      </dialog>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
