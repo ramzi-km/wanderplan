@@ -6,7 +6,7 @@ import { User } from 'src/app/interfaces/user.model';
 @Injectable({
   providedIn: 'root',
 })
-export class UsersService {
+export class UserManagementService {
   private baseUrl = environment.API_URL;
   constructor(private http: HttpClient) {}
   getUsers() {

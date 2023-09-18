@@ -8,7 +8,7 @@ import expenseModel from '../models/expenseModel.js'
 
 export async function getAllExpenseCategories(req, res) {
     try {
-        const categories = await categoryModel.find().lean()
+        const categories = await categoryModel.find({ unList: false }).lean()
         res.status(200).json({ message: 'success', categories: categories })
     } catch (error) {
         console.log(error)

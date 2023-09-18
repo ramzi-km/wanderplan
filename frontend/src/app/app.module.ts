@@ -74,6 +74,7 @@ import { AutoResizeTextareaDirective } from './directives/auto-resize-textarea.d
 import { CarouselComponent } from './components/shared components/carousel/carousel.component';
 import { CustomDateFormatPipe } from './pipes/custom-date-format.pipe';
 import { CustomDateFormat2Pipe } from './pipes/custom-date-format2.pipe';
+import { GroupChatComponent } from './components/trip/group-chat/group-chat.component';
 
 @NgModule({
   declarations: [
@@ -107,6 +108,7 @@ import { CustomDateFormat2Pipe } from './pipes/custom-date-format2.pipe';
     CarouselComponent,
     CustomDateFormatPipe,
     CustomDateFormat2Pipe,
+    GroupChatComponent,
   ],
   imports: [
     SocialLoginModule,

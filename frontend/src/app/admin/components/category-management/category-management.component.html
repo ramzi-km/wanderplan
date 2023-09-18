@@ -3,6 +3,7 @@
     <button (click)="showAddCategoryModal()" class="btn btn-primary text-textp">
       <i class="fa-solid fa-plus"></i> Add category
     </button>
+    <!-------------add category form------------------- -->
     <dialog id="addCategoryModal" class="modal">
       <form
         class="modal-box bg-secondary"
@@ -99,6 +100,7 @@
         </div>
       </form>
     </dialog>
+    <!-------------add category form end------------------- -->
   </div>
   <div class="mx-1 my-4">
     <label
@@ -182,22 +184,161 @@
           <td>
             <div class="flex items-center space-x-3">
               <button
+                (click)="showEditCategoryModal(category)"
                 class="btn btn-sm bg-blue-600 text-gray-100 hover:bg-gray-200 hover:text-blue-600"
               >
                 <i class="fa-solid fa-pen"></i> Edit
               </button>
+              <!-- -----------edit category form------------------- -->
+              <dialog id="editCategoryModal" class="modal">
+                <form
+                  class="modal-box bg-secondary text-textp"
+                  [formGroup]="editCategoryForm"
+                  (ngSubmit)="submitEditCategoryForm()"
+                >
+                  <div class="my-4 text-center text-2xl font-semibold">
+                    <p>Edit category</p>
+                  </div>
+                  <button
+                    type="button"
+                    (click)="closeEditCategoryModal()"
+                    class="btn btn-circle btn-ghost btn-sm absolute right-4 top-4"
+                  >
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                  <div
+                    *ngIf="editCategoryErrMessage"
+                    class="alert alert-error mt-3 flex h-10"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6 shrink-0 stroke-current"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span>{{ editCategoryErrMessage }}</span>
+                  </div>
+
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text">Category Name</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="new category name"
+                      class="input input-bordered"
+                      formControlName="categoryName"
+                      required
+                    />
+                    <div
+                      class="text-sm text-red-500"
+                      *ngIf="
+                        editCategoryFc['categoryName'].touched &&
+                        editCategoryFc['categoryName'].invalid
+                      "
+                    >
+                      <label
+                        *ngIf="
+                          editCategoryFc['categoryName'].errors?.['required']
+                        "
+                        >category name is required
+                      </label>
+                      <label
+                        *ngIf="
+                          editCategoryFc['categoryName'].errors?.[
+                            'customMinLength'
+                          ]
+                        "
+                      >
+                        category name must be atleast 3 characters</label
+                      >
+                    </div>
+                  </div>
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text">Icon</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="font awesome icon class name"
+                      class="input input-bordered"
+                      formControlName="categoryIcon"
+                    />
+                    <div
+                      class="text-sm text-red-500"
+                      *ngIf="
+                        editCategoryFc['categoryIcon'].touched &&
+                        editCategoryFc['categoryIcon'].invalid
+                      "
+                    >
+                      <label
+                        *ngIf="
+                          editCategoryFc['categoryIcon'].errors?.['required']
+                        "
+                        >icon is required
+                      </label>
+                      <label
+                        *ngIf="
+                          editCategoryFc['categoryIcon'].errors?.[
+                            'customMinLength'
+                          ]
+                        "
+                      >
+                        icon class name must be atleast 4 characters</label
+                      >
+                    </div>
+                  </div>
+                  <div class="form-control mt-6">
+                    <button
+                      [disabled]="editCategoryForm.invalid"
+                      type="submit"
+                      class="btn btn-primary text-textp"
+                    >
+                      Submit
+                      <span
+                        *ngIf="editCategoryLoading"
+                        class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+                      ></span>
+                    </button>
+                  </div>
+                </form>
+              </dialog>
+              <!-------------edit category form end------------------- -->
               <ng-container *ngIf="category.unList">
                 <button
                   class="btn btn-sm bg-primary text-gray-100 hover:bg-gray-200 hover:text-primary"
+                  (click)="toggleUnlistCategory(category._id)"
                 >
                   <i class="fa-solid fa-unlock"></i> list
+                  <span
+                    *ngIf="
+                      unlistCategoryLoading.value &&
+                      unlistCategoryLoading.id == category._id
+                    "
+                    class="loading loading-spinner loading-sm mb-1 ml-5"
+                  ></span>
                 </button>
               </ng-container>
               <ng-container *ngIf="!category.unList">
                 <button
+                  (click)="toggleUnlistCategory(category._id)"
                   class="btn btn-sm bg-red-600 text-gray-100 hover:bg-gray-200 hover:text-red-600"
                 >
                   <i class="fa-solid fa-ban"></i> Unlist
+                  <span
+                    *ngIf="
+                      unlistCategoryLoading.value &&
+                      unlistCategoryLoading.id == category._id
+                    "
+                    class="loading loading-spinner loading-sm mb-1 ml-5"
+                  ></span>
                 </button>
               </ng-container>
             </div>
