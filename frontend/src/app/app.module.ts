@@ -27,12 +27,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { ToastrModule } from 'ngx-toastr';
 import { AppInitializerService } from './app-intializer.service';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
+import { AttachmentComponent } from './components/attachment/attachment.component';
 import { ErrorComponent } from './components/error/error.component';
+import { CarouselComponent } from './components/shared components/carousel/carousel.component';
+import { GroupChatComponent } from './components/trip/group-chat/group-chat.component';
+import { BudgetComponent } from './components/trip/trip-edit/budget/budget.component';
+import { ItineraryComponent } from './components/trip/trip-edit/itinerary/itinerary.component';
+import { OverviewComponent } from './components/trip/trip-edit/overview/overview.component';
 import { TripEditComponent } from './components/trip/trip-edit/trip-edit.component';
 import { TripViewComponent } from './components/trip/trip-view/trip-view.component';
 import { CreateGuideComponent } from './components/user/create-guide/create-guide.component';
@@ -42,6 +49,7 @@ import { HomeComponent } from './components/user/home/home.component';
 import { LandingPageComponent } from './components/user/landing-page/landing-page.component';
 import { ListGuidesComponent } from './components/user/list-guides/list-guides.component';
 import { LoginComponent } from './components/user/login/login.component';
+import { ResetForgotPasswordComponent } from './components/user/login/reset-forgot-password/reset-forgot-password.component';
 import { NavComponent } from './components/user/nav/nav.component';
 import { ProfileModalComponent } from './components/user/profile/profile-modal/profile-modal.component';
 import { ProfileComponent } from './components/user/profile/profile.component';
@@ -50,31 +58,26 @@ import { UserTripPlansComponent } from './components/user/profile/user-trip-plan
 import { SignUpComponent } from './components/user/sign-up/sign-up.component';
 import { SignupOtpComponent } from './components/user/sign-up/signup-otp/signup-otp.component';
 
+import { AutoResizeTextareaDirective } from './directives/auto-resize-textarea.directive';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 
 import { environment } from '../../environment';
-
-import { editTripReducer } from './store/editingTrip/trip-edit.reducers';
-import { userEffects } from './store/user/user.effects';
-import { userReducer } from './store/user/user.reducers';
+import { MainInterceptor } from './interceptors/main.interceptor';
 
 import { adminEffects } from './admin/store/admin/admin.effects';
 import { adminReducer } from './admin/store/admin/admin.reducers';
 import { usersEffects } from './admin/store/users/users.effects';
 import { usersReducer } from './admin/store/users/users.reducers';
-import { AttachmentComponent } from './components/attachment/attachment.component';
-import { BudgetComponent } from './components/trip/trip-edit/budget/budget.component';
-import { ItineraryComponent } from './components/trip/trip-edit/itinerary/itinerary.component';
-import { OverviewComponent } from './components/trip/trip-edit/overview/overview.component';
-import { ResetForgotPasswordComponent } from './components/user/login/reset-forgot-password/reset-forgot-password.component';
-import { MainInterceptor } from './interceptors/main.interceptor';
-import { DateRangePipe } from './pipes/date-range.pipe';
-import { DaysToPipe } from './pipes/days-to.pipe';
-import { AutoResizeTextareaDirective } from './directives/auto-resize-textarea.directive';
-import { CarouselComponent } from './components/shared components/carousel/carousel.component';
+import { editTripReducer } from './store/editingTrip/trip-edit.reducers';
+import { userEffects } from './store/user/user.effects';
+import { userReducer } from './store/user/user.reducers';
+
 import { CustomDateFormatPipe } from './pipes/custom-date-format.pipe';
 import { CustomDateFormat2Pipe } from './pipes/custom-date-format2.pipe';
-import { GroupChatComponent } from './components/trip/group-chat/group-chat.component';
+import { DateRangePipe } from './pipes/date-range.pipe';
+import { DaysToPipe } from './pipes/days-to.pipe';
+
+const config: SocketIoConfig = { url: environment.API_URL, options: {} };
 
 @NgModule({
   declarations: [
@@ -128,6 +131,7 @@ import { GroupChatComponent } from './components/trip/group-chat/group-chat.comp
     HttpClientModule,
     CommonModule,
     BrowserAnimationsModule,
+    SocketIoModule.forRoot(config),
     ToastrModule.forRoot(),
     StoreModule.forRoot({
       userState: userReducer,
