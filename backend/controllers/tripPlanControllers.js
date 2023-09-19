@@ -129,7 +129,6 @@ export async function getTripDetails(req, res) {
                 .populate('tripMates', '_id username name profilePic')
                 .populate('budget.expenses')
                 .exec()
-            console.log(trip)
             return res
                 .status(200)
                 .json({ message: 'Success', trip: trip, editable: true })

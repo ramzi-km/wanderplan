@@ -1,9 +1,8 @@
-import jwt from 'jsonwebtoken';
-import userModel from '../models/userModel.js';
+import jwt from 'jsonwebtoken'
+import userModel from '../models/userModel.js'
 
 export default async function verifyUser(req, res, next) {
     try {
-        console.log('object');
         const token = req.cookies.userToken
         if (!token) {
             return res

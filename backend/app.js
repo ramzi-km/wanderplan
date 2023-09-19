@@ -4,12 +4,27 @@ import cors from 'cors'
 import 'dotenv/config.js'
 import express from 'express'
 import session from 'express-session'
+import http from 'http'
 import logger from 'morgan'
 import path from 'path'
+import { Server } from 'socket.io'
 import connectDb from './config/db.connection.js'
+import socketConnect from './config/socketConnect.js'
 
 const app = express()
 const PORT = process.env.PORT || 8000
+
+//socket.io
+const server = http.createServer(app)
+
+// eslint-disable-next-line no-unused-vars
+const io = new Server(server, {
+    cors: {
+        origin: process.env.CLIENT_URL,
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        credentials: true,
+    },
+})
 
 import adminRouter from './routes/adminRouter.js'
 import userRouter from './routes/userRouter.js'
@@ -32,12 +47,13 @@ app.use(
 )
 app.use(express.json({ limit: '10mb' }))
 app.use(express.static(path.join(path.resolve(), 'public')))
-app.use(cors({ origin: ['http://localhost:4200'], credentials: true }))
+app.use(cors({ origin: [process.env.CLIENT_URL], credentials: true }))
 
 //listening
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`server started at  http://localhost:${PORT}`)
 })
+socketConnect(io)
 
 //route setup
 app.use('/api', userRouter)
