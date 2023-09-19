@@ -32,6 +32,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { AppInitializerService } from './app-intializer.service';
 import { AppRoutingModule } from './app-routing.module';
 
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { AppComponent } from './app.component';
 import { AttachmentComponent } from './components/attachment/attachment.component';
 import { ErrorComponent } from './components/error/error.component';
@@ -76,6 +77,7 @@ import { CustomDateFormatPipe } from './pipes/custom-date-format.pipe';
 import { CustomDateFormat2Pipe } from './pipes/custom-date-format2.pipe';
 import { DateRangePipe } from './pipes/date-range.pipe';
 import { DaysToPipe } from './pipes/days-to.pipe';
+import { DateTimeFormatPipe } from './pipes/date-time-format.pipe';
 
 const config: SocketIoConfig = { url: environment.API_URL, options: {} };
 
@@ -112,8 +114,10 @@ const config: SocketIoConfig = { url: environment.API_URL, options: {} };
     CustomDateFormatPipe,
     CustomDateFormat2Pipe,
     GroupChatComponent,
+    DateTimeFormatPipe,
   ],
   imports: [
+    PickerComponent,
     SocialLoginModule,
     GoogleSigninButtonModule,
     MatSidenavModule,

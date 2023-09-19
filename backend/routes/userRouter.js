@@ -74,6 +74,10 @@ import {
     getAllExpenseCategories,
     setBudget,
 } from '../controllers/budgetMangagementControllers.js'
+import {
+    createMessage,
+    getAllMessagesForRoom,
+} from '../controllers/chatControllers.js'
 
 //-------------------------------------------------------------------------//
 
@@ -234,5 +238,15 @@ router.delete(
     deleteExpense
 )
 router.post('/trip/:id/budget/limit', verifyUser, verifyTripMate, setBudget)
+
+//----------------------------group-chat-------------------------------------//
+
+router.post('/trip/:id/chat/message', verifyUser, verifyTripMate, createMessage)
+router.get(
+    '/trip/:id/chat/messages',
+    verifyUser,
+    verifyTripMate,
+    getAllMessagesForRoom
+)
 
 export default router

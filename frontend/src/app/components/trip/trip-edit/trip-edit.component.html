@@ -566,8 +566,8 @@
       >
         <i class="fa-solid fa-message"></i>
       </button>
-      <dialog id="chatModal" class="modal modal-top md:modal-middle">
-        <div class="modal-box bg-secondary text-textp">
+      <dialog id="chatModal" class="modal modal-bottom md:modal-middle">
+        <div class="modal-box shadow-textp shadow-sm bg-secondary text-textp md:w-11/12 md:max-w-5xl">
           <form method="dialog">
             <button
               class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2"
@@ -575,7 +575,7 @@
               ✕
             </button>
           </form>
-          <div>
+          <div class="w-full">
             <app-group-chat
               [user]="user$ | async"
               [trip]="trip"

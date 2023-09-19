@@ -7,6 +7,7 @@ export default function socketConnect(io) {
             const trip = await tripModel.findById(roomId)
             if (trip.tripMates.includes(user._id)) {
                 socket.join(roomId)
+                socket.broadcast.to(data.roomId).emit('user joined')
                 console.log(`${user.username} joined room ${roomId}`)
             }
         })
@@ -15,10 +16,12 @@ export default function socketConnect(io) {
             socket.leave(roomId)
             console.log(`${user.username} left room ${roomId}`)
         })
-        
-        socket.on('message', (msg) => {
-            console.log('message : ' + msg)
-            io.emit('message', msg)
+
+        socket.on('message', (data) => {
+            const { roomId, messageData } = data
+            io.to(roomId).emit('new message', messageData)
+
+            console.log(`Message sent to room ${roomId}: ${messageData}`)
         })
 
         socket.on('disconnect', () => {

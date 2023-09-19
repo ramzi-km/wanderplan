@@ -1,1 +1,102 @@
-<p>group-chat works!</p>
+<!-- component -->
+<div
+  class="-m-2 flex w-full flex-1 flex-col justify-between bg-secondary text-textp"
+>
+  <div class="mb-2 flex justify-between border-textp">
+    <div class="relative flex items-center space-x-4">
+      <div class="relative">
+        <img
+          [src]="trip?.coverPhoto"
+          class="h-8 w-8 rounded-full sm:h-14 sm:w-14"
+        />
+      </div>
+      <div class="flex flex-col leading-tight">
+        <div class="flex items-center text-2xl font-bold">
+          <span class="mr-3">{{ trip?.name }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    #messagesContainer
+    id="messages"
+    class="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch -ml-4 -mr-7 flex h-96 flex-col space-y-4 overflow-y-auto rounded-md bg-base-100 p-3"
+  >
+    <ng-container *ngFor="let message of messageList; let messageIndex = index">
+      <ng-container *ngIf="message.sender._id !== user?._id">
+        <div style="margin: 0px" class="chat chat-start">
+          <div class="avatar chat-image">
+            <div class="w-7 rounded-full">
+              <img [src]="message.sender.profilePic" />
+            </div>
+          </div>
+          <div class="chat-header ml-2">
+            {{ message.sender.username }}
+          </div>
+          <div
+            class="chat-bubble chat-bubble-info max-w-[16rem] text-sm text-white md:max-w-xl"
+          >
+            {{ message.messageText }}
+          </div>
+          <div class="chat-footer opacity-50">
+            <time class="ml-2 text-xs">{{
+              message.time | dateTimeFormat
+            }}</time>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="message.sender._id == user?._id">
+        <div style="margin: 0px" class="chat chat-end">
+          <div
+            class="chat-bubble chat-bubble-primary max-w-[16rem] text-sm text-white md:max-w-xl"
+          >
+            {{ message.messageText }}
+          </div>
+          <div class="chat-footer opacity-50">
+            <time class="mr-2 text-xs">{{
+              message.time | dateTimeFormat
+            }}</time>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <form
+    class="relative -mb-4 flex items-center justify-between space-x-1 p-3"
+    [formGroup]="sendMessageForm"
+    (ngSubmit)="sendMessage()"
+  >
+    <button
+      type="button"
+      (click)="showEmojiWindow = !showEmojiWindow"
+      class="btn btn-circle btn-sm sm:btn-md"
+    >
+      <i class="fa-regular fa-face-smile"></i>
+    </button>
+    <emoji-mart
+      *ngIf="showEmojiWindow"
+      [style]="{ position: 'absolute', bottom: '70px', left: '1px' }"
+      [showPreview]="false"
+      (emojiClick)="addEmoji($event)"
+      [isNative]="true"
+      [showSingleCategory]="true"
+      [emojiTooltip]="true"
+    ></emoji-mart>
+    <input
+      #messageInput
+      type="text"
+      placeholder="Write your message!"
+      class="input-sm w-5 flex-grow rounded-full bg-base-100 sm:input-md"
+      formControlName="messageText"
+    />
+
+    <button
+      type="submit"
+      class="btn btn-primary btn-sm rounded-full text-white sm:btn-md"
+    >
+      <span class="font-bold">Send</span>
+      <i class="fa-solid fa-paper-plane mb-1 rotate-45 transform"></i>
+    </button>
+  </form>
+</div>

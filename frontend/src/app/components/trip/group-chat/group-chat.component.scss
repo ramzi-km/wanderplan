@@ -1,0 +1,18 @@
+.scrollbar-w-2::-webkit-scrollbar {
+  width: 0.25rem;
+  height: 0.25rem;
+}
+
+.scrollbar-track-blue-lighter::-webkit-scrollbar-track {
+  --bg-opacity: 1;
+  background-color: #9c9c9c;
+}
+
+.scrollbar-thumb-blue::-webkit-scrollbar-thumb {
+  --bg-opacity: 1;
+  background-color: #03b048;
+}
+
+.scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
+  border-radius: 0.25rem;
+}
