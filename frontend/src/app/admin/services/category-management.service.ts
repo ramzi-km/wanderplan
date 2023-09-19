@@ -7,17 +7,17 @@ import { Category } from 'src/app/interfaces/category.interface';
   providedIn: 'root',
 })
 export class CategoryManagementService {
-  private baseUrl = environment.API_URL;
+  private baseUrl = environment.API_URL + '/api/admin';
   constructor(private http: HttpClient) {}
 
   getAllCategories() {
     return this.http.get<{ categories: Category[]; message: string }>(
-      `${this.baseUrl}/admin/categories`,
+      `${this.baseUrl}/categories`,
     );
   }
   addCategory(body: { categoryName: string; categoryIcon: string }) {
     return this.http.post<{ category: Category; message: string }>(
-      `${this.baseUrl}/admin/category`,
+      `${this.baseUrl}/category`,
       body,
     );
   }
@@ -26,13 +26,13 @@ export class CategoryManagementService {
     body: { categoryName: string; categoryIcon: string },
   ) {
     return this.http.patch<{ category: Category; message: string }>(
-      `${this.baseUrl}/admin/category/${categoryId}`,
+      `${this.baseUrl}/category/${categoryId}`,
       body,
     );
   }
   toggleUnlistCategory(categoryId: string) {
     return this.http.patch<{ category: Category; message: string }>(
-      `${this.baseUrl}/admin/category/${categoryId}/toggleUnlist`,
+      `${this.baseUrl}/category/${categoryId}/toggleUnlist`,
       {},
     );
   }

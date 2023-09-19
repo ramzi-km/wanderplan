@@ -7,7 +7,7 @@ import { ItineraryPlace, Place } from 'src/app/interfaces/trip.interface';
   providedIn: 'root',
 })
 export class ItineraryManagementService {
-  private baseUrl = environment.API_URL;
+  private baseUrl = environment.API_URL+ '/api/trip'
   constructor(private http: HttpClient) {}
 
   updateSubheading(
@@ -16,13 +16,13 @@ export class ItineraryManagementService {
     body: { subheading: string },
   ) {
     return this.http.patch<{ subheading: string; message: string }>(
-      `${this.baseUrl}/trip/edit/${tripId}/itinerary/${itineraryIndex}/subheading`,
+      `${this.baseUrl}/edit/${tripId}/itinerary/${itineraryIndex}/subheading`,
       body,
     );
   }
   addPlace(tripId: string, itineraryId: string, body: { place: Place }) {
     return this.http.post<{ place: ItineraryPlace; message: string }>(
-      `${this.baseUrl}/trip/${tripId}/itinerary/${itineraryId}/place`,
+      `${this.baseUrl}/${tripId}/itinerary/${itineraryId}/place`,
       body,
     );
   }
@@ -35,7 +35,7 @@ export class ItineraryManagementService {
     },
   ) {
     return this.http.patch<{ place: ItineraryPlace; message: string }>(
-      `${this.baseUrl}/trip/${tripId}/itinerary/${dayIndex}/place/${placeIndex}/description`,
+      `${this.baseUrl}/${tripId}/itinerary/${dayIndex}/place/${placeIndex}/description`,
       body,
     );
   }
@@ -48,7 +48,7 @@ export class ItineraryManagementService {
     },
   ) {
     return this.http.patch<{ place: ItineraryPlace; message: string }>(
-      `${this.baseUrl}/trip/${tripId}/itinerary/${dayIndex}/place/${placeIndex}/note`,
+      `${this.baseUrl}/${tripId}/itinerary/${dayIndex}/place/${placeIndex}/note`,
       body,
     );
   }
@@ -61,7 +61,7 @@ export class ItineraryManagementService {
     },
   ) {
     return this.http.patch<{ place: ItineraryPlace; message: string }>(
-      `${this.baseUrl}/trip/${tripId}/itinerary/${dayIndex}/place/${placeIndex}/image`,
+      `${this.baseUrl}/${tripId}/itinerary/${dayIndex}/place/${placeIndex}/image`,
       body,
     );
   }
@@ -74,13 +74,13 @@ export class ItineraryManagementService {
     },
   ) {
     return this.http.patch<{ place: ItineraryPlace; message: string }>(
-      `${this.baseUrl}/trip/${tripId}/itinerary/${dayIndex}/place/${placeIndex}/time`,
+      `${this.baseUrl}/${tripId}/itinerary/${dayIndex}/place/${placeIndex}/time`,
       body,
     );
   }
   deletePlace(tripId: string, dayIndex: number, placeIndex: number) {
     return this.http.delete<{ message: string }>(
-      `${this.baseUrl}/trip/${tripId}/itinerary/${dayIndex}/place/${placeIndex}`,
+      `${this.baseUrl}/${tripId}/itinerary/${dayIndex}/place/${placeIndex}`,
     );
   }
 }

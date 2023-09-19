@@ -9,74 +9,74 @@ import { User } from 'src/app/interfaces/user.model';
   providedIn: 'root',
 })
 export class TripService {
-  private baseUrl = environment.API_URL;
+  private baseUrl = environment.API_URL+ '/api/trip'
   constructor(private http: HttpClient) {}
 
   createTrip(data: CreateTrip) {
     return this.http.post<{ trip: Trip; message: string }>(
-      `${this.baseUrl}/trip/create`,
+      `${this.baseUrl}/create`,
       data,
     );
   }
   getDetails(id: string) {
     return this.http.get<{ trip: Trip; message: string; editable: boolean }>(
-      `${this.baseUrl}/trip/getDetails/${id}`,
+      `${this.baseUrl}/getDetails/${id}`,
     );
   }
   inviteTripMate(tripId: string, body: { userId: string }) {
     return this.http.post<{ invitedTripMates: string[]; message: string }>(
-      `${this.baseUrl}/trip/${tripId}/inviteTripmate`,
+      `${this.baseUrl}/${tripId}/inviteTripmate`,
       body,
     );
   }
   removeTripMate(tripId: string, tripMateId: string) {
     return this.http.delete<{ tripMates: User[]; message: string }>(
-      `${this.baseUrl}/trip/${tripId}/removeTripmate/${tripMateId}`,
+      `${this.baseUrl}/${tripId}/removeTripmate/${tripMateId}`,
     );
   }
   leaveTrip(tripId: string) {
     return this.http.delete<{ message: string }>(
-      `${this.baseUrl}/trip/${tripId}/leaveTrip`,
+      `${this.baseUrl}/${tripId}/leaveTrip`,
     );
   }
   changeName(id: string, body: { tripName: string }) {
     return this.http.patch<{ tripName: string; message: string }>(
-      `${this.baseUrl}/trip/edit/name/${id}`,
+      `${this.baseUrl}/edit/name/${id}`,
       body,
     );
   }
   changeVisibility(tripId: string, body: { visibility: string }) {
     return this.http.patch<{ visibility: string; message: string }>(
-      `${this.baseUrl}/trip/${tripId}/visibility`,
+      `${this.baseUrl}/${tripId}/visibility`,
       body,
     );
   }
   changeCoverphoto(id: string, body: { coverPhoto: string }) {
     return this.http.patch<{ coverPhoto: string; message: string }>(
-      `${this.baseUrl}/trip/edit/coverPhoto/${id}`,
+      `${this.baseUrl}/edit/coverPhoto/${id}`,
       body,
     );
   }
   updateDescription(id: string, body: { description: string }) {
     return this.http.patch<{ tripDescription: string; message: string }>(
-      `${this.baseUrl}/trip/edit/overview/description/${id}`,
+      `${this.baseUrl}/edit/overview/description/${id}`,
       body,
     );
   }
   updateNotes(id: string, body: { notes: string }) {
     return this.http.patch<{ overviewNotes: string; message: string }>(
-      `${this.baseUrl}/trip/edit/overview/notes/${id}`,
+      `${this.baseUrl}/edit/overview/notes/${id}`,
       body,
     );
   }
   addPlaceToVisit(id: string, body: { place: PlaceToVisit }) {
     return this.http.put<{ place: PlaceToVisit; message: string }>(
-      `${this.baseUrl}/trip/edit/overview/placesToVisit/addPlace/${id}`,
+      `${this.baseUrl}/edit/overview/placesToVisit/addPlace/${id}`,
       body,
     );
   }
   deletePlace(tripId: string, placeIndex: number) {
-    const url = `${this.baseUrl}/trip/edit/${tripId}/overview/placesToVisit/deletePlace/${placeIndex}`;
+    const url = `${this.baseUrl}/edit/${tripId}/overview/placesToVisit/deletePlace/${placeIndex}`;
     return this.http.delete<{ place: PlaceToVisit; message: string }>(url);
   }
   updatePlaceToVisitDescription(
@@ -85,7 +85,7 @@ export class TripService {
     body: { description: string },
   ) {
     return this.http.patch<{ place: PlaceToVisit; message: string }>(
-      `${this.baseUrl}/trip/edit/${tripId}/overview/placesToVisit/updateDescription/${placeIndex}`,
+      `${this.baseUrl}/edit/${tripId}/overview/placesToVisit/updateDescription/${placeIndex}`,
       body,
     );
   }
@@ -96,13 +96,13 @@ export class TripService {
     body: { image: string },
   ) {
     return this.http.patch<{ place: PlaceToVisit; message: string }>(
-      `${this.baseUrl}/trip/edit/${tripId}/overview/placesToVisit/changePhoto/${placeIndex}`,
+      `${this.baseUrl}/edit/${tripId}/overview/placesToVisit/changePhoto/${placeIndex}`,
       body,
     );
   }
   deleteTrip(tripId: string) {
     return this.http.delete<{ message: string }>(
-      `${this.baseUrl}/trip/${tripId}`,
+      `${this.baseUrl}/${tripId}`,
     );
   }
 }

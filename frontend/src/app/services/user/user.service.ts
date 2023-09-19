@@ -9,11 +9,11 @@ import { User } from 'src/app/interfaces/user.model';
 })
 export class UserService {
   constructor(private http: HttpClient) {}
-  private baseUrl = environment.API_URL;
+  private baseUrl = environment.API_URL + '/api/user';
 
   updateUser(user: User) {
     return this.http.patch<{ user: User; message: string }>(
-      `${this.baseUrl}/user`,
+      `${this.baseUrl}`,
       user,
     );
   }
@@ -25,7 +25,7 @@ export class UserService {
   }
   uploadProfile(profile: { profilePic: string }) {
     return this.http.post<{ user: User; message: string }>(
-      `${this.baseUrl}/user/uploadProfile`,
+      `${this.baseUrl}/uploadProfile`,
       profile,
     );
   }
@@ -33,19 +33,19 @@ export class UserService {
     return this.http.get<{
       upcomingTrips: ShortTripInfo[];
       message: string;
-    }>(`${this.baseUrl}/user/upcomingTrips`);
+    }>(`${this.baseUrl}/upcomingTrips`);
   }
   getAllTrips() {
     return this.http.get<{ trips: ShortTripInfo[] }>(
-      `${this.baseUrl}/user/getAllTrips`,
+      `${this.baseUrl}/getAllTrips`,
     );
   }
   searchUsers(searchTerm: string) {
-    const url = `${this.baseUrl}/user/search?username=${searchTerm}`;
+    const url = `${this.baseUrl}/search?username=${searchTerm}`;
     return this.http.get<{ users: User[] }>(url);
   }
   acceptTripInvitation(tripId: string, notificationId: string) {
-    const url = `${this.baseUrl}/user/acceptTripInvitation/${tripId}/${notificationId}`;
+    const url = `${this.baseUrl}/acceptTripInvitation/${tripId}/${notificationId}`;
     return this.http.post<{ user: User; message: string }>(url, {});
   }
 }

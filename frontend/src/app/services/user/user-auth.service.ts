@@ -8,7 +8,7 @@ declare const google: any;
 })
 export class UserAuthService {
   constructor(private http: HttpClient) {}
-  private baseUrl = environment.API_URL;
+  private baseUrl = environment.API_URL + '/api';
 
   userRegister(user: User) {
     return this.http.post<{ message: string }>(`${this.baseUrl}/signUp`, user);

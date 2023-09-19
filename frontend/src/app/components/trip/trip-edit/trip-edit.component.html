@@ -576,7 +576,10 @@
             </button>
           </form>
           <div>
-            <app-group-chat [trip]="trip"></app-group-chat>
+            <app-group-chat
+              [user]="user$ | async"
+              [trip]="trip"
+            ></app-group-chat>
           </div>
         </div>
       </dialog>

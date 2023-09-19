@@ -96,7 +96,7 @@ router.get('/user/search', verifyUser, searchUsers)
 router.get('/user', verifyUser, getUser)
 router.patch('/user', verifyUser, updateUser)
 router.post('/user/uploadProfile', verifyUser, uploadProfile)
-router.patch('/resetPassword', verifyUser, resetPassword)
+router.patch('/user/resetPassword', verifyUser, resetPassword)
 
 router.get('/user/upcomingTrips', verifyUser, getUpcomingTrips)
 router.get('/user/getAllTrips', verifyUser, getAllTrips)

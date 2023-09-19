@@ -378,6 +378,7 @@ export class TripEditComponent implements OnDestroy, OnInit {
         },
       });
   }
+
   showDeleteTripModal() {
     const deleteTripModal = document.getElementById(
       'deleteTripModal',
