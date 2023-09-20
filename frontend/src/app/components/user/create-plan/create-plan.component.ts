@@ -6,7 +6,12 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import {
   MatDatepicker,
   MatDatepickerInputEvent,
@@ -38,17 +43,12 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
   showResults: boolean = false;
   inputControl = new FormControl();
   currentDate = new Date();
-  createPlanForm: any;
+  createPlanForm: FormGroup;
   showErrors: boolean = false;
   places: Array<MapboxPlaceFeature> = [];
   private unsubscribe$ = new Subject<void>();
   @ViewChild('picker') picker!: MatDatepicker<any>;
-  // @HostListener('document:click', ['$event'])
-  // onDocumentClick(event: Event) {
-  //   if (!this.hostElement.nativeElement.contains(event.target)) {
-  //     this.showResults = false;
-  //   }
-  // }
+
   constructor(
     private hostElement: ElementRef,
     fb: FormBuilder,
@@ -131,8 +131,9 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
   }
 
   submitForm() {
-    if (this.createPlanForm.invalid) {
+    if (this.createPlanForm.invalid || this.loading) {
       this.showErrors = true;
+      return;
     } else {
       this.loading = true;
       const form = this.createPlanForm.value;

@@ -113,6 +113,9 @@ export class BudgetComponent implements OnInit, OnDestroy {
       this.addExpenseErrMessage = 'category is required';
       return;
     }
+    if (this.addExpenseLoading) {
+      return;
+    }
     this.addExpenseLoading = true;
     this.budgetManagementService
       .addExpense(this.trip?._id!, this.addExpenseForm.value)
@@ -133,7 +136,7 @@ export class BudgetComponent implements OnInit, OnDestroy {
         },
       });
   }
-  deleteExpense(expenseId: string) {
+  deleteExpense(expenseId: string, amount: number) {
     this.budgetManagementService
       .deleteExpense(this.trip?._id!, expenseId)
       .pipe(takeUntil(this.ngUnsubscribe$))
@@ -142,6 +145,7 @@ export class BudgetComponent implements OnInit, OnDestroy {
           this.store.dispatch(
             tripEditActions.updateBudget({ budget: res.budget }),
           );
+          this.totalAmount -= amount;
         },
         error: (errMessage) => {
           console.log(errMessage);

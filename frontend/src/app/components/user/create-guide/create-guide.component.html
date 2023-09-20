@@ -1,2 +1,70 @@
 <div class="mt-20"></div>
-<p>create-guide works!</p>
+<section class="flex justify-center py-16">
+  <div
+    class="flex w-5/6 flex-col items-center justify-center space-y-5 md:w-2/3 lg:w-2/5"
+  >
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-textp">Write a travel guide</h1>
+      <h6 class="font-normal text-textg">
+        Help fellow travelers by writing up your tips or a past itinerary.
+      </h6>
+    </div>
+    <form
+      class="w-full space-y-8"
+      [formGroup]="createGuideForm"
+      (ngSubmit)="submitForm()"
+    >
+      <div class="form-control relative">
+        <label class="label">
+          <span class="label-text text-lg font-medium text-textp"
+            >For where?</span
+          >
+        </label>
+        <input
+          type="text"
+          placeholder="e.g. Paris,Japan,Goa"
+          [formControl]="inputControl"
+          class="input input-bordered bg-secondary"
+          (focus)="showResults = true"
+          (blur)="blurResults()"
+          (keydown)="onKeyDown($event)"
+        />
+        <div class="text-sm text-red-500 ml-2" *ngIf="showErrors">
+          <label *ngIf="fc['place'].errors?.['required']"
+            >Choose a destination to start writing
+          </label>
+        </div>
+        <ul
+          class="absolute z-10 mt-24 w-full rounded border border-gray-300 bg-secondary shadow-lg"
+          *ngIf="places.length > 0 && showResults"
+        >
+          <li
+            class="cursor-pointer px-4 py-2 text-textp hover:bg-gray-300"
+            *ngFor="let place of places; let i = index"
+            [class.bg-gray-300]="i === selectedPlaceIndex"
+            (click)="selectPlace(place)"
+          >
+            <p>{{ place.text }}</p>
+            <span class="text-sm text-texts">{{ place.place_name }}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="flex justify-center">
+        <button
+          type="submit"
+          class="btn btn-primary rounded-full normal-case text-textp"
+        >
+          Start writing
+          <span
+            *ngIf="loading"
+            class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+          ></span>
+        </button>
+      </div>
+    </form>
+
+    <a routerLink="../plan" class="link-hover font-medium text-texts">
+      Or start planning a trip
+    </a>
+  </div>
+</section>

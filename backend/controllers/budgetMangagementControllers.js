@@ -50,11 +50,11 @@ export async function addExpense(req, res) {
             trip.budget.expenses.push(newExpense._id)
             await trip.save()
             await trip.populate('budget.expenses')
+            res.status(201).json({
+                message: 'Expense added successfully',
+                budget: trip.budget,
+            })
         }
-        res.status(201).json({
-            message: 'Expense added successfully',
-            budget: trip.budget,
-        })
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: 'Internal server error' })
@@ -69,14 +69,13 @@ export async function deleteExpense(req, res) {
         if (!trip || !trip.budget.expenses.includes(expenseId)) {
             return res.status(400).json({ message: 'Expense not found' })
         }
+        await expenseModel.findByIdAndDelete(expenseId)
 
         trip.budget.expenses = trip.budget.expenses.filter(
             (id) => id !== expenseId
         )
         await trip.save()
         await trip.populate('budget.expenses')
-
-        await expenseModel.findByIdAndDelete(expenseId)
 
         res.status(200).json({
             message: 'Expense deleted successfully',

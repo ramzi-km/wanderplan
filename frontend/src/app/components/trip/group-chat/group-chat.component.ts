@@ -137,6 +137,14 @@ export class GroupChatComponent implements OnInit, OnDestroy {
   closeEmojiWindow() {
     this.showEmojiWindow = false;
   }
+  createLinksFromString(text: string) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const linkedText = text.replace(urlRegex, (url) => {
+      return `<a href="${url}" target="_blank" class="link-hover text-blue-300">${url}</a>`;
+    });
+
+    return linkedText;
+  }
   ngOnDestroy(): void {
     const user = {
       _id: this.user?._id,

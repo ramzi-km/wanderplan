@@ -34,10 +34,9 @@
             {{ message.sender.username }}
           </div>
           <div
-            class="chat-bubble chat-bubble-info max-w-[16rem] text-sm text-white md:max-w-xl"
-          >
-            {{ message.messageText }}
-          </div>
+            class="chat-bubble chat-bubble-info max-w-[16rem] break-words text-sm text-white md:max-w-xl"
+            [innerHTML]="createLinksFromString(message.messageText)"
+          ></div>
           <div class="chat-footer opacity-50">
             <time class="ml-2 text-xs">{{
               message.time | dateTimeFormat
@@ -48,10 +47,9 @@
       <ng-container *ngIf="message.sender._id == user?._id">
         <div style="margin: 0px" class="chat chat-end">
           <div
-            class="chat-bubble chat-bubble-primary max-w-[16rem] text-sm text-white md:max-w-xl"
-          >
-            {{ message.messageText }}
-          </div>
+            class="chat-bubble chat-bubble-primary max-w-[16rem] break-words text-sm text-white md:max-w-xl"
+            [innerHTML]="createLinksFromString(message.messageText)"
+          ></div>
           <div class="chat-footer opacity-50">
             <time class="mr-2 text-xs">{{
               message.time | dateTimeFormat

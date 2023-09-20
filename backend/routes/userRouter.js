@@ -38,12 +38,12 @@ import {
 //------------tripPlanConrollers-------------//
 
 import {
-    addNewTrip,
     addPlaceToVisit,
     changeCoverPhoto,
     changePlaceToVisitPhoto,
     changeTripName,
     changeTripVisibility,
+    createNewTrip,
     deletePlaceToVisit,
     deleteTrip,
     getTripDetails,
@@ -112,7 +112,7 @@ router.post(
 
 //--------------------user-trip-plans--------------------//
 
-router.post('/trip/create', verifyUser, addNewTrip)
+router.post('/trip/create', verifyUser, createNewTrip)
 router.get('/trip/getDetails/:id', verifyUser, getTripDetails)
 router.post(
     '/trip/:id/inviteTripmate',

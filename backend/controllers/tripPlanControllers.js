@@ -8,7 +8,7 @@ import userModel from '../models/userModel.js'
 
 //-----------------------------------------------//
 
-export async function addNewTrip(req, res) {
+export async function createNewTrip(req, res) {
     try {
         const frontendData = req.body
         const accessKey = process.env.UNSPLASH_KEY
