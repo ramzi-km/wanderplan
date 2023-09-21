@@ -9,7 +9,7 @@ import { User } from 'src/app/interfaces/user.model';
   providedIn: 'root',
 })
 export class TripService {
-  private baseUrl = environment.API_URL+ '/api/trip'
+  private baseUrl = environment.API_URL + '/api/trip';
   constructor(private http: HttpClient) {}
 
   createTrip(data: CreateTrip) {
@@ -20,7 +20,7 @@ export class TripService {
   }
   getDetails(id: string) {
     return this.http.get<{ trip: Trip; message: string; editable: boolean }>(
-      `${this.baseUrl}/getDetails/${id}`,
+      `${this.baseUrl}/${id}/editTrip`,
     );
   }
   inviteTripMate(tripId: string, body: { userId: string }) {
@@ -101,8 +101,6 @@ export class TripService {
     );
   }
   deleteTrip(tripId: string) {
-    return this.http.delete<{ message: string }>(
-      `${this.baseUrl}/${tripId}`,
-    );
+    return this.http.delete<{ message: string }>(`${this.baseUrl}/${tripId}`);
   }
 }

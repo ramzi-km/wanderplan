@@ -5,6 +5,8 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import {
   Subject,
   debounceTime,
@@ -13,7 +15,9 @@ import {
   takeUntil,
 } from 'rxjs';
 import { MapboxPlaceFeature } from 'src/app/interfaces/mapbox-interface';
+import { GuideService } from 'src/app/services/guide/guide.service';
 import { MapboxService } from 'src/app/services/mapbox/mapbox.service';
+import * as guideEditActions from '../../../store/editingGuide/guide-edit.actions';
 
 @Component({
   selector: 'app-create-guide',
@@ -32,6 +36,9 @@ export class CreateGuideComponent implements OnInit {
   constructor(
     fb: FormBuilder,
     private mapboxService: MapboxService,
+    private guideService: GuideService,
+    private router: Router,
+    private store: Store,
   ) {
     this.createGuideForm = fb.group({
       place: ['', [Validators.required]],
@@ -97,18 +104,21 @@ export class CreateGuideComponent implements OnInit {
     } else {
       this.loading = true;
       const formValues = this.createGuideForm.value;
-      // this.tripService.createTrip(form).subscribe({
-      //   next: (response) => {
-      //     const trip = response.trip;
-      //     this.store.dispatch(tripEditActions.setTripEdit({ trip: trip }));
-      //     this.loading = false;
-      //     this.router.navigate(['trip/edit', trip._id]);
-      //   },
-      //   error: (errMessage) => {
-      //     console.log(errMessage);
-      //     this.loading = false;
-      //   },
-      // });
+      this.guideService.createGuide(formValues).subscribe({
+        next: (response) => {
+          const guide = response.guide;
+          this.store.dispatch(
+            guideEditActions.setEditingGuide({ guide: guide }),
+          );
+          this.loading = false;
+          console.log(guide);
+          this.router.navigate(['guide/edit', guide._id]);
+        },
+        error: (errMessage) => {
+          console.log(errMessage);
+          this.loading = false;
+        },
+      });
     }
   }
 

@@ -36,6 +36,7 @@ export async function createNewGuide(req, res) {
                     note: '',
                 },
             ],
+            likes: [],
         }
         if (photoUrl?.length > 3) {
             newGuideData.coverPhoto = photoUrl
@@ -54,10 +55,24 @@ export async function createNewGuide(req, res) {
 
         res.status(201).json({
             message: 'New guide created',
-            trip: guide,
+            guide: guide,
         })
     } catch (error) {
         console.error('Error creating new guide:', error)
         res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function getEditGuideDetails(req, res) {
+    try {
+        const guideId = req.params.guideId
+        const guide = await guideModel
+            .findById(guideId)
+            .populate('writer', '_id username name profilePic')
+            .exec()
+        return res.status(200).json({ message: 'Success', guide: guide })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Internal server error' })
     }
 }

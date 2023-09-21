@@ -69,15 +69,18 @@ import { adminEffects } from './admin/store/admin/admin.effects';
 import { adminReducer } from './admin/store/admin/admin.reducers';
 import { usersEffects } from './admin/store/users/users.effects';
 import { usersReducer } from './admin/store/users/users.reducers';
+import { editGuideReducer } from './store/editingGuide/guide-edit.reducers';
 import { editTripReducer } from './store/editingTrip/trip-edit.reducers';
 import { userEffects } from './store/user/user.effects';
 import { userReducer } from './store/user/user.reducers';
 
+import { GuideEditComponent } from './components/guide/guide-edit/guide-edit.component';
+import { GuideViewComponent } from './components/guide/guide-view/guide-view.component';
 import { CustomDateFormatPipe } from './pipes/custom-date-format.pipe';
 import { CustomDateFormat2Pipe } from './pipes/custom-date-format2.pipe';
 import { DateRangePipe } from './pipes/date-range.pipe';
-import { DaysToPipe } from './pipes/days-to.pipe';
 import { DateTimeFormatPipe } from './pipes/date-time-format.pipe';
+import { DaysToPipe } from './pipes/days-to.pipe';
 
 const config: SocketIoConfig = { url: environment.API_URL, options: {} };
 
@@ -115,6 +118,8 @@ const config: SocketIoConfig = { url: environment.API_URL, options: {} };
     CustomDateFormat2Pipe,
     GroupChatComponent,
     DateTimeFormatPipe,
+    GuideEditComponent,
+    GuideViewComponent,
   ],
   imports: [
     PickerComponent,
@@ -142,6 +147,7 @@ const config: SocketIoConfig = { url: environment.API_URL, options: {} };
       editTripState: editTripReducer,
       adminState: adminReducer,
       usersState: usersReducer,
+      editGuideState: editGuideReducer,
     }),
     EffectsModule.forRoot([userEffects, adminEffects, usersEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),

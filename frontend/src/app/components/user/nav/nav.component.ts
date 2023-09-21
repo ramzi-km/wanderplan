@@ -17,9 +17,7 @@ declare const google: any;
 export class NavComponent {
   theme = 'light';
   @HostListener('window:scroll', ['$event'])
-  onWindowScroll() {
-    //  this is  just to disable scrolling during navigation.
-  }
+  onWindowScroll() {}
   constructor(
     private router: Router,
     private userAuthService: UserAuthService,
@@ -46,13 +44,15 @@ export class NavComponent {
     id: '',
   };
   ngOnInit() {
-    // Subscribe to the NavigationEnd event of the Router.
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        // Scroll to the top of the page on each navigation end.
-        window.scrollTo(0, 0);
-      }
-    });
+    this.router.events
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          setTimeout(() => {
+            window.scrollTo(0, 0);
+          }, 100);
+        }
+      });
     if (localStorage.getItem('theme')) {
       this.theme = localStorage.getItem('theme')!;
     }

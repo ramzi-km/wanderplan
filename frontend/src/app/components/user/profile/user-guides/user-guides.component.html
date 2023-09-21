@@ -1,24 +1,55 @@
-<main class="grid grid-cols-1 gap-4 pt-10 md:grid-cols-2 lg:grid-cols-3">
-  <div class="relative max-w-sm">
-    <button class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2">
-      <i class="fa-solid fa-ellipsis"></i>
-    </button>
-    <a>
-      <img
-        class="h-40 w-full rounded-lg"
-        src="../../../../../assets/images/paris.jpeg"
-        alt=""
-      />
-    </a>
-    <div class="pt-3 p-1">
-      <a>
-        <h5 class="mb-2 text-lg font-semibold tracking-tight text-textp">
-          Trip to paris
-        </h5>
-      </a>
-      <p class="font-semibold text-textp -mt-2 pl-1">
-        <span><i class="fa-regular fa-heart"></i></span> 0
-      </p>
+<main class="relative">
+  <div *ngIf="loading">
+    <div
+      class="absolute inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-90 text-primary"
+    >
+      <span class="loading loading-infinity w-24"></span>
     </div>
+  </div>
+
+  <div
+    class="flex w-full flex-col items-center justify-center"
+    *ngIf="!userGuides[0]"
+  >
+    <img
+      class="w-1/2"
+      src="../../../../../assets/images/noTrips-removebg.png"
+    />
+    <h1 class="text-xl text-textp">
+      You don't have any guides.<a
+        class="text-blue-400"
+        routerLink="/create/guide"
+        >start writing</a
+      >
+    </h1>
+  </div>
+  <div class="grid grid-cols-1 gap-4 pt-10 md:grid-cols-2 lg:grid-cols-3">
+    <ng-container *ngFor="let guide of userGuides">
+      <div class="relative max-w-sm">
+        <button
+          class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
+        >
+          <i class="fa-solid fa-ellipsis"></i>
+        </button>
+        <a (click)="navigateTo(guide._id)">
+          <img
+            class="h-40 w-full rounded-lg object-cover"
+            src="{{ guide.coverPhoto }}"
+            alt=""
+          />
+        </a>
+        <div class="pt-3">
+          <a (click)="navigateTo(guide._id)">
+            <h5 class="mb-2 text-lg font-semibold tracking-tight text-textp">
+              {{ guide.name }}
+            </h5>
+          </a>
+          <p class="-mt-2 pl-1 font-semibold text-textp">
+            <span><i class="fa-regular fa-heart"></i></span>
+            {{ guide.likes.length }}
+          </p>
+        </div>
+      </div>
+    </ng-container>
   </div>
 </main>

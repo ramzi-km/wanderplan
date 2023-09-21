@@ -1,0 +1,202 @@
+<button
+  *ngIf="!isDrawerOpen()"
+  class="btn btn-primary fixed top-20 z-10 rounded-e-md rounded-s-none text-textp"
+  (click)="drawer.toggle()"
+>
+  <i class="fa-solid fa-angles-right"></i>
+</button>
+<mat-sidenav-container autosize class="bg-base-100">
+  <mat-sidenav
+    style="background-color: var(--secondary-color)"
+    mode="side"
+    opened
+    #drawer
+    class="relative mt-20"
+  >
+    <button
+      *ngIf="isDrawerOpen()"
+      class="btn btn-secondary absolute bottom-0 z-10 w-auto rounded-e-md rounded-s-none text-textp"
+      (click)="drawer.toggle()"
+    >
+      <i class="fa-solid fa-angles-left"></i>
+      Hide sidebar
+    </button>
+    <mat-nav-list class="mb-12 space-y-2">
+      <ul class="menu rounded-box">
+        <li>
+          <details open>
+            <summary class="btn-success">
+              <a
+                class="text-lg font-semibold"
+                (click)="$event.stopPropagation()"
+                (click)="scrollToSection(overview, 'overview')"
+                >Overview</a
+              >
+            </summary>
+            <ul class="text-textp">
+              <li class="w-28 truncate">
+                <p class="line-clamp-1">General Tips</p>
+              </li>
+              <li
+                class="w-28 truncate"
+                *ngFor="let section of guide.sections; let sectionI = index"
+              >
+                <p class="w-28 truncate">{{ section.name }}</p>
+              </li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content class="bg-base-100">
+    <div class="flex h-screen w-full">
+      <div
+        [ngClass]="isDrawerOpen() ? 'w-[55%]' : 'w-1/2'"
+        class="mt-20 w-1/2"
+        *ngIf="guide$ | async as guide"
+        #overview
+      >
+        <div class="relative h-2/5 w-full">
+          <div *ngIf="coverPhotoLoading">
+            <div
+              class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 text-primary"
+            >
+              <span class="loading loading-spinner loading-lg"></span>
+            </div>
+          </div>
+          <img
+            src="{{ guide.coverPhoto }}"
+            class="h-full w-full object-cover"
+            alt=""
+          />
+          <input
+            accept=".jpg,.jpeg,.png"
+            type="file"
+            #fileInput
+            style="display: none"
+          />
+          <button
+            type="button"
+            class="btn btn-circle btn-info btn-sm absolute right-5 top-5"
+            (click)="fileInput.click()"
+          >
+            <i class="fa-solid fa-pen"></i>
+          </button>
+        </div>
+
+        <div class="flex flex-col items-center">
+          <ng-container *ngIf="user$ | async as user">
+            <div class="card -mt-24 w-4/5 bg-secondary shadow-xl">
+              <div class="card-body">
+                <div class="flex">
+                  <span
+                    *ngIf="headingLoading"
+                    class="loading loading-spinner loading-sm text-primary"
+                  ></span>
+                  <input
+                    type="text"
+                    class="input card-title input-ghost w-full max-w-md text-ellipsis text-3xl text-textp"
+                    [(ngModel)]="guideHeadingInput"
+                  />
+                  <div class="dropdown dropdown-left ml-auto">
+                    <label
+                      tabindex="0"
+                      class="btn btn-circle btn-ghost btn-sm m-1 text-textp"
+                      ><i class="fa-solid fa-ellipsis"></i
+                    ></label>
+                    <ul
+                      tabindex="0"
+                      class="menu dropdown-content rounded-box z-[1] w-44 bg-base-100 p-2 text-textp shadow"
+                    >
+                      <li>
+                        <a (click)="showDeleteGuideModal()"
+                          ><i class="fa-regular fa-trash-can"></i> Delete this
+                          guide</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!---------- delete trip modal ------------->
+                <dialog id="deleteGuideModal" class="modal">
+                  <div
+                    class="modal-box relative h-full w-full max-w-md bg-secondary p-4 md:h-auto"
+                  >
+                    <!-- Modal content -->
+                    <div class="relative p-4 text-center sm:p-5">
+                      <button
+                        (click)="closeDeleteGuideModal()"
+                        type="button"
+                        class="absolute right-2.5 top-2.5 ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900"
+                      >
+                        <i class="fa-solid fa-xmark"></i>
+                      </button>
+                      <svg
+                        class="mx-auto mb-3.5 h-11 w-11 text-gray-400 dark:text-gray-500"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                      <p class="mb-4 text-textp">
+                        Are you sure you want to permanently delete "{{
+                          guide.name
+                        }}" ? This action is not reversible!
+                      </p>
+                      <div class="flex items-center justify-center space-x-4">
+                        <button
+                          (click)="closeDeleteGuideModal()"
+                          type="button"
+                          class="btn btn-success btn-outline btn-sm"
+                        >
+                          No, cancel
+                        </button>
+                        <button
+                          (click)="deleteGuide()"
+                          type="submit"
+                          class="btn btn-error btn-sm bg-red-600 text-white"
+                        >
+                          Yes, I'm sure
+                          <span
+                            *ngIf="deleteGuideLoading"
+                            class="loading loading-spinner loading-sm ml-2 text-white"
+                          ></span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </dialog>
+                <!---------- delete trip modal end ------------->
+
+                <div class="card-actions mt-8 justify-between">
+                  <span class="text-texts">
+                    <i class="fa-regular fa-calendar mr-2"></i>
+                    Created at:
+                    {{ guide.createdAt! | date }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <div class="my-16 flex w-full flex-col items-center justify-center">
+            <div class="w-full"></div>
+          </div>
+        </div>
+      </div>
+      <div
+        id="map"
+        [ngClass]="isDrawerOpen() ? 'w-[41%]' : 'w-1/2'"
+        class="fixed bottom-0 right-0 top-20 w-1/2"
+      ></div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

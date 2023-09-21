@@ -21,13 +21,8 @@ export const tripEditGuard: CanActivateFn = (route, state) => {
         return tripService.getDetails(routeId).pipe(
           take(1),
           map((res) => {
-            if (res.editable) {
-              store.dispatch(tripEditActions.setTripEdit({ trip: res.trip }));
-              return true;
-            } else {
-              router.navigate(['trip/view', routeId]);
-              return false;
-            }
+            store.dispatch(tripEditActions.setTripEdit({ trip: res.trip }));
+            return true;
           }),
           catchError((error) => {
             router.navigate(['/home']);

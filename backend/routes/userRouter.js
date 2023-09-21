@@ -26,6 +26,7 @@ import {
 
 import {
     acceptTripInvitation,
+    getAllGuides,
     getAllTrips,
     getUpcomingTrips,
     getUser,
@@ -56,6 +57,7 @@ import {
 } from '../controllers/tripPlanControllers.js'
 
 //------------itinerary-management-controllers-------------//
+
 import {
     addPlace,
     deleteItineraryPlace,
@@ -78,6 +80,14 @@ import {
     createMessage,
     getAllMessagesForRoom,
 } from '../controllers/chatControllers.js'
+
+//---------------------------guide-controllers------------------------//
+
+import {
+    createNewGuide,
+    getEditGuideDetails,
+} from '../controllers/guideControllers.js'
+import verifyGuideWriter from '../middlewares/verifyGuideWriter.js'
 
 //-------------------------------------------------------------------------//
 
@@ -104,6 +114,7 @@ router.patch('/user/resetPassword', verifyUser, resetPassword)
 
 router.get('/user/upcomingTrips', verifyUser, getUpcomingTrips)
 router.get('/user/getAllTrips', verifyUser, getAllTrips)
+router.get('/user/getAllGuides', verifyUser, getAllGuides)
 router.post(
     '/user/acceptTripInvitation/:tripId/:notificationId',
     verifyUser,
@@ -113,7 +124,7 @@ router.post(
 //--------------------user-trip-plans--------------------//
 
 router.post('/trip/create', verifyUser, createNewTrip)
-router.get('/trip/getDetails/:id', verifyUser, getTripDetails)
+router.get('/trip/:id/editTrip', verifyUser, verifyTripMate, getTripDetails)
 router.post(
     '/trip/:id/inviteTripmate',
     verifyUser,
@@ -247,6 +258,16 @@ router.get(
     verifyUser,
     verifyTripMate,
     getAllMessagesForRoom
+)
+
+//---------------------------user-guides---------------------------//
+
+router.post('/guide/create', verifyUser, createNewGuide)
+router.get(
+    '/guide/:guideId/editGuide',
+    verifyUser,
+    verifyGuideWriter,
+    getEditGuideDetails
 )
 
 export default router

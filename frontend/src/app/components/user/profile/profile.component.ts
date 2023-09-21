@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
 import { UserService } from 'src/app/services/user/user.service';
@@ -14,7 +15,7 @@ import { ProfileModalComponent } from './profile-modal/profile-modal.component';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
-export class ProfileComponent implements OnDestroy {
+export class ProfileComponent implements OnDestroy, OnInit {
   loading: boolean = false;
   resetPassForm: FormGroup;
   resetPassLoading = false;
@@ -26,6 +27,7 @@ export class ProfileComponent implements OnDestroy {
     private store: Store,
     private matDialog: MatDialog,
     private userService: UserService,
+    private router: Router,
   ) {
     this.resetPassForm = fb.group(
       {
@@ -70,6 +72,18 @@ export class ProfileComponent implements OnDestroy {
     return this.resetPassForm.controls;
   }
 
+  ngOnInit(): void {
+    this.router.events
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          const currentPosition = window.scrollY;
+          setTimeout(() => {
+            window.scrollTo(0, currentPosition);
+          }, 200);
+        }
+      });
+  }
   openDialog() {
     this.matDialog.open(ProfileModalComponent, {
       width: '350px',

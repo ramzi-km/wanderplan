@@ -3,6 +3,7 @@ import cloudinary from '../config/cloudinary.js'
 
 //------------------ models --------------------//
 
+import guideModel from '../models/guideModel.js'
 import tripModel from '../models/tripModel.js'
 import userModel from '../models/userModel.js'
 
@@ -248,6 +249,36 @@ export async function getAllTrips(req, res) {
             ])
             .exec()
         res.status(200).json({ trips: trips })
+    } catch (error) {
+        res.status(500).json({ message: 'Internal Server Error' })
+    }
+}
+export async function getAllGuides(req, res) {
+    try {
+        const user = req.user
+        const guides = await guideModel
+            .aggregate([
+                {
+                    $match: {
+                        writer: user._id,
+                    },
+                },
+                {
+                    $sort: {
+                        createdAt: 1,
+                    },
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        coverPhoto: 1,
+                        likes: 1,
+                    },
+                },
+            ])
+            .exec()
+        res.status(200).json({ guides: guides })
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' })
     }

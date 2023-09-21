@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environment';
+import { ShortGuideInfo } from 'src/app/interfaces/short-guide.interface';
 import { ShortTripInfo } from 'src/app/interfaces/short-trip.interface';
 import { User } from 'src/app/interfaces/user.model';
 
@@ -38,6 +39,11 @@ export class UserService {
   getAllTrips() {
     return this.http.get<{ trips: ShortTripInfo[] }>(
       `${this.baseUrl}/getAllTrips`,
+    );
+  }
+  getAllGuides() {
+    return this.http.get<{ guides: ShortGuideInfo[] }>(
+      `${this.baseUrl}/getAllGuides`,
     );
   }
   searchUsers(searchTerm: string) {

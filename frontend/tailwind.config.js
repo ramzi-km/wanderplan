@@ -50,5 +50,5 @@ export const daisyui = {
   ],
 };
 export const plugins = [
-  require("daisyui"), //require("flowbite/plugin")//
+  require("daisyui"),
 ];

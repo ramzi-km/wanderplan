@@ -117,29 +117,14 @@ export async function createNewTrip(req, res) {
 
 export async function getTripDetails(req, res) {
     try {
-        const user = req.user
         const tripId = req.params.id
-        let trip = await tripModel
+        const trip = await tripModel
             .findById(tripId)
-            .select('tripMates visibility')
-        if (trip?.tripMates.includes(user._id)) {
-            trip = await tripModel
-                .findById(tripId)
-                .populate('admin', '_id username name profilePic')
-                .populate('tripMates', '_id username name profilePic')
-                .populate('budget.expenses')
-                .exec()
-            return res
-                .status(200)
-                .json({ message: 'Success', trip: trip, editable: true })
-        } else if (trip?.visibility == 'public') {
-            trip = await tripModel.findById(tripId).select('adminId')
-            return res
-                .status(200)
-                .json({ message: 'success', trip: trip, editable: false })
-        } else {
-            return res.status(422).json({ message: 'invalid trip id' })
-        }
+            .populate('admin', '_id username name profilePic')
+            .populate('tripMates', '_id username name profilePic')
+            .populate('budget.expenses')
+            .exec()
+        return res.status(200).json({ message: 'Success', trip: trip })
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: 'Internal server error' })

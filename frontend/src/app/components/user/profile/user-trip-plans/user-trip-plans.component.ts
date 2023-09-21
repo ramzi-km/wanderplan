@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
+import { ShortTripInfo } from 'src/app/interfaces/short-trip.interface';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
@@ -16,7 +17,7 @@ export class UserTripPlansComponent implements OnInit, OnDestroy {
     private router: Router,
   ) {}
   private ngUnsubscribe = new Subject<void>();
-  userTrips: Array<any> = [];
+  userTrips: Array<ShortTripInfo> = [];
   loading = false;
   ngOnInit(): void {
     this.loading = true;
