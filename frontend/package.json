@@ -29,6 +29,7 @@
     "@ngrx/effects": "^16.1.0",
     "@ngrx/store": "^16.1.0",
     "@ngrx/store-devtools": "^16.1.0",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "autoprefixer": "^10.4.14",
     "critters": "^0.0.20",
     "mapbox-gl": "^2.15.0",

@@ -198,7 +198,7 @@ export class ItineraryComponent {
       this.showResults = false;
     }, 200);
   }
-  selectPlace(selectedPlace: any, dayId: string, dayIndex: number) {
+  selectPlace(selectedPlace: MapboxPlaceFeature, dayId: string, dayIndex: number) {
     this.inputControl.setValue('');
     const place = {
       name: selectedPlace.text,

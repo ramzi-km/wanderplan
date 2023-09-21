@@ -84,8 +84,17 @@ import {
 //---------------------------guide-controllers------------------------//
 
 import {
+    addPlaceToSection,
+    addSection,
+    changeGuideCoverPhoto,
+    changeGuideName,
     createNewGuide,
+    deleteGuide,
+    deleteSection,
     getEditGuideDetails,
+    updateGeneralTips,
+    updateSectionNote,
+    updateWritersRelation,
 } from '../controllers/guideControllers.js'
 import verifyGuideWriter from '../middlewares/verifyGuideWriter.js'
 
@@ -268,6 +277,55 @@ router.get(
     verifyUser,
     verifyGuideWriter,
     getEditGuideDetails
+)
+router.delete('/guide/:guideId', verifyUser, verifyGuideWriter, deleteGuide)
+router.patch(
+    '/guide/:guideId/coverPhoto',
+    verifyUser,
+    verifyGuideWriter,
+    changeGuideCoverPhoto
+)
+router.patch(
+    '/guide/:guideId/name',
+    verifyUser,
+    verifyGuideWriter,
+    changeGuideName
+)
+router.patch(
+    '/guide/:guideId/generalTips',
+    verifyUser,
+    verifyGuideWriter,
+    updateGeneralTips
+)
+router.patch(
+    '/guide/:guideId/writersRelation',
+    verifyUser,
+    verifyGuideWriter,
+    updateWritersRelation
+)
+router.post(
+    '/guide/:guideId/section',
+    verifyUser,
+    verifyGuideWriter,
+    addSection
+)
+router.delete(
+    '/guide/:guideId/section/:sectionId',
+    verifyUser,
+    verifyGuideWriter,
+    deleteSection
+)
+router.patch(
+    '/guide/:guideId/section/:sectionId/note',
+    verifyUser,
+    verifyGuideWriter,
+    updateSectionNote
+)
+router.post(
+    '/guide/:guideId/section/:sectionId/place',
+    verifyUser,
+    verifyGuideWriter,
+    addPlaceToSection
 )
 
 export default router

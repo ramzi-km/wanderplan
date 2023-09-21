@@ -19,12 +19,14 @@ export interface Guide {
 }
 
 export interface Section {
+  _id?: string;
   name?: string;
   note?: string;
   places: Place[];
 }
 
 export interface Place {
+  _id?: string;
   name: string;
   image?: string;
   description?: string;

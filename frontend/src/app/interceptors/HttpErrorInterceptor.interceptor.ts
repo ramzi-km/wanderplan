@@ -14,7 +14,7 @@ import * as adminActions from '../admin/store/admin/admin.actions';
 import * as userActions from '../store/user/user.actions';
 
 @Injectable()
-export class MainInterceptor implements HttpInterceptor {
+export class HttpErrorInterceptor implements HttpInterceptor {
   constructor(
     private store: Store,
     private router: Router,

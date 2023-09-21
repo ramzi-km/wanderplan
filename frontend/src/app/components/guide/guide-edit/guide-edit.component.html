@@ -34,14 +34,18 @@
               >
             </summary>
             <ul class="text-textp">
-              <li class="w-28 truncate">
+              <li (click)="scrollToDynamicSection('generalTips')" class="w-28">
                 <p class="line-clamp-1">General Tips</p>
               </li>
               <li
-                class="w-28 truncate"
+                class="w-28"
+                (click)="scrollToDynamicSection('' + sectionI)"
                 *ngFor="let section of guide.sections; let sectionI = index"
               >
-                <p class="w-28 truncate">{{ section.name }}</p>
+                <p *ngIf="section.name" class="line-clamp-1">
+                  {{ section.name }}
+                </p>
+                <p *ngIf="!section.name" class="line-clamp-1">Untitled</p>
               </li>
             </ul>
           </details>
@@ -75,6 +79,7 @@
             type="file"
             #fileInput
             style="display: none"
+            (change)="onFileSelected($event)"
           />
           <button
             type="button"
@@ -98,6 +103,7 @@
                     type="text"
                     class="input card-title input-ghost w-full max-w-md text-ellipsis text-3xl text-textp"
                     [(ngModel)]="guideHeadingInput"
+                    (blur)="onHeadingBlur()"
                   />
                   <div class="dropdown dropdown-left ml-auto">
                     <label
@@ -187,8 +193,98 @@
             </div>
           </ng-container>
 
-          <div class="my-16 flex w-full flex-col items-center justify-center">
-            <div class="w-full"></div>
+          <div class="my-10 flex w-full flex-col items-center justify-center">
+            <div class="w-full space-y-4 px-10">
+              <div class="flex w-full items-center justify-between px-10">
+                <div class="flex items-center space-x-2">
+                  <div class="avatar">
+                    <div class="w-14 rounded-full">
+                      <img [src]="guide.writer?.profilePic" />
+                    </div>
+                  </div>
+                  <span>{{ guide.writer?.username }}</span>
+                </div>
+                <div>
+                  <button class="btn btn-square">
+                    <i class="fa-regular fa-heart"></i>
+                    {{ guide.likes?.length }}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <textarea
+                  #writerRelationTextarea
+                  class="textarea w-full bg-secondary"
+                  appAutoResizeTextarea
+                  (blur)="updateWritersRelation(writerRelationTextarea.value)"
+                  [placeholder]="
+                    'Tell readers how you know ' +
+                    guide.place?.name +
+                    '(e.g., lived in ' +
+                    guide.place?.name +
+                    ',visited ' +
+                    guide.place?.name +
+                    ' for a week in 2022)'
+                  "
+                  >{{ guide.writersRelation }}</textarea
+                >
+                <div *ngIf="writersRelationsaving" class="flex justify-end">
+                  saving
+                  <span
+                    class="loading loading-dots loading-xs ml-1 mt-2"
+                  ></span>
+                </div>
+              </div>
+              <section class="section-generalTips scroll-m-20">
+                <div class="collapse collapse-arrow bg-base-100 text-textp">
+                  <input checked type="checkbox" />
+                  <div class="collapse-title text-xl font-semibold">
+                    General Tips
+                  </div>
+                  <div class="collapse-content">
+                    <textarea
+                      #generalTipsTextarea
+                      class="textarea w-full bg-secondary"
+                      appAutoResizeTextarea
+                      (blur)="updateGeneralTips(generalTipsTextarea.value)"
+                      placeholder="Write or paste anything here: how to get around,tips and tricks"
+                      >{{ guide.generalTips }}</textarea
+                    >
+                    <div *ngIf="generalTipsSaving" class="flex justify-end">
+                      saving
+                      <span
+                        class="loading loading-dots loading-xs ml-1 mt-2"
+                      ></span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <section
+                *ngFor="let section of guide?.sections; let sectionI = index"
+                ngClass="section-{{ sectionI }}"
+                class="scroll-m-20"
+              >
+                <app-guide-section
+                (accordionClicked)="onAccordionClicked($event)"
+                  [sectionI]="sectionI"
+                  [guide]="guide"
+                  [section]="section"
+                ></app-guide-section>
+              </section>
+              <div class="divider"></div>
+              <div class="mt-4 flex items-center justify-center">
+                <button
+                  (click)="addNewSection()"
+                  class="btn btn-primary rounded-full normal-case text-white"
+                >
+                  <i class="fa-solid fa-plus"></i> New section
+                  <span
+                    *ngIf="addSectionLoading"
+                    class="loading loading-spinner loading-sm ml-2 text-white"
+                  ></span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -93,9 +93,12 @@ export class NavComponent {
     });
   }
   shouldShowFooter(): boolean {
-    const excludedRoutePattern = /^\/trip\/edit\/.*/;
-    // Test if the current route matches the pattern
-    const shouldExclude = excludedRoutePattern.test(this.router.url);
+    const excludedRoutePatterns = [/^\/trip\/edit\/.*/, /^\/guide\/edit\/.*/];
+    const currentUrl = this.router.url;
+    
+    const shouldExclude = excludedRoutePatterns.some((pattern) =>
+      pattern.test(currentUrl),
+    );
     return !shouldExclude;
   }
 

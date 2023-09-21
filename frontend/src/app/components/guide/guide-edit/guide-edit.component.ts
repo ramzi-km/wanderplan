@@ -13,9 +13,10 @@ import { Store } from '@ngrx/store';
 import { environment } from 'environment';
 import mapboxgl from 'mapbox-gl';
 import { Subject, take, takeUntil } from 'rxjs';
-import { Guide } from 'src/app/interfaces/guide.interface';
+import { Guide, Place } from 'src/app/interfaces/guide.interface';
 import { GuideService } from 'src/app/services/guide/guide.service';
 import { UserService } from 'src/app/services/user/user.service';
+import * as guideEditActions from '../../../store/editingGuide/guide-edit.actions';
 import * as guideEditSelectors from '../../../store/editingGuide/guide-edit.selectors';
 import * as userSelectors from '../../../store/user/user.selectors';
 
@@ -31,6 +32,14 @@ export class GuideEditComponent implements OnInit, OnDestroy {
   scrollToSection(section: ElementRef, sectionName: string): void {
     section.nativeElement.scrollIntoView({ behavior: 'smooth' });
   }
+  scrollToDynamicSection(sectionI: string) {
+    const sectionElement = this.elementRef.nativeElement.querySelector(
+      `.section-${sectionI}`,
+    );
+    if (sectionElement) {
+      sectionElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
   private ngUnsubscribe$ = new Subject<void>();
   guide$ = this.store.select(guideEditSelectors.selectEditingGuide);
@@ -43,6 +52,10 @@ export class GuideEditComponent implements OnInit, OnDestroy {
   headingLoading = false;
   coverPhotoLoading = false;
   deleteGuideLoading = false;
+  generalTipsSaving = false;
+  writersRelationsaving = false;
+  addSectionLoading = false;
+  deleteSectionLoading = false;
 
   constructor(
     private store: Store,
@@ -51,6 +64,7 @@ export class GuideEditComponent implements OnInit, OnDestroy {
     private el: ElementRef,
     private userService: UserService,
     private router: Router,
+    private elementRef: ElementRef,
     fb: FormBuilder,
   ) {
     mapboxgl.accessToken = environment.MAPBOX_TOKEN;
@@ -90,7 +104,7 @@ export class GuideEditComponent implements OnInit, OnDestroy {
                 new mapboxgl.Popup().setHTML(
                   `<h1 class="text-lg font-bold">${place.name}</h1><br>
                   <div class="flex flex-col space-y-2"><img class="h-24 w-full rounded-lg object-cover"
-                  src="${place.image}"><p class="text-sm">${place.description}</p>
+                  src="${place.image}">
                   </div>
                   `,
                 ),
@@ -102,38 +116,206 @@ export class GuideEditComponent implements OnInit, OnDestroy {
       },
     });
   }
+
   isDrawerOpen(): boolean {
     return this.drawer?.opened || false;
   }
+
   showDeleteGuideModal() {
     const deleteGuideModal = document.getElementById(
       'deleteGuideModal',
     ) as HTMLDialogElement;
     deleteGuideModal.showModal();
   }
+
   closeDeleteGuideModal() {
     const deleteGuideModal = document.getElementById(
       'deleteGuideModal',
     ) as HTMLDialogElement;
     deleteGuideModal.close();
   }
+
   deleteGuide() {
     this.deleteGuideLoading = true;
-    // this.tripService
-    //   .deleteTrip(this.tripId)
-    //   .pipe(takeUntil(this.ngUnsubscribe))
-    //   .subscribe({
-    //     next: () => {
-    //       this.store.dispatch(tripEditActions.deleteTripEdit());
-    //       this.deleteTripLoading = false;
-    //       this.router.navigate(['/home']);
-    //     },
-    //     error: (errMessage) => {
-    //       this.deleteTripLoading = false;
-    //       console.log(errMessage);
-    //     },
-    //   });
+    this.guideService
+      .deleteGuide(this.guide._id!)
+      .pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe({
+        next: () => {
+          this.store.dispatch(guideEditActions.deleteGuideEdit());
+          this.deleteGuideLoading = false;
+          this.router.navigate(['/home']);
+        },
+        error: (errMessage) => {
+          this.deleteGuideLoading = false;
+          console.log(errMessage);
+        },
+      });
   }
+
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const base64String = e.target.result;
+        this.changeCoverPhoto(base64String);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  changeCoverPhoto(base64String: string): void {
+    this.coverPhotoLoading = true;
+    this.guideService
+      .changeCoverphoto(this.guide._id!, { coverPhoto: base64String })
+      .pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe({
+        next: (res) => {
+          this.store.dispatch(
+            guideEditActions.updateCoverPhoto({ coverPhoto: res.coverPhoto }),
+          );
+          this.coverPhotoLoading = false;
+        },
+        error: (errMessage: string) => {
+          console.log(errMessage);
+          this.coverPhotoLoading = false;
+        },
+      });
+  }
+
+  onHeadingBlur() {
+    this.headingLoading = true;
+    if (
+      this.guideHeadingInput?.trim().length > 3 &&
+      this.guideHeadingInput !== this.guide.name
+    ) {
+      this.guideService
+        .changeName(this.guide._id!, { guideName: this.guideHeadingInput })
+        .pipe(takeUntil(this.ngUnsubscribe$))
+        .subscribe({
+          next: (res) => {
+            this.store.dispatch(
+              guideEditActions.updateGuideName({ name: res.guideName }),
+            );
+            this.headingLoading = false;
+          },
+          error: (errMessage: string) => {
+            this.headingLoading = false;
+          },
+        });
+    } else {
+      this.headingLoading = false;
+      this.guideHeadingInput = this.guide.name!;
+    }
+  }
+
+  updateGeneralTips(newValue: string) {
+    if (newValue !== this.guide?.generalTips) {
+      this.generalTipsSaving = true;
+      this.guideService
+        .updateGeneralTips(this.guide?._id!, {
+          generalTips: newValue,
+        })
+        .pipe(takeUntil(this.ngUnsubscribe$))
+        .subscribe({
+          next: (res) => {
+            this.store.dispatch(
+              guideEditActions.updateGeneralTips({
+                generalTips: res.generalTips,
+              }),
+            );
+            this.generalTipsSaving = false;
+          },
+          error: (errMessage) => {
+            console.log(errMessage);
+            this.generalTipsSaving = false;
+          },
+        });
+    }
+  }
+
+  updateWritersRelation(newValue: string) {
+    if (newValue !== this.guide?.writersRelation) {
+      this.writersRelationsaving = true;
+      this.guideService
+        .updateWritersRelation(this.guide?._id!, {
+          writersRelation: newValue,
+        })
+        .pipe(takeUntil(this.ngUnsubscribe$))
+        .subscribe({
+          next: (res) => {
+            this.store.dispatch(
+              guideEditActions.updateWritersRelation({
+                writersRelation: res.writersRelation,
+              }),
+            );
+            this.writersRelationsaving = false;
+          },
+          error: (errMessage) => {
+            console.log(errMessage);
+            this.writersRelationsaving = false;
+          },
+        });
+    }
+  }
+
+  addNewSection() {
+    if (!this.addSectionLoading) {
+      this.addSectionLoading = true;
+      this.guideService
+        .addSection(this.guide._id!)
+        .pipe(takeUntil(this.ngUnsubscribe$))
+        .subscribe({
+          next: (res) => {
+            this.addSectionLoading = false;
+            this.store.dispatch(
+              guideEditActions.addSection({ section: res.section }),
+            );
+          },
+          error: (errMessage) => {
+            console.log(errMessage);
+            this.addSectionLoading = false;
+          },
+        });
+    }
+  }
+
+  onAccordionClicked(place: Place) {
+    this.map.flyTo({ center: place.coordinates, zoom: 13 });
+    let count = 0;
+    let flag = false;
+    for (const element of this.guide.sections || []) {
+      for (const item of element.places || []) {
+        if (place._id == item._id) {
+          flag = true;
+          break;
+        } else {
+          count++;
+        }
+      }
+      if (flag) {
+        break;
+      }
+    }
+    this.togglePopupByIndex(count);
+  }
+
+  togglePopupByIndex(index: number) {
+    if (this.currentMarker) {
+      const popup = this.currentMarker!.getPopup();
+      if (popup.isOpen()) {
+        this.currentMarker!.togglePopup();
+      }
+    }
+    if (index >= 0 && index < this.markers.length) {
+      const popup = this.markers[index].getPopup();
+      if (!popup.isOpen()) {
+        this.markers[index].togglePopup();
+      }
+      this.currentMarker = this.markers[index];
+    }
+  }
+
   ngOnDestroy(): void {
     this.ngUnsubscribe$.next();
     this.ngUnsubscribe$.complete();

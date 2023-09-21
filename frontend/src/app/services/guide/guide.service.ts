@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environment';
 import { createGuide } from 'src/app/interfaces/create-guide.interface';
-import { Guide } from 'src/app/interfaces/guide.interface';
+import { Guide, Place, Section } from 'src/app/interfaces/guide.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -17,9 +17,76 @@ export class GuideService {
       data,
     );
   }
-  getEditGuideDetails(id: string) {
+
+  getEditGuideDetails(guideId: string) {
     return this.http.get<{ guide: Guide; message: string }>(
-      `${this.baseUrl}/${id}/editGuide`,
+      `${this.baseUrl}/${guideId}/editGuide`,
+    );
+  }
+
+  deleteGuide(guideId: string) {
+    return this.http.delete<{ message: string }>(`${this.baseUrl}/${guideId}`);
+  }
+
+  changeCoverphoto(guideId: string, body: { coverPhoto: string }) {
+    return this.http.patch<{ coverPhoto: string; message: string }>(
+      `${this.baseUrl}/${guideId}/coverPhoto`,
+      body,
+    );
+  }
+
+  changeName(guideId: string, body: { guideName: string }) {
+    return this.http.patch<{ guideName: string; message: string }>(
+      `${this.baseUrl}/${guideId}/name`,
+      body,
+    );
+  }
+
+  updateGeneralTips(guideId: string, body: { generalTips: string }) {
+    return this.http.patch<{ generalTips: string; message: string }>(
+      `${this.baseUrl}/${guideId}/generalTips`,
+      body,
+    );
+  }
+
+  updateWritersRelation(guideId: string, body: { writersRelation: string }) {
+    return this.http.patch<{ writersRelation: string; message: string }>(
+      `${this.baseUrl}/${guideId}/writersRelation`,
+      body,
+    );
+  }
+
+  addSection(guideId: string) {
+    return this.http.post<{ section: Section; message: string }>(
+      `${this.baseUrl}/${guideId}/section`,
+      {},
+    );
+  }
+
+  deleteSection(guideId: string, sectionId: string) {
+    return this.http.delete<{ message: string }>(
+      `${this.baseUrl}/${guideId}/section/${sectionId}`,
+    );
+  }
+
+  updateSectionNote(
+    guideId: string,
+    sectionId: string,
+    body: { note: string },
+  ) {
+    return this.http.patch<{ message: string; note: string }>(
+      `${this.baseUrl}/${guideId}/section/${sectionId}/note`,
+      body,
+    );
+  }
+  addPlaceToSection(
+    guideId: string,
+    sectionId: string,
+    body: { place: Place },
+  ) {
+    return this.http.post<{ message: string; place: Place }>(
+      `${this.baseUrl}/${guideId}/section/${sectionId}/place`,
+      body,
     );
   }
 }
