@@ -93,7 +93,9 @@ import {
     deleteSection,
     getEditGuideDetails,
     updateGeneralTips,
+    updateSectionName,
     updateSectionNote,
+    updateSectionPlaceDescription,
     updateWritersRelation,
 } from '../controllers/guideControllers.js'
 import verifyGuideWriter from '../middlewares/verifyGuideWriter.js'
@@ -321,11 +323,24 @@ router.patch(
     verifyGuideWriter,
     updateSectionNote
 )
+router.patch(
+    '/guide/:guideId/section/:sectionId/name',
+    verifyUser,
+    verifyGuideWriter,
+    updateSectionName
+)
 router.post(
     '/guide/:guideId/section/:sectionId/place',
     verifyUser,
     verifyGuideWriter,
     addPlaceToSection
+)
+
+router.patch(
+    '/guide/:guideId/section/:sectionId/place/:placeId/description',
+    verifyUser,
+    verifyGuideWriter,
+    updateSectionPlaceDescription
 )
 
 export default router

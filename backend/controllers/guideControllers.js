@@ -273,6 +273,40 @@ export async function updateSectionNote(req, res) {
     }
 }
 
+export async function updateSectionName(req, res) {
+    try {
+        const guideId = req.params.guideId
+        const sectionId = req.params.sectionId
+        const newSectionName = req.body.name ?? ''
+
+        const guide = await guideModel.findByIdAndUpdate(
+            guideId,
+            {
+                $set: {
+                    'sections.$[section].name': newSectionName,
+                },
+            },
+            {
+                new: true,
+                arrayFilters: [{ 'section._id': sectionId }],
+            }
+        )
+        let name = ''
+        guide.sections.forEach((section) => {
+            if (section._id.toString() === sectionId) {
+                name = section.name
+            }
+        })
+        return res.status(200).json({
+            message: 'Section name updated successfully',
+            name: name,
+        })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
 export async function addPlaceToSection(req, res) {
     try {
         const guideId = req.params.guideId
@@ -312,7 +346,6 @@ export async function addPlaceToSection(req, res) {
                 place = section.places.pop()
             }
         })
-        console.log(place)
 
         return res.status(200).json({
             message: 'success',
@@ -320,6 +353,50 @@ export async function addPlaceToSection(req, res) {
         })
     } catch (error) {
         console.log(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function updateSectionPlaceDescription(req, res) {
+    try {
+        const guideId = req.params.guideId
+        const sectionId = req.params.sectionId
+        const placeId = req.params.placeId
+        const newDescription = req.body.description ?? ''
+
+        const guide = await guideModel.findOneAndUpdate(
+            {
+                _id: guideId,
+                'sections._id': sectionId,
+                'sections.places._id': placeId,
+            },
+            {
+                $set: {
+                    'sections.$[s].places.$[p].description': newDescription,
+                },
+            },
+            {
+                new: true,
+                arrayFilters: [{ 's._id': sectionId }, { 'p._id': placeId }],
+            }
+        )
+
+        if (!guide) {
+            return res
+                .status(400)
+                .json({ message: 'Guide, section, or place not found' })
+        }
+
+        const updatedPlace = guide.sections
+            .find((section) => section._id.toString() === sectionId)
+            .places.find((place) => place._id.toString() === placeId)
+
+        return res.status(200).json({
+            message: 'Place description updated successfully',
+            place: updatedPlace,
+        })
+    } catch (error) {
+        console.error(error)
         return res.status(500).json({ message: 'Internal server error' })
     }
 }

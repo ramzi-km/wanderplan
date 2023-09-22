@@ -44,8 +44,19 @@ export const updateSectionNote = createAction(
   '[GuideEdit Component] UpdateSectionNote',
   props<{ sectionId: string; note: string }>(),
 );
+
+export const updateSectionName = createAction(
+  '[GuideEdit Component] UpdateSectionName',
+  props<{ sectionId: string; name: string }>(),
+);
+
 export const addPlaceToSection = createAction(
   '[GuideEdit Component] AddPlaceToSection',
   props<{ sectionId: string; place: Place }>(),
+);
+
+export const updatePlaceInSection = createAction(
+  '[Guide Edit] UpdatePlaceInSection',
+  props<{ sectionId: string; placeId: string; updatedPlace: Partial<Place> }>()
 );
 

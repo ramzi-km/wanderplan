@@ -1,16 +1,78 @@
 <div class="flex w-full items-center justify-between">
   <button
+    (click)="showChangeTitleModal()"
     *ngIf="section?.name"
     class="btn btn-success btn-outline btn-sm rounded-full normal-case"
   >
     Change title <i class="fa-solid fa-pen"></i>
   </button>
   <button
+    (click)="showChangeTitleModal()"
     *ngIf="!section?.name"
     class="btn btn-success btn-outline btn-sm rounded-full normal-case"
   >
     Add title <i class="fa-solid fa-pen"></i>
   </button>
+  <!------------------ change title modal ----------------->
+
+  <dialog [id]="'changeTitleModal' + sectionI" class="modal">
+    <form
+      class="modal-box bg-secondary text-textp"
+      [formGroup]="changeTitleForm"
+      (ngSubmit)="submitChangeTitleForm()"
+    >
+      <div class="my-4 text-center text-2xl font-semibold">
+        <p>Title</p>
+      </div>
+      <button
+        type="button"
+        (click)="closeChangeTitleModal()"
+        class="btn btn-circle btn-ghost btn-sm absolute right-4 top-4"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div
+        *ngIf="changeTitleErrMessage"
+        class="alert alert-error mt-3 flex h-10"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6 shrink-0 stroke-current"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <span>{{ changeTitleErrMessage }}</span>
+      </div>
+
+      <div class="form-control">
+        <input
+          type="text"
+          placeholder="Add a title (e.g: restaurants)"
+          class="input input-bordered"
+          formControlName="name"
+        />
+      </div>
+      <div class="form-control mt-6">
+        <button type="submit" class="btn btn-primary text-textp">
+          Save
+          <span
+            *ngIf="changeTitleLoading"
+            class="loading loading-spinner loading-sm mb-1 ml-5 text-textp"
+          ></span>
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <!------------------ change title modal end ----------------->
+
   <label tabindex="0" class="tooltip mx-2" [attr.data-tip]="'delete section'">
     <button
       (click)="deleteSection(section?._id!)"
@@ -30,12 +92,15 @@
     checked
     type="checkbox"
   />
-  <div *ngIf="section?.name" class="collapse-title text-xl font-semibold">
+  <div
+    *ngIf="section?.name"
+    class="collapse-title truncate text-xl font-semibold"
+  >
     {{ section?.name }}
   </div>
   <div
     *ngIf="!section?.name"
-    class="collapse-title text-xl font-medium text-textg"
+    class="collapse-title truncate text-xl font-medium text-textg"
   >
     Add a title (e.g: restaurants)
   </div>
@@ -78,10 +143,23 @@
             #placeDescTextArea
             class="textarea w-full bg-base-100"
             appAutoResizeTextarea
-            placeholder="Write a description about this place"
+            placeholder="Write about this place"
+            (blur)="
+              updatePlaceDescription(
+                placeDescTextArea.value,
+                placeIndex,
+                place._id!
+              )
+            "
             >{{ place.description }}</textarea
           >
-          <div class="flex justify-end">
+          <div
+            *ngIf="
+              placeDescriptionSaving.value &&
+              placeDescriptionSaving.index == placeIndex
+            "
+            class="flex justify-end"
+          >
             saving
             <span class="loading loading-dots loading-xs ml-1 mt-2"></span>
           </div>
@@ -94,7 +172,11 @@
             src="{{ place.image }}"
             alt=""
           />
-          <div>
+          <div
+            *ngIf="
+              placeImageLoading.value && placeImageLoading.index == placeIndex
+            "
+          >
             <div
               class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 text-primary"
             >

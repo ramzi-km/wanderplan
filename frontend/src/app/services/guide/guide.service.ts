@@ -79,6 +79,17 @@ export class GuideService {
       body,
     );
   }
+  updateSectionName(
+    guideId: string,
+    sectionId: string,
+    body: { name: string },
+  ) {
+    return this.http.patch<{ message: string; name: string }>(
+      `${this.baseUrl}/${guideId}/section/${sectionId}/name`,
+      body,
+    );
+  }
+
   addPlaceToSection(
     guideId: string,
     sectionId: string,
@@ -86,6 +97,18 @@ export class GuideService {
   ) {
     return this.http.post<{ message: string; place: Place }>(
       `${this.baseUrl}/${guideId}/section/${sectionId}/place`,
+      body,
+    );
+  }
+
+  updateSectionPlaceDescription(
+    guideId: string,
+    sectionId: string,
+    placeId:string,
+    body: { description: string },
+  ) {
+    return this.http.patch<{ message: string; place: Place }>(
+      `${this.baseUrl}/${guideId}/section/${sectionId}/place/${placeId}/description`,
       body,
     );
   }

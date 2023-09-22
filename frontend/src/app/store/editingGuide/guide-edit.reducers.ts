@@ -91,6 +91,26 @@ export const editGuideReducer = createReducer(
       guide: updatedGuide,
     };
   }),
+  on(guideEditActions.updateSectionName, (state, { sectionId, name }) => {
+    const updatedSections = state.guide.sections!.map((section) => {
+      if (section._id === sectionId) {
+        return {
+          ...section,
+          name: name,
+        };
+      } else {
+        return section;
+      }
+    });
+    const updatedGuide = {
+      ...state.guide,
+      sections: updatedSections,
+    };
+    return {
+      ...state,
+      guide: updatedGuide,
+    };
+  }),
 
   on(guideEditActions.addPlaceToSection, (state, { sectionId, place }) => {
     const updatedSections = state.guide.sections!.map((section) => {
@@ -112,4 +132,40 @@ export const editGuideReducer = createReducer(
       guide: updatedGuide,
     };
   }),
+  on(
+    guideEditActions.updatePlaceInSection,
+    (state, { sectionId, placeId, updatedPlace }) => {
+      const updatedSections = state.guide.sections!.map((section) => {
+        if (section._id === sectionId) {
+          const updatedPlaces = section.places.map((place) => {
+            if (place._id === placeId) {
+              return {
+                ...place,
+                ...updatedPlace,
+              };
+            } else {
+              return place;
+            }
+          });
+
+          return {
+            ...section,
+            places: updatedPlaces,
+          };
+        } else {
+          return section;
+        }
+      });
+
+      const updatedGuide = {
+        ...state.guide,
+        sections: updatedSections,
+      };
+
+      return {
+        ...state,
+        guide: updatedGuide,
+      };
+    },
+  ),
 );

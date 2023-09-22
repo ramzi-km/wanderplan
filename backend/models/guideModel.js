@@ -10,7 +10,11 @@ const guideSchema = new Schema(
         name: {
             type: String,
         },
-        coverPhoto: String,
+        coverPhoto: {
+            type: String,
+            default:
+                'https://res.cloudinary.com/dbmujhmpe/image/upload/v1692011176/wanderplan/default-image_th3auj.jpg',
+        },
         place: {
             name: {
                 type: String,
@@ -36,8 +40,15 @@ const guideSchema = new Schema(
                             type: String,
                             required: true,
                         },
-                        image: String,
-                        description: String,
+                        image: {
+                            type: String,
+                            default:
+                                'https://res.cloudinary.com/dbmujhmpe/image/upload/v1692011176/wanderplan/default-image_th3auj.jpg',
+                        },
+                        description: {
+                            type: String,
+                            default: '',
+                        },
                         coordinates: {
                             type: [Number],
                             required: true,

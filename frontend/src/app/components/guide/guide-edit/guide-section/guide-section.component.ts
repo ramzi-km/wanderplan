@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import {
   Subject,
@@ -39,12 +39,29 @@ export class GuideSectionComponent implements OnInit, OnDestroy {
   addPlaceLoading = false;
   deleteSectionLoading = false;
   sectionNoteSaving = false;
+  changeTitleForm: FormGroup;
+  changeTitleErrMessage = '';
+  changeTitleLoading = false;
+  nameChangingSection!: Section;
+  placeDescriptionSaving = {
+    value: false,
+    index: 0,
+  };
+  placeImageLoading = {
+    value: false,
+    index: 0,
+  };
 
   constructor(
     private mapboxService: MapboxService,
     private store: Store,
     private guideService: GuideService,
-  ) {}
+    fb: FormBuilder,
+  ) {
+    this.changeTitleForm = fb.group({
+      name: [''],
+    });
+  }
 
   ngOnInit(): void {
     this.inputControl.valueChanges
@@ -158,6 +175,101 @@ export class GuideSectionComponent implements OnInit, OnDestroy {
   onPlaceClick(place: Place) {
     place = { ...place };
     this.accordionClicked.emit(place);
+  }
+
+  showChangeTitleModal() {
+    const value = this.section?.name ?? '';
+    this.changeTitleForm.patchValue({
+      name: value,
+    });
+    this.changeTitleErrMessage = '';
+    const changeTitleModal = document.getElementById(
+      'changeTitleModal' + this.sectionI,
+    ) as HTMLDialogElement;
+    changeTitleModal.showModal();
+  }
+  closeChangeTitleModal() {
+    this.changeTitleErrMessage = '';
+    const changeTitleModal = document.getElementById(
+      'changeTitleModal' + this.sectionI,
+    ) as HTMLDialogElement;
+    changeTitleModal.close();
+  }
+  submitChangeTitleForm() {
+    const { name } = this.changeTitleForm.value;
+    if (!this.changeTitleLoading && name != this.section?.name) {
+      this.changeTitleLoading = true;
+      this.guideService
+        .updateSectionName(
+          this.guide?._id!,
+          this.section?._id!,
+          this.changeTitleForm.value,
+        )
+        .pipe(takeUntil(this.ngUnsubscribe$))
+        .subscribe({
+          next: (res) => {
+            this.changeTitleErrMessage = '';
+            this.changeTitleLoading = false;
+            this.store.dispatch(
+              guideEditActions.updateSectionName({
+                sectionId: this.section?._id!,
+                name: res.name,
+              }),
+            );
+            this.closeChangeTitleModal();
+          },
+          error: (errMessage) => {
+            this.changeTitleErrMessage = errMessage;
+            this.changeTitleLoading = false;
+          },
+        });
+    } else {
+      this.closeChangeTitleModal();
+    }
+  }
+
+  updatePlaceDescription(
+    newValue: string,
+    placeIndex: number,
+    placeId: string,
+  ) {
+    const oldValue = this.section?.places[placeIndex].description ?? '';
+    if (newValue != oldValue) {
+      this.placeDescriptionSaving = {
+        value: true,
+        index: placeIndex,
+      };
+      this.guideService
+        .updateSectionPlaceDescription(
+          this.guide?._id!,
+          this.section?._id!,
+          placeId,
+          { description: newValue },
+        )
+        .pipe(takeUntil(this.ngUnsubscribe$))
+        .subscribe({
+          next: (res) => {
+            this.store.dispatch(
+              guideEditActions.updatePlaceInSection({
+                sectionId: this.section?._id!,
+                placeId,
+                updatedPlace: res.place,
+              }),
+            );
+            this.placeDescriptionSaving = {
+              value: false,
+              index: 0,
+            };
+          },
+          error: (errMessage) => {
+            console.log(errMessage);
+            this.placeDescriptionSaving = {
+              value: false,
+              index: 0,
+            };
+          },
+        });
+    }
   }
 
   ngOnDestroy(): void {
