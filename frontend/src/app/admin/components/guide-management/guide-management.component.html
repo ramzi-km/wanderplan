@@ -1,0 +1,127 @@
+<div class="p-5">
+  <div class="mx-1 my-4">
+    <label
+      for="default-search"
+      class="sr-only mb-2 text-sm font-medium text-textg"
+      >Search</label
+    >
+    <div class="relative">
+      <div
+        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+      >
+        <svg
+          class="h-4 w-4 text-gray-500"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 20 20"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+          />
+        </svg>
+      </div>
+      <input
+        type="text"
+        id="default-search"
+        class="block w-full rounded-lg border border-textg bg-secondary p-4 pl-10 text-sm text-textp focus:border-blue-500 focus:ring-blue-500"
+        placeholder="Search username, email..."
+        [(ngModel)]="searchText"
+      />
+      <button
+        type="submit"
+        class="absolute bottom-2.5 right-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
+      >
+        Search
+      </button>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto rounded-xl">
+    <table class="table border border-textg bg-secondary text-textp">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th class="font-bold text-textp">N.O</th>
+          <th class="font-bold text-textp">Name</th>
+          <th class="font-bold text-textp">Place</th>
+          <th class="font-bold text-textp">writer</th>
+          <th class="font-bold text-textp">likes</th>
+          <th class="font-bold text-textp">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <ng-container *ngFor="let guide of guides; let i = index">
+          <tr
+            *ngIf="
+              searchText.trim() == '' ||
+              guide.name?.toLocaleLowerCase()?.includes(searchText.trim()) ||
+              guide.place
+                ?.name!.toLocaleLowerCase()
+                ?.includes(searchText.trim()) ||
+              guide.writer?.username
+                ?.toLocaleLowerCase()
+                ?.includes(searchText.trim())
+            "
+          >
+            <td>{{ i + 1 }}</td>
+            <td>
+              <div class="flex items-center space-x-3">
+                <div class="avatar">
+                  <div class="mask mask-squircle h-12 w-12">
+                    <img [src]="guide.coverPhoto" alt="Avatar" />
+                  </div>
+                </div>
+                <div>
+                  <div class="font-medium">{{ guide.name }}</div>
+                </div>
+              </div>
+            </td>
+            <td>{{ guide.place?.name }}</td>
+            <td>{{ guide.writer?.username }}</td>
+            <td>{{ guide.likes?.length }}</td>
+            <th>
+              <ng-container *ngIf="guide.unList">
+                <button
+                  class="btn btn-sm bg-primary text-gray-100 hover:bg-gray-200 hover:text-primary"
+                >
+                  <i class="fa-solid fa-unlock"></i> list
+                </button>
+              </ng-container>
+              <ng-container *ngIf="!guide.unList">
+                <button
+                  class="btn btn-sm bg-red-600 text-gray-100 hover:bg-gray-200 hover:text-red-600"
+                >
+                  <i class="fa-solid fa-ban"></i> Unlist
+                </button>
+              </ng-container>
+            </th>
+          </tr>
+        </ng-container>
+      </tbody>
+      <!-- foot -->
+      <tfoot>
+        <tr>
+          <th>N.O</th>
+          <th>Name</th>
+          <th>Place</th>
+          <th>writer</th>
+          <th>likes</th>
+          <th>Actions</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div *ngIf="loading">
+    <div
+      class="fixed inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-60 text-primary"
+    >
+      <span class="loading loading-infinity w-24"></span>
+    </div>
+  </div>
+</div>

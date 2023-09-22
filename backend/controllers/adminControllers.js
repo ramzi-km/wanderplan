@@ -1,4 +1,5 @@
 import categoryModel from '../models/categoryModel.js'
+import guideModel from '../models/guideModel.js'
 import userModel from '../models/userModel.js'
 
 export async function getAllUsers(req, res) {
@@ -34,6 +35,21 @@ export async function getAllCategories(req, res) {
     try {
         const categories = await categoryModel.find().lean()
         res.status(200).json({ message: 'success', categories: categories })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function getAllGuides(req, res) {
+    try {
+        const guides = await guideModel
+            .find()
+            .populate('writer', '_id username name profilePic')
+            .lean()
+            .exec()
+
+        res.status(200).json({ message: 'success', guides: guides })
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: 'Internal server error' })

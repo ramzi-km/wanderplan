@@ -16,6 +16,7 @@ export interface Guide {
   likes?: string[];
   createdAt?: Date;
   updatedAt?: Date;
+  unList?: boolean;
 }
 
 export interface Section {

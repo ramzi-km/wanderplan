@@ -63,6 +63,10 @@ const guideSchema = new Schema(
                 ref: 'User',
             },
         ],
+        unList: {
+            type: Boolean,
+            default: false,
+        },
     },
     { timestamps: true }
 )

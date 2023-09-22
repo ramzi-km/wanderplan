@@ -9,6 +9,7 @@ import {
     blockUser,
     editCategory,
     getAllCategories,
+    getAllGuides,
     getAllUsers,
     toggleUnlistCategory,
 } from '../controllers/adminControllers.js'
@@ -32,5 +33,9 @@ router.patch(
     verifyAdmin,
     toggleUnlistCategory
 )
+
+//-------------------guide management--------------------//
+
+router.get('/guides', verifyAdmin, getAllGuides)
 
 export default router
