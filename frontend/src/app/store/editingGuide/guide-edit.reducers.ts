@@ -168,4 +168,30 @@ export const editGuideReducer = createReducer(
       };
     },
   ),
+  on(guideEditActions.deletePlaceInSection, (state, { sectionId, placeId }) => {
+    const updatedSections = state.guide.sections!.map((section) => {
+      if (section._id === sectionId) {
+        const updatedPlaces = section.places.filter(
+          (place) => place._id !== placeId,
+        );
+
+        return {
+          ...section,
+          places: updatedPlaces,
+        };
+      } else {
+        return section;
+      }
+    });
+
+    const updatedGuide = {
+      ...state.guide,
+      sections: updatedSections,
+    };
+
+    return {
+      ...state,
+      guide: updatedGuide,
+    };
+  }),
 );

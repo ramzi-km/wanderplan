@@ -60,3 +60,8 @@ export const updatePlaceInSection = createAction(
   props<{ sectionId: string; placeId: string; updatedPlace: Partial<Place> }>()
 );
 
+export const deletePlaceInSection = createAction(
+  '[Guide Edit] Delete Place in Section',
+  props<{ sectionId: string; placeId: string }>()
+);
+

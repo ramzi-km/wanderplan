@@ -400,3 +400,90 @@ export async function updateSectionPlaceDescription(req, res) {
         return res.status(500).json({ message: 'Internal server error' })
     }
 }
+
+export async function updateSectionPlacePhoto(req, res) {
+    try {
+        const guideId = req.params.guideId
+        const sectionId = req.params.sectionId
+        const placeId = req.params.placeId
+        const newPhoto = req.body.image
+        console.log(newPhoto)
+
+        if (!newPhoto) {
+            return res.status(400).json({ message: 'provide image' })
+        }
+
+        const image = await cloudinary.uploader.upload(newPhoto, {
+            folder: 'wanderplan',
+        })
+
+        const guide = await guideModel.findOneAndUpdate(
+            {
+                _id: guideId,
+                'sections._id': sectionId,
+                'sections.places._id': placeId,
+            },
+            {
+                $set: {
+                    'sections.$[s].places.$[p].image': image.secure_url,
+                },
+            },
+            {
+                new: true,
+                arrayFilters: [{ 's._id': sectionId }, { 'p._id': placeId }],
+            }
+        )
+
+        if (!guide) {
+            return res
+                .status(404)
+                .json({ message: 'Guide, section, or place not found' })
+        }
+
+        const updatedPlace = guide.sections
+            .find((section) => section._id.toString() === sectionId)
+            .places.find((place) => place._id.toString() === placeId)
+
+        return res.status(200).json({
+            message: 'Place photo updated successfully',
+            place: updatedPlace,
+        })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function deleteSectionPlace(req, res) {
+    try {
+        const guideId = req.params.guideId
+        const sectionId = req.params.sectionId
+        const placeId = req.params.placeId
+
+        const guide = await guideModel.findByIdAndUpdate(
+            guideId,
+            {
+                $pull: {
+                    'sections.$[s].places': { _id: placeId },
+                },
+            },
+            {
+                new: true,
+                arrayFilters: [{ 's._id': sectionId }],
+            }
+        )
+
+        if (!guide) {
+            return res
+                .status(404)
+                .json({ message: 'Guide or section not found' })
+        }
+
+        return res.status(200).json({
+            message: 'Place deleted successfully',
+        })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}

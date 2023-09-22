@@ -104,12 +104,30 @@ export class GuideService {
   updateSectionPlaceDescription(
     guideId: string,
     sectionId: string,
-    placeId:string,
+    placeId: string,
     body: { description: string },
   ) {
     return this.http.patch<{ message: string; place: Place }>(
       `${this.baseUrl}/${guideId}/section/${sectionId}/place/${placeId}/description`,
       body,
+    );
+  }
+
+  updateSectionPlaceImage(
+    guideId: string,
+    sectionId: string,
+    placeId: string,
+    body: { image: string },
+  ) {
+    return this.http.patch<{ message: string; place: Place }>(
+      `${this.baseUrl}/${guideId}/section/${sectionId}/place/${placeId}/image`,
+      body,
+    );
+  }
+
+  deleteSectionPlace(guideId: string, sectionId: string, placeId: string) {
+    return this.http.delete<{ message: string }>(
+      `${this.baseUrl}/${guideId}/section/${sectionId}/place/${placeId}`,
     );
   }
 }

@@ -51,6 +51,10 @@ export class GuideSectionComponent implements OnInit, OnDestroy {
     value: false,
     index: 0,
   };
+  deletePlaceLoading = {
+    value: false,
+    index: 0,
+  };
 
   constructor(
     private mapboxService: MapboxService,
@@ -256,20 +260,91 @@ export class GuideSectionComponent implements OnInit, OnDestroy {
                 updatedPlace: res.place,
               }),
             );
+
             this.placeDescriptionSaving = {
               value: false,
-              index: 0,
+              index: placeIndex,
             };
           },
           error: (errMessage) => {
             console.log(errMessage);
             this.placeDescriptionSaving = {
               value: false,
-              index: 0,
+              index: placeIndex,
             };
           },
         });
     }
+  }
+
+  onFileSelected(event: any, placeIndex: number, placeId: string): void {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const base64String = e.target.result;
+        this.changePlaceImage(base64String, placeIndex, placeId);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  changePlaceImage(
+    base64String: string,
+    placeIndex: number,
+    placeId: string,
+  ): void {
+    this.placeImageLoading = { value: true, index: placeIndex };
+    this.guideService
+      .updateSectionPlaceImage(this.guide?._id!, this.section?._id!, placeId, {
+        image: base64String,
+      })
+      .pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe({
+        next: (res) => {
+          this.store.dispatch(
+            guideEditActions.updatePlaceInSection({
+              sectionId: this.section?._id!,
+              placeId,
+              updatedPlace: res.place,
+            }),
+          );
+          this.placeImageLoading = { value: false, index: placeIndex };
+        },
+        error: (errMessage: string) => {
+          this.placeImageLoading = { value: false, index: placeIndex };
+        },
+      });
+  }
+
+  deletePlace(placeIndex: number, placeId: string) {
+    this.deletePlaceLoading = {
+      value: true,
+      index: placeIndex,
+    };
+    this.guideService
+      .deleteSectionPlace(this.guide?._id!, this.section?._id!, placeId)
+      .pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe({
+        next: (res) => {
+          this.store.dispatch(
+            guideEditActions.deletePlaceInSection({
+              sectionId: this.section?._id!,
+              placeId,
+            }),
+          );
+          this.deletePlaceLoading = {
+            value: false,
+            index: placeIndex,
+          };
+        },
+        error: (errMessage: string) => {
+          this.deletePlaceLoading = {
+            value: false,
+            index: placeIndex,
+          };
+        },
+      });
   }
 
   ngOnDestroy(): void {

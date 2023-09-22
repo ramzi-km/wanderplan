@@ -190,6 +190,7 @@
           type="file"
           #fileInput
           style="display: none"
+          (change)="onFileSelected($event, placeIndex, place._id!)"
         />
         <button
           type="button"
@@ -200,11 +201,18 @@
           Change photo
         </button>
         <button
+          (click)="deletePlace(placeIndex, place._id!)"
           type="button"
           class="btn btn-error btn-sm w-full rounded-full normal-case text-white"
         >
           <i class="fa-solid fa-trash-can"></i>
           Delete place
+          <span
+            *ngIf="
+              deletePlaceLoading.value && deletePlaceLoading.index == placeIndex
+            "
+            class="loading loading-spinner loading-sm ml-2 text-white"
+          ></span>
         </button>
       </div>
     </div>

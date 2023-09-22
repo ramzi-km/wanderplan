@@ -91,11 +91,13 @@ import {
     createNewGuide,
     deleteGuide,
     deleteSection,
+    deleteSectionPlace,
     getEditGuideDetails,
     updateGeneralTips,
     updateSectionName,
     updateSectionNote,
     updateSectionPlaceDescription,
+    updateSectionPlacePhoto,
     updateWritersRelation,
 } from '../controllers/guideControllers.js'
 import verifyGuideWriter from '../middlewares/verifyGuideWriter.js'
@@ -337,10 +339,24 @@ router.post(
 )
 
 router.patch(
+    '/guide/:guideId/section/:sectionId/place/:placeId/image',
+    verifyUser,
+    verifyGuideWriter,
+    updateSectionPlacePhoto
+)
+
+router.patch(
     '/guide/:guideId/section/:sectionId/place/:placeId/description',
     verifyUser,
     verifyGuideWriter,
     updateSectionPlaceDescription
+)
+
+router.delete(
+    '/guide/:guideId/section/:sectionId/place/:placeId',
+    verifyUser,
+    verifyGuideWriter,
+    deleteSectionPlace
 )
 
 export default router
