@@ -16,6 +16,7 @@ import { usersEffects } from './store/users/users.effects';
 import { usersReducer } from './store/users/users.reducers';
 import { CategoryManagementComponent } from './components/category-management/category-management.component';
 import { GuideManagementComponent } from './components/guide-management/guide-management.component';
+import { ItineraryManagementComponent } from './components/itinerary-management/itinerary-management.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { GuideManagementComponent } from './components/guide-management/guide-ma
     UserManagementComponent,
     CategoryManagementComponent,
     GuideManagementComponent,
+    ItineraryManagementComponent,
   ],
   imports: [
     CommonModule,

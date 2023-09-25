@@ -1,5 +1,6 @@
 import categoryModel from '../models/categoryModel.js'
 import guideModel from '../models/guideModel.js'
+import tripModel from '../models/tripModel.js'
 import userModel from '../models/userModel.js'
 
 export async function getAllUsers(req, res) {
@@ -50,6 +51,73 @@ export async function getAllGuides(req, res) {
             .exec()
 
         res.status(200).json({ message: 'success', guides: guides })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function toggleUnlistGuide(req, res) {
+    const guideId = req.params.guideId
+    try {
+        const guide = await guideModel
+            .findById(guideId)
+            .populate('writer', '_id username name profilePic')
+            .exec()
+
+        if (!guide) {
+            return res.status(422).json({ message: 'Guide not found' })
+        }
+
+        guide.unList = !guide.unList
+        await guide.save()
+
+        const message = guide.unList ? 'Guide unlisted' : 'Guide listed'
+
+        res.status(200).json({ message, guide })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function getAllItineraries(req, res) {
+    try {
+        const trips = await tripModel
+            .find({ visibility: 'public' })
+            .select('name place coverPhoto admin unList _id')
+            .populate('admin', '_id username name profilePic')
+            .lean()
+            .exec()
+
+        res.status(200).json({ message: 'success', itineraries: trips })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function toggleUnlistItinerary(req, res) {
+    const itineraryId = req.params.itineraryId
+    try {
+        const itinerary = await tripModel
+            .findById(itineraryId)
+            .select('name place coverPhoto admin unList _id')
+            .populate('admin', '_id username name profilePic')
+            .exec()
+
+        if (!itinerary) {
+            return res.status(422).json({ message: 'Itinerary not found' })
+        }
+
+        itinerary.unList = !itinerary.unList
+        await itinerary.save()
+
+        const message = itinerary.unList
+            ? 'Itinerary unlisted'
+            : 'Itinerary listed'
+
+        res.status(200).json({ message, itinerary })
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: 'Internal server error' })

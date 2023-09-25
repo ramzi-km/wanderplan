@@ -9,6 +9,7 @@ import { CategoryManagementComponent } from './components/category-management/ca
 import { GuideManagementComponent } from './components/guide-management/guide-management.component';
 import { UserManagementComponent } from './components/user-management/user-management.component';
 
+import { ItineraryManagementComponent } from './components/itinerary-management/itinerary-management.component';
 import { adminAuthGuard } from './guards/admin-auth.guard';
 import { adminLoginGuard } from './guards/admin-login.guard';
 
@@ -26,6 +27,7 @@ const routes: Routes = [
       { path: 'userManagement', component: UserManagementComponent },
       { path: 'categoryManagement', component: CategoryManagementComponent },
       { path: 'guideManagement', component: GuideManagementComponent },
+      { path: 'itineraryManagement', component: ItineraryManagementComponent },
       { path: '**', component: ErrorComponent },
     ],
     canActivate: [adminAuthGuard],

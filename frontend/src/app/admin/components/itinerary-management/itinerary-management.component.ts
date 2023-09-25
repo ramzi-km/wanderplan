@@ -1,67 +1,68 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { Guide } from 'src/app/interfaces/guide.interface';
-import { GuideManagementService } from '../../services/guide-management.service';
+import { Trip } from 'src/app/interfaces/trip.interface';
+import { ItinerariesManagementService } from '../../services/itineraries-management.service';
 
 @Component({
-  selector: 'app-guide-management',
-  templateUrl: './guide-management.component.html',
-  styleUrls: ['./guide-management.component.scss'],
+  selector: 'app-itinerary-management',
+  templateUrl: './itinerary-management.component.html',
+  styleUrls: ['./itinerary-management.component.scss'],
 })
-export class GuideManagementComponent implements OnInit, OnDestroy {
-  constructor(private guideManagementService: GuideManagementService) {}
+export class ItineraryManagementComponent implements OnInit, OnDestroy {
+  constructor(private itinerariesManagement: ItinerariesManagementService) {}
 
   private ngUnsubscribe$ = new Subject<void>();
   searchText = '';
-  guides: Array<Guide> = [];
+  itineraries: Array<Trip> = [];
   loading = false;
-  unlistGuideLoading = {
+  unListItineraryLoading = {
     value: false,
     id: '',
   };
 
   ngOnInit(): void {
     this.loading = true;
-    this.guideManagementService
+    this.itinerariesManagement
       .getAllGuides()
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe({
         next: (res) => {
           this.loading = false;
-          this.guides = res.guides;
+          this.itineraries = res.itineraries;
         },
         error: (errMessage) => {
           this.loading = false;
         },
       });
   }
-  toggleUnlist(guideId: string) {
-    if (!this.unlistGuideLoading.value) {
-      this.unlistGuideLoading = {
+  toggleUnlist(itineraryId: string) {
+    if (!this.unListItineraryLoading.value) {
+      this.unListItineraryLoading = {
         value: true,
-        id: guideId,
+        id: itineraryId,
       };
     }
-    this.guideManagementService
-      .toggleUnlistGuide(guideId)
+    this.itinerariesManagement
+      .toggleUnlistGuide(itineraryId)
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe({
         next: (res) => {
-          this.guides = this.guides.map((guide) => {
-            if (guide._id == res.guide._id) {
-              return res.guide;
+          this.itineraries = this.itineraries.map((itinerary) => {
+            if (itinerary._id == res.itinerary._id) {
+              return res.itinerary;
             } else {
-              return guide;
+              return itinerary;
             }
           });
-          this.unlistGuideLoading = {
+          this.unListItineraryLoading = {
             value: false,
             id: '',
           };
         },
         error: (errMessage) => {
           console.log(errMessage);
-          this.unlistGuideLoading = {
+          this.unListItineraryLoading = {
             value: false,
             id: '',
           };

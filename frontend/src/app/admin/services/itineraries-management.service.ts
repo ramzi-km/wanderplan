@@ -2,22 +2,23 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environment';
 import { Guide } from 'src/app/interfaces/guide.interface';
+import { Trip } from 'src/app/interfaces/trip.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class GuideManagementService {
+export class ItinerariesManagementService {
   private baseUrl = environment.API_URL + '/api/admin';
   constructor(private http: HttpClient) {}
 
   getAllGuides() {
-    return this.http.get<{ guides: Guide[]; message: string }>(
-      `${this.baseUrl}/guides`,
+    return this.http.get<{ itineraries: Trip[]; message: string }>(
+      `${this.baseUrl}/itineraries`,
     );
   }
-  toggleUnlistGuide(guideId: string) {
-    return this.http.patch<{ guide: Guide; message: string }>(
-      `${this.baseUrl}/guides/${guideId}/toggleUnlist`,
+  toggleUnlistGuide(itineraryId: string) {
+    return this.http.patch<{ itinerary: Trip; message: string }>(
+      `${this.baseUrl}/itineraries/${itineraryId}/toggleUnlist`,
       {},
     );
   }

@@ -44,49 +44,56 @@ const itineraryPlaceSchema = new Schema({
     expense: { type: Schema.Types.ObjectId, ref: 'Expense' },
 })
 
-const tripSchema = new Schema({
-    admin: { type: Schema.Types.ObjectId, ref: 'User' },
-    name: String,
-    startDate: Date,
-    endDate: Date,
-    coverPhoto: {
-        type: String,
-        default:
-            'https://res.cloudinary.com/dbmujhmpe/image/upload/v1692011176/wanderplan/default-image_th3auj.jpg',
-    },
-    place: {
+const tripSchema = new Schema(
+    {
+        admin: { type: Schema.Types.ObjectId, ref: 'User' },
         name: String,
-        extendedName: String,
-        coordinates: [Number],
-    },
-    tripMates: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    invitedTripMates: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    visibility: {
-        type: String,
-        default: 'private',
-    },
-    overview: {
-        description: {
+        startDate: Date,
+        endDate: Date,
+        coverPhoto: {
             type: String,
-            default: '',
+            default:
+                'https://res.cloudinary.com/dbmujhmpe/image/upload/v1692011176/wanderplan/default-image_th3auj.jpg',
         },
-        notes: String,
-        placesToVisit: [placeToVisitSchema],
-    },
-    itinerary: [
-        {
-            Date: Date,
-            subheading: {
+        place: {
+            name: String,
+            extendedName: String,
+            coordinates: [Number],
+        },
+        tripMates: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+        invitedTripMates: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+        visibility: {
+            type: String,
+            default: 'private',
+        },
+        overview: {
+            description: {
                 type: String,
                 default: '',
             },
-            places: [itineraryPlaceSchema],
+            notes: String,
+            placesToVisit: [placeToVisitSchema],
         },
-    ],
-    budget: {
-        limit: { type: Number },
-        expenses: [{ type: Schema.Types.ObjectId, ref: 'Expense' }],
+        itinerary: [
+            {
+                Date: Date,
+                subheading: {
+                    type: String,
+                    default: '',
+                },
+                places: [itineraryPlaceSchema],
+            },
+        ],
+        budget: {
+            limit: { type: Number },
+            expenses: [{ type: Schema.Types.ObjectId, ref: 'Expense' }],
+        },
+        unList: {
+            type: Boolean,
+            default: false,
+        },
     },
-})
+    { timestamps: true }
+)
 
 export default model('Trip', tripSchema)

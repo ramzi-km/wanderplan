@@ -10,8 +10,11 @@ import {
     editCategory,
     getAllCategories,
     getAllGuides,
+    getAllItineraries,
     getAllUsers,
     toggleUnlistCategory,
+    toggleUnlistGuide,
+    toggleUnlistItinerary,
 } from '../controllers/adminControllers.js'
 import verifyAdmin from '../middlewares/verifyAdmin.js'
 const router = express.Router()
@@ -37,5 +40,15 @@ router.patch(
 //-------------------guide management--------------------//
 
 router.get('/guides', verifyAdmin, getAllGuides)
+router.patch('/guides/:guideId/toggleUnlist', verifyAdmin, toggleUnlistGuide)
+
+//-------------------itinerary management--------------------//
+
+router.get('/itineraries', verifyAdmin, getAllItineraries)
+router.patch(
+    '/itineraries/:itineraryId/toggleUnlist',
+    verifyAdmin,
+    toggleUnlistItinerary
+)
 
 export default router

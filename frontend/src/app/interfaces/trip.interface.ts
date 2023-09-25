@@ -14,6 +14,7 @@ export interface Trip {
   overview?: Overview;
   itinerary?: Itinerary[];
   budget?: Budget;
+  unList?: boolean;
 }
 
 export interface Place {

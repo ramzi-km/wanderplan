@@ -1,3 +1,4 @@
+<p>itinerary-management works!</p>
 <div class="p-5">
   <div class="mx-1 my-4">
     <label
@@ -50,14 +51,13 @@
           <th class="font-bold text-textp">Cover</th>
           <th class="font-bold text-textp">Name</th>
           <th class="font-bold text-textp">Place</th>
-          <th class="font-bold text-textp">writer</th>
-          <th class="font-bold text-textp">likes</th>
+          <th class="font-bold text-textp">Admin</th>
           <th class="font-bold text-textp">Actions</th>
         </tr>
       </thead>
 
       <tbody>
-        <ng-container *ngFor="let item of guides; let i = index">
+        <ng-container *ngFor="let item of itineraries; let i = index">
           <tr
             *ngIf="
               searchText.trim() == '' ||
@@ -65,7 +65,7 @@
               item.place
                 ?.name!.toLocaleLowerCase()
                 ?.includes(searchText.trim()) ||
-              item.writer?.username
+              item.admin?.username
                 ?.toLocaleLowerCase()
                 ?.includes(searchText.trim())
             "
@@ -84,8 +84,7 @@
               </div>
             </td>
             <td>{{ item.place?.name }}</td>
-            <td>{{ item.writer?.username }}</td>
-            <td>{{ item.likes?.length }}</td>
+            <td>{{ item.admin?.username }}</td>
             <th>
               <ng-container *ngIf="item.unList">
                 <button
@@ -95,8 +94,8 @@
                   <i class="fa-solid fa-unlock"></i> list
                   <span
                     *ngIf="
-                      unlistGuideLoading.value &&
-                      unlistGuideLoading.id == item._id
+                      unListItineraryLoading.value &&
+                      unListItineraryLoading.id == item._id
                     "
                     class="loading loading-spinner loading-sm mb-1 ml-5"
                   ></span>
@@ -110,8 +109,8 @@
                   <i class="fa-solid fa-ban"></i> Unlist
                   <span
                     *ngIf="
-                      unlistGuideLoading.value &&
-                      unlistGuideLoading.id == item._id
+                      unListItineraryLoading.value &&
+                      unListItineraryLoading.id == item._id
                     "
                     class="loading loading-spinner loading-sm mb-1 ml-5"
                   ></span>
@@ -128,8 +127,7 @@
           <th>Cover</th>
           <th>Name</th>
           <th>Place</th>
-          <th>writer</th>
-          <th>likes</th>
+          <th>Admin</th>
           <th>Actions</th>
         </tr>
       </tfoot>
