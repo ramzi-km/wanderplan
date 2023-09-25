@@ -212,6 +212,16 @@ export async function resetPassword(req, res) {
 export async function getAllTrips(req, res) {
     try {
         const user = req.user
+        let page = Number(req.query.page ?? 0)
+        page = Math.max(page, 0)
+
+        const totalTrips = await tripModel.countDocuments({
+            tripMates: user._id,
+        })
+
+        const perPage = 6
+        const lastPage = Math.max(Math.ceil(totalTrips / perPage) - 1, 0)
+        page = Math.min(page, lastPage)
         const trips = await tripModel
             .aggregate([
                 {
@@ -231,8 +241,7 @@ export async function getAllTrips(req, res) {
                 },
                 {
                     $sort: {
-                        startDate: 1,
-                        endDate: 1,
+                        createdAt: -1,
                     },
                 },
                 {
@@ -246,9 +255,16 @@ export async function getAllTrips(req, res) {
                         totalItineraryPlaces: 1,
                     },
                 },
+                {
+                    $skip: page * perPage,
+                },
+                {
+                    $limit: perPage,
+                },
             ])
             .exec()
-        res.status(200).json({ trips: trips })
+
+        res.status(200).json({ trips: trips, page, lastPage })
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' })
     }
@@ -256,6 +272,17 @@ export async function getAllTrips(req, res) {
 export async function getAllGuides(req, res) {
     try {
         const user = req.user
+
+        let page = Number(req.query.page ?? 0)
+        page = Math.max(page, 0)
+
+        const totalGuides = await guideModel.countDocuments({
+            writer: user._id,
+        })
+
+        const perPage = 6
+        const lastPage = Math.max(Math.ceil(totalGuides / perPage) - 1, 0)
+        page = Math.min(page, lastPage)
         const guides = await guideModel
             .aggregate([
                 {
@@ -265,7 +292,7 @@ export async function getAllGuides(req, res) {
                 },
                 {
                     $sort: {
-                        createdAt: 1,
+                        createdAt: -1,
                     },
                 },
                 {
@@ -276,9 +303,15 @@ export async function getAllGuides(req, res) {
                         likes: 1,
                     },
                 },
+                {
+                    $skip: page * perPage,
+                },
+                {
+                    $limit: perPage,
+                },
             ])
             .exec()
-        res.status(200).json({ guides: guides })
+        res.status(200).json({ guides: guides, page, lastPage })
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' })
     }

@@ -11,6 +11,7 @@ import * as AdminActions from '../../store/admin/admin.actions';
 })
 export class AdminNavComponent {
   theme = 'light';
+  logoutLoading = false;
   @HostListener('window:scroll', ['$event'])
   onWindowScroll() {
     // this is just to disable scrolling during navigation.
@@ -55,15 +56,34 @@ export class AdminNavComponent {
       this.isOpen = false;
     }
   }
+
+  showLogoutModal() {
+    const adminLogoutModal = document.getElementById(
+      'adminLogoutModal',
+    ) as HTMLDialogElement;
+    adminLogoutModal.showModal();
+  }
+  closeLogoutModal() {
+    const adminLogoutModal = document.getElementById(
+      'adminLogoutModal',
+    ) as HTMLDialogElement;
+    adminLogoutModal.close();
+  }
+
   logout(): void {
-    this.adminAuthService.adminLogout().subscribe({
-      next: (res) => {
-        this.store.dispatch(AdminActions.adminLogout());
-        this.router.navigate(['/admin/login']);
-      },
-      error: (errMessage) => {
-        console.log(errMessage);
-      },
-    });
+    if (!this.logoutLoading) {
+      this.logoutLoading = true;
+      this.adminAuthService.adminLogout().subscribe({
+        next: (res) => {
+          this.store.dispatch(AdminActions.adminLogout());
+          this.logoutLoading = false;
+          this.router.navigate(['/admin/login']);
+        },
+        error: (errMessage) => {
+          this.logoutLoading = false;
+          console.log(errMessage);
+        },
+      });
+    }
   }
 }

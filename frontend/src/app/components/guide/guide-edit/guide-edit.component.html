@@ -125,7 +125,7 @@
                   </div>
                 </div>
 
-                <!---------- delete trip modal ------------->
+                <!---------- delete guide modal ------------->
                 <dialog id="deleteGuideModal" class="modal">
                   <div
                     class="modal-box relative h-full w-full max-w-md bg-secondary p-4 md:h-auto"
@@ -180,7 +180,7 @@
                     </div>
                   </div>
                 </dialog>
-                <!---------- delete trip modal end ------------->
+                <!---------- delete guide modal end ------------->
 
                 <div class="card-actions mt-8 justify-between">
                   <span class="text-texts">
@@ -193,7 +193,9 @@
             </div>
           </ng-container>
 
-          <div class="my-10 flex w-full flex-col items-center justify-center">
+          <div
+            class="my-10 flex w-full flex-col items-center justify-center text-textp"
+          >
             <div class="w-full space-y-4 px-10">
               <div class="flex w-full items-center justify-between px-10">
                 <div class="flex items-center space-x-2">
@@ -214,7 +216,7 @@
               <div>
                 <textarea
                   #writerRelationTextarea
-                  class="textarea w-full bg-secondary"
+                  class="textarea w-full bg-secondary text-textp"
                   appAutoResizeTextarea
                   (blur)="updateWritersRelation(writerRelationTextarea.value)"
                   [placeholder]="
@@ -265,7 +267,7 @@
                 class="scroll-m-20"
               >
                 <app-guide-section
-                (accordionClicked)="onAccordionClicked($event)"
+                  (accordionClicked)="onAccordionClicked($event)"
                   [sectionI]="sectionI"
                   [guide]="guide"
                   [section]="section"

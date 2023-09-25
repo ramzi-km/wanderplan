@@ -1,3 +1,41 @@
+<!-------------------- logout-modal  --------------------->
+<dialog id="logoutModal" class="modal">
+  <div class="modal-box w-5/6 max-w-sm bg-secondary p-4 md:h-auto">
+    <!-- Modal content -->
+    <div class="relative p-4 text-center sm:p-5">
+      <button
+        (click)="closeLogoutModal()"
+        type="button"
+        class="absolute right-2.5 top-2.5 ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <i class="fa-solid fa-right-from-bracket mb-2 text-4xl"></i>
+      <p class="mb-4 text-textp">Are you sure you want to logout ?</p>
+      <div class="flex items-center justify-center space-x-4">
+        <button
+          (click)="closeLogoutModal()"
+          type="button"
+          class="btn btn-success btn-outline btn-sm"
+        >
+          No, cancel
+        </button>
+        <button
+          (click)="logout()"
+          type="submit"
+          class="btn btn-error btn-sm bg-red-600 text-white"
+        >
+          Yes, I'm sure
+          <span
+            *ngIf="logoutLoading"
+            class="loading loading-spinner loading-sm ml-2 text-white"
+          ></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</dialog>
+<!-------------------- logout-modal-end  --------------------->
 <nav class="fixed top-0 z-20 w-full border-b border-textp bg-secondary">
   <div class="container navbar mx-auto my-0 flex h-20 flex-row justify-between">
     <div class="flex flex-row space-x-20">
@@ -181,7 +219,7 @@
               >
             </li>
             <li>
-              <a class="text-lg font-medium text-textp" (click)="logout()"
+              <a class="text-lg font-medium text-textp" (click)="showLogoutModal()"
                 ><i class="fa-solid fa-arrow-right-from-bracket mr-2"></i>
                 Logout</a
               >
@@ -321,7 +359,7 @@
               </li>
 
               <li>
-                <a (click)="logout()"
+                <a (click)="showLogoutModal()"
                   ><i
                     class="fa-solid fa-arrow-right-from-bracket ml-1 mr-2 text-textp"
                   ></i

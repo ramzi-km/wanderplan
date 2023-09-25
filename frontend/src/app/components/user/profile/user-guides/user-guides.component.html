@@ -52,4 +52,16 @@
       </div>
     </ng-container>
   </div>
+  <div *ngIf="page < lastPage" class="mt-8 flex items-center justify-center">
+    <button
+      (click)="loadMoreGuides()"
+      class="btn btn-outline btn-sm rounded-full normal-case"
+    >
+      See more
+      <span
+        *ngIf="loadingMore"
+        class="loading loading-spinner loading-sm ml-2"
+      ></span>
+    </button>
+  </div>
 </main>

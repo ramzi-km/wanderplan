@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environment';
 import { Guide } from 'src/app/interfaces/guide.interface';
@@ -11,12 +11,15 @@ export class ItinerariesManagementService {
   private baseUrl = environment.API_URL + '/api/admin';
   constructor(private http: HttpClient) {}
 
-  getAllGuides() {
-    return this.http.get<{ itineraries: Trip[]; message: string }>(
-      `${this.baseUrl}/itineraries`,
-    );
+  getAllItineraries(params?: HttpParams) {
+    return this.http.get<{
+      itineraries: Trip[];
+      message: string;
+      page: number;
+      lastPage: number;
+    }>(`${this.baseUrl}/itineraries`, { params });
   }
-  toggleUnlistGuide(itineraryId: string) {
+  toggleUnlistItinerary(itineraryId: string) {
     return this.http.patch<{ itinerary: Trip; message: string }>(
       `${this.baseUrl}/itineraries/${itineraryId}/toggleUnlist`,
       {},

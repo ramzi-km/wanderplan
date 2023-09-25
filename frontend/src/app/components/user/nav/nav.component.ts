@@ -16,6 +16,7 @@ declare const google: any;
 })
 export class NavComponent {
   theme = 'light';
+  logoutLoading = false;
   @HostListener('window:scroll', ['$event'])
   onWindowScroll() {}
   constructor(
@@ -81,25 +82,46 @@ export class NavComponent {
       this.isOpen = false;
     }
   }
-  logout(): void {
-    this.userAuthService.userLogout().subscribe({
-      next: (res) => {
-        this.store.dispatch(UserActions.userLogout());
-        this.router.navigate(['/']);
-      },
-      error: (err) => {
-        console.log(err);
-      },
-    });
-  }
+
   shouldShowFooter(): boolean {
     const excludedRoutePatterns = [/^\/trip\/edit\/.*/, /^\/guide\/edit\/.*/];
     const currentUrl = this.router.url;
-    
+
     const shouldExclude = excludedRoutePatterns.some((pattern) =>
       pattern.test(currentUrl),
     );
     return !shouldExclude;
+  }
+
+  showLogoutModal() {
+    const logoutModal = document.getElementById(
+      'logoutModal',
+    ) as HTMLDialogElement;
+    logoutModal.showModal();
+  }
+  closeLogoutModal() {
+    const logoutModal = document.getElementById(
+      'logoutModal',
+    ) as HTMLDialogElement;
+    logoutModal.close();
+  }
+
+  logout(): void {
+    if (!this.logoutLoading) {
+      this.logoutLoading = true;
+      this.userAuthService.userLogout().subscribe({
+        next: (res) => {
+          this.store.dispatch(UserActions.userLogout());
+          this.logoutLoading = true;
+          this.closeLogoutModal();
+          this.router.navigate(['/']);
+        },
+        error: (err) => {
+          console.log(err);
+          this.logoutLoading = true;
+        },
+      });
+    }
   }
 
   acceptTripInvitation(tripId: string, notificationId: string) {

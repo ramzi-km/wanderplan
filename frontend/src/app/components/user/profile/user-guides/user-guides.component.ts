@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -17,6 +18,10 @@ export class UserGuidesComponent {
   private ngUnsubscribe = new Subject<void>();
   userGuides: Array<ShortGuideInfo> = [];
   loading = false;
+  loadingMore = false;
+  page = 0;
+  lastPage = 0;
+
   ngOnInit(): void {
     this.loading = true;
     this.userService
@@ -26,11 +31,35 @@ export class UserGuidesComponent {
         next: (res) => {
           this.userGuides = res.guides;
           this.loading = false;
+          this.page = res.page;
+          this.lastPage = res.lastPage;
         },
         error: (errMessage: string) => {
           this.loading = false;
         },
       });
+  }
+  loadMoreGuides() {
+    if (!this.loadingMore) {
+      this.loadingMore = true;
+      const page = this.page + 1;
+      const params = new HttpParams().set('page', page);
+      this.userService
+        .getAllGuides(params)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe({
+          next: (res) => {
+            this.userGuides.push(...res.guides);
+            this.loadingMore = false;
+            this.page = res.page;
+            this.lastPage = res.lastPage;
+          },
+          error: (errMessage: string) => {
+            console.log(errMessage);
+            this.loadingMore = false;
+          },
+        });
+    }
   }
   navigateTo(id: string) {
     this.router.navigate(['guide/edit', id]);

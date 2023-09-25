@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environment';
 import { ShortGuideInfo } from 'src/app/interfaces/short-guide.interface';
@@ -36,15 +36,19 @@ export class UserService {
       message: string;
     }>(`${this.baseUrl}/upcomingTrips`);
   }
-  getAllTrips() {
-    return this.http.get<{ trips: ShortTripInfo[] }>(
-      `${this.baseUrl}/getAllTrips`,
-    );
+  getAllTrips(params?: HttpParams) {
+    return this.http.get<{
+      trips: ShortTripInfo[];
+      page: number;
+      lastPage: number;
+    }>(`${this.baseUrl}/getAllTrips`, { params });
   }
-  getAllGuides() {
-    return this.http.get<{ guides: ShortGuideInfo[] }>(
-      `${this.baseUrl}/getAllGuides`,
-    );
+  getAllGuides(params?: HttpParams) {
+    return this.http.get<{
+      guides: ShortGuideInfo[];
+      page: number;
+      lastPage: number;
+    }>(`${this.baseUrl}/getAllGuides`, { params });
   }
   searchUsers(searchTerm: string) {
     const url = `${this.baseUrl}/search?username=${searchTerm}`;

@@ -6,43 +6,54 @@
       >Search</label
     >
     <div class="relative">
-      <div
-        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
-      >
-        <svg
-          class="h-4 w-4 text-gray-500"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 20 20"
+      <form [formGroup]="searchForm" (ngSubmit)="searchGuide()">
+        <div
+          class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
         >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-          />
-        </svg>
-      </div>
-      <input
-        type="text"
-        id="default-search"
-        class="block w-full rounded-lg border border-textg bg-secondary p-4 pl-10 text-sm text-textp focus:border-blue-500 focus:ring-blue-500"
-        placeholder="Search username, email..."
-        [(ngModel)]="searchText"
-      />
-      <button
-        type="submit"
-        class="absolute bottom-2.5 right-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
-      >
-        Search
-      </button>
+          <svg
+            class="h-4 w-4 text-gray-500"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 20 20"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+            />
+          </svg>
+        </div>
+        <input
+          type="text"
+          id="default-search"
+          class="block w-full rounded-lg border border-textg bg-secondary p-4 pl-10 text-sm text-textp focus:border-blue-500 focus:ring-blue-500"
+          placeholder="Search guide name, place..."
+          formControlName="searchText"
+        />
+        <button
+          type="submit"
+          class="absolute bottom-2.5 right-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
+        >
+          Search
+        </button>
+      </form>
     </div>
   </div>
 
   <div class="overflow-x-auto rounded-xl">
-    <table class="table border border-textg bg-secondary text-textp">
+    <div
+      *ngIf="guides.length <= 0"
+      class="flex h-20 items-center justify-center bg-secondary text-2xl font-semibold"
+    >
+      No guides to display
+    </div>
+    <table
+      *ngIf="guides.length > 0"
+      class="table border border-textg bg-secondary text-textp"
+    >
       <!-- head -->
       <thead>
         <tr>
@@ -58,19 +69,8 @@
 
       <tbody>
         <ng-container *ngFor="let item of guides; let i = index">
-          <tr
-            *ngIf="
-              searchText.trim() == '' ||
-              item.name?.toLocaleLowerCase()?.includes(searchText.trim()) ||
-              item.place
-                ?.name!.toLocaleLowerCase()
-                ?.includes(searchText.trim()) ||
-              item.writer?.username
-                ?.toLocaleLowerCase()
-                ?.includes(searchText.trim())
-            "
-          >
-            <td>{{ i + 1 }}</td>
+          <tr>
+            <td>{{ i + 1 + page * 10 }}</td>
             <td>
               <div class="avatar w-16">
                 <div class="mask mask-square h-14 w-14">
@@ -134,6 +134,21 @@
         </tr>
       </tfoot>
     </table>
+    <div class="flex items-center justify-center p-5">
+      <div class="join">
+        <button (click)="prevPage()" *ngIf="page > 0" class="btn join-item">
+          «
+        </button>
+        <button class="btn join-item">Page {{ page + 1 }}</button>
+        <button
+          (click)="nextPage()"
+          *ngIf="page < lastPage"
+          class="btn join-item"
+        >
+          »
+        </button>
+      </div>
+    </div>
   </div>
   <div *ngIf="loading">
     <div

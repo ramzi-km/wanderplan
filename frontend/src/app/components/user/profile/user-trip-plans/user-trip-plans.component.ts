@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -19,6 +20,10 @@ export class UserTripPlansComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject<void>();
   userTrips: Array<ShortTripInfo> = [];
   loading = false;
+  loadingMore = false;
+  page = 0;
+  lastPage = 0;
+
   ngOnInit(): void {
     this.loading = true;
     this.userService
@@ -28,11 +33,35 @@ export class UserTripPlansComponent implements OnInit, OnDestroy {
         next: (res) => {
           this.userTrips = res.trips;
           this.loading = false;
+          this.page = res.page;
+          this.lastPage = res.lastPage;
         },
         error: (errMessage: string) => {
           this.loading = false;
         },
       });
+  }
+  loadMoreTrips() {
+    if (!this.loadingMore) {
+      this.loadingMore = true;
+      const page = this.page + 1;
+      const params = new HttpParams().set('page', page);
+      this.userService
+        .getAllTrips(params)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe({
+          next: (res) => {
+            this.userTrips.push(...res.trips);
+            this.loadingMore = false;
+            this.page = res.page;
+            this.lastPage = res.lastPage;
+          },
+          error: (errMessage: string) => {
+            console.log(errMessage);
+            this.loadingMore = false;
+          },
+        });
+    }
   }
   navigateTo(id: string) {
     this.router.navigate(['trip/edit', id]);

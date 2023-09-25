@@ -1,6 +1,7 @@
+import { HttpParams } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { Guide } from 'src/app/interfaces/guide.interface';
 import { Trip } from 'src/app/interfaces/trip.interface';
 import { ItinerariesManagementService } from '../../services/itineraries-management.service';
 
@@ -10,9 +11,17 @@ import { ItinerariesManagementService } from '../../services/itineraries-managem
   styleUrls: ['./itinerary-management.component.scss'],
 })
 export class ItineraryManagementComponent implements OnInit, OnDestroy {
-  constructor(private itinerariesManagement: ItinerariesManagementService) {}
+  constructor(
+    private itinerariesManagement: ItinerariesManagementService,
+    fb: FormBuilder,
+  ) {
+    this.searchForm = fb.group({
+      searchText: ['', [Validators.required]],
+    });
+  }
 
   private ngUnsubscribe$ = new Subject<void>();
+  searchForm: FormGroup;
   searchText = '';
   itineraries: Array<Trip> = [];
   loading = false;
@@ -20,16 +29,20 @@ export class ItineraryManagementComponent implements OnInit, OnDestroy {
     value: false,
     id: '',
   };
+  page = 0;
+  lastPage = 0;
 
   ngOnInit(): void {
     this.loading = true;
     this.itinerariesManagement
-      .getAllGuides()
+      .getAllItineraries()
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe({
         next: (res) => {
           this.loading = false;
           this.itineraries = res.itineraries;
+          this.page = res.page;
+          this.lastPage = res.lastPage;
         },
         error: (errMessage) => {
           this.loading = false;
@@ -44,7 +57,7 @@ export class ItineraryManagementComponent implements OnInit, OnDestroy {
       };
     }
     this.itinerariesManagement
-      .toggleUnlistGuide(itineraryId)
+      .toggleUnlistItinerary(itineraryId)
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe({
         next: (res) => {
@@ -68,6 +81,82 @@ export class ItineraryManagementComponent implements OnInit, OnDestroy {
           };
         },
       });
+  }
+  searchItinerary() {
+    if (!this.loading) {
+      const formText = this.searchForm.value.searchText.trim();
+      if (formText == this.searchText) {
+        return;
+      }
+      this.searchText = formText;
+
+      const params = new HttpParams()
+        .set('page', 0)
+        .set('searchText', this.searchText);
+      this.loading = true;
+      this.itinerariesManagement
+        .getAllItineraries(params)
+        .pipe(takeUntil(this.ngUnsubscribe$))
+        .subscribe({
+          next: (res) => {
+            this.itineraries = res.itineraries;
+            this.loading = false;
+            this.page = res.page;
+            this.lastPage = res.lastPage;
+          },
+          error: (errMessage) => {
+            console.log(errMessage);
+            this.loading = false;
+          },
+        });
+    }
+  }
+
+  nextPage() {
+    if (!this.loading) {
+      const params = new HttpParams()
+        .set('page', this.page + 1)
+        .set('searchText', this.searchText);
+      this.loading = true;
+      this.itinerariesManagement
+        .getAllItineraries(params)
+        .pipe(takeUntil(this.ngUnsubscribe$))
+        .subscribe({
+          next: (res) => {
+            this.itineraries = res.itineraries;
+            this.loading = false;
+            this.page = res.page;
+            this.lastPage = res.lastPage;
+          },
+          error: (errMessage) => {
+            console.log(errMessage);
+            this.loading = false;
+          },
+        });
+    }
+  }
+  prevPage() {
+    if (!this.loading) {
+      const params = new HttpParams()
+        .set('page', this.page - 1)
+        .set('searchText', this.searchText);
+      this.loading = true;
+      this.itinerariesManagement
+        .getAllItineraries(params)
+        .pipe(takeUntil(this.ngUnsubscribe$))
+        .subscribe({
+          next: (res) => {
+            this.itineraries = res.itineraries;
+            this.loading = false;
+            this.page = res.page;
+            this.lastPage = res.lastPage;
+          },
+          error: (errMessage) => {
+            console.log(errMessage);
+            this.loading = false;
+          },
+        });
+    }
   }
 
   ngOnDestroy(): void {

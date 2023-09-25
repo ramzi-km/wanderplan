@@ -44,13 +44,43 @@ export async function getAllCategories(req, res) {
 
 export async function getAllGuides(req, res) {
     try {
+        let search = req.query.searchText ?? ''
+        search = search.trim()
+        let page = Number(req.query.page ?? 0)
+        page = Math.max(page, 0)
+
+        const totalGuides = await guideModel.countDocuments({
+            $or: [
+                { name: new RegExp(search, 'i') },
+                { 'place.name': new RegExp(search, 'i') },
+            ],
+        })
+
+        const perPage = 10
+        const lastPage = Math.max(Math.ceil(totalGuides / perPage) - 1, 0)
+        page = Math.min(page, lastPage)
+
         const guides = await guideModel
-            .find()
+            .find({
+                $or: [
+                    { name: new RegExp(search, 'i') },
+                    { 'place.name': new RegExp(search, 'i') },
+                    { 'writer.username': new RegExp(search, 'i') },
+                ],
+            })
+            .sort({ createdAt: -1 })
             .populate('writer', '_id username name profilePic')
+            .skip(page * perPage)
+            .limit(perPage)
             .lean()
             .exec()
 
-        res.status(200).json({ message: 'success', guides: guides })
+        res.status(200).json({
+            message: 'success',
+            guides: guides,
+            page,
+            lastPage,
+        })
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: 'Internal server error' })
@@ -83,14 +113,46 @@ export async function toggleUnlistGuide(req, res) {
 
 export async function getAllItineraries(req, res) {
     try {
+        let search = req.query.searchText ?? ''
+        search = search.trim()
+        let page = Number(req.query.page ?? 0)
+        page = Math.max(page, 0)
+
+        const totalItineraries = await tripModel.countDocuments({
+            $or: [
+                { name: new RegExp(search, 'i') },
+                { 'place.name': new RegExp(search, 'i') },
+            ],
+            visibility: 'public',
+        })
+
+        const perPage = 10
+        const lastPage = Math.max(Math.ceil(totalItineraries / perPage) - 1, 0)
+        page = Math.min(page, lastPage)
+
         const trips = await tripModel
-            .find({ visibility: 'public' })
+            .find({
+                $or: [
+                    { name: new RegExp(search, 'i') },
+                    { 'place.name': new RegExp(search, 'i') },
+                    { 'admin.username': new RegExp(search, 'i') },
+                ],
+                visibility: 'public',
+            })
             .select('name place coverPhoto admin unList _id')
+            .sort({ createdAt: -1 })
             .populate('admin', '_id username name profilePic')
+            .skip(page * perPage)
+            .limit(perPage)
             .lean()
             .exec()
 
-        res.status(200).json({ message: 'success', itineraries: trips })
+        res.status(200).json({
+            message: 'success',
+            itineraries: trips,
+            page,
+            lastPage,
+        })
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: 'Internal server error' })
