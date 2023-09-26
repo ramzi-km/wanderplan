@@ -26,8 +26,9 @@ import {
 
 import {
     acceptTripInvitation,
-    getAllGuides,
-    getAllTrips,
+    getAllTripsAndGuides,
+    getAllUserGuides,
+    getAllUserTrips,
     getUpcomingTrips,
     getUser,
     resetPassword,
@@ -116,23 +117,26 @@ router.post('/login', postLogin)
 router.post('/googleLogin', postGoogleLogin)
 router.post('/logout', logout)
 
-//----------------------user-profile-------------------//
+//----------------------general-------------------//
 
+router.get('/user/upcomingTrips', verifyUser, getUpcomingTrips)
+router.post(
+    '/user/acceptTripInvitation/:tripId/:notificationId',
+    verifyUser,
+    acceptTripInvitation
+)
 router.get('/user/search', verifyUser, searchUsers)
+router.get('/travelGuides', getAllTripsAndGuides)
+
+//----------------------user-profile-------------------//
 
 router.get('/user', verifyUser, getUser)
 router.patch('/user', verifyUser, updateUser)
 router.post('/user/uploadProfile', verifyUser, uploadProfile)
 router.patch('/user/resetPassword', verifyUser, resetPassword)
 
-router.get('/user/upcomingTrips', verifyUser, getUpcomingTrips)
-router.get('/user/getAllTrips', verifyUser, getAllTrips)
-router.get('/user/getAllGuides', verifyUser, getAllGuides)
-router.post(
-    '/user/acceptTripInvitation/:tripId/:notificationId',
-    verifyUser,
-    acceptTripInvitation
-)
+router.get('/user/getAllTrips', verifyUser, getAllUserTrips)
+router.get('/user/getAllGuides', verifyUser, getAllUserGuides)
 
 //--------------------user-trip-plans--------------------//
 

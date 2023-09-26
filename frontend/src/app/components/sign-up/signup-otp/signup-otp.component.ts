@@ -4,7 +4,7 @@ import { FormBuilder, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { UserAuthService } from 'src/app/services/user/user-auth.service';
-import * as UserActions from '../../../../store/user/user.actions';
+import * as UserActions from '../../../store/user/user.actions';
 
 @Component({
   selector: 'app-signup-otp',

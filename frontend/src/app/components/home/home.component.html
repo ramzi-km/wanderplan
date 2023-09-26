@@ -46,9 +46,9 @@
                   <i class="fa-solid fa-ellipsis"></i>
                 </button>
                 <button class="btn btn-neutral btn-xs absolute left-2 top-2">
-                  {{ upcomingTrip.startDate | daysTo }}
+                  {{ upcomingTrip.startDate! | daysTo }}
                 </button>
-                <a (click)="navigateTo(upcomingTrip._id)">
+                <a (click)="navigateTo(upcomingTrip._id!)">
                   <img
                     class="h-40 w-full rounded-lg object-cover"
                     src="{{ upcomingTrip.coverPhoto }}"
@@ -56,7 +56,7 @@
                   />
                 </a>
                 <div class="pt-3">
-                  <a (click)="navigateTo(upcomingTrip._id)">
+                  <a (click)="navigateTo(upcomingTrip._id!)">
                     <h5
                       class="mb-2 text-lg font-semibold tracking-tight text-textp"
                     >
@@ -67,14 +67,14 @@
                     <span
                       >&bull;
                       {{
-                        [upcomingTrip.startDate, upcomingTrip.endDate]
+                        [upcomingTrip.startDate!, upcomingTrip.endDate!]
                           | dateRange
                       }}</span
                     >
                     <span class="ml-5"
                       >&bull;{{
-                        upcomingTrip.totalPlacesToVisit +
-                          upcomingTrip.totalItineraryPlaces
+                        upcomingTrip.totalPlacesToVisit! +
+                          upcomingTrip.totalItineraryPlaces!
                       }}
                       places</span
                     >

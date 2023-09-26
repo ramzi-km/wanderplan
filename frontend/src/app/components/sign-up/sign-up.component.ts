@@ -13,7 +13,7 @@ import { Store } from '@ngrx/store';
 import { EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
 import { UserAuthService } from 'src/app/services/user/user-auth.service';
 import { noSpace } from 'src/app/validators/noSpace.validators';
-import * as UserActions from '../../../store/user/user.actions';
+import * as UserActions from '../../store/user/user.actions';
 
 @Component({
   selector: 'app-sign-up',

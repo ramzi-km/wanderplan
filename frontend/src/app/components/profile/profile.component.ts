@@ -7,7 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { UserService } from 'src/app/services/user/user.service';
 import * as userActions from 'src/app/store/user/user.actions';
 import { noSpace } from 'src/app/validators/noSpace.validators';
-import * as userSelectors from '../../../store/user/user.selectors';
+import * as userSelectors from '../../store/user/user.selectors';
 import { ProfileModalComponent } from './profile-modal/profile-modal.component';
 
 @Component({

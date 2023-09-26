@@ -9,48 +9,44 @@
 
   <div
     class="flex w-full flex-col items-center justify-center"
-    *ngIf="!userTrips[0]"
+    *ngIf="!userGuides[0]"
   >
     <img
       class="w-1/2"
       src="../../../../../assets/images/noTrips-removebg.png"
     />
     <h1 class="text-xl text-textp">
-      You don't have any trips.<a
+      You don't have any guides.<a
         class="text-blue-400"
-        routerLink="/create/plan"
-        >start planning</a
+        routerLink="/create/guide"
+        >start writing</a
       >
     </h1>
   </div>
   <div class="grid grid-cols-1 gap-4 pt-10 md:grid-cols-2 lg:grid-cols-3">
-    <ng-container *ngFor="let trip of userTrips">
+    <ng-container *ngFor="let guide of userGuides">
       <div class="relative max-w-sm">
         <button
           class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
         >
           <i class="fa-solid fa-ellipsis"></i>
         </button>
-        <a (click)="navigateTo(trip._id)">
+        <a (click)="navigateTo(guide._id!)">
           <img
             class="h-40 w-full rounded-lg object-cover"
-            src="{{ trip.coverPhoto }}"
+            src="{{ guide.coverPhoto }}"
             alt=""
           />
         </a>
         <div class="pt-3">
-          <a (click)="navigateTo(trip._id)">
+          <a (click)="navigateTo(guide._id!)">
             <h5 class="mb-2 text-lg font-semibold tracking-tight text-textp">
-              {{ trip.name }}
+              {{ guide.name }}
             </h5>
           </a>
-          <p class="text-sm font-normal text-texts">
-            <span>&bull; {{ [trip.startDate, trip.endDate] | dateRange }}</span>
-            <span class="ml-5"
-              >&bull;
-              {{ trip.totalPlacesToVisit + trip.totalItineraryPlaces }}
-              places</span
-            >
+          <p class="-mt-2 pl-1 font-semibold text-textp">
+            <span><i class="fa-regular fa-heart"></i></span>
+            {{ guide.likes!.length }}
           </p>
         </div>
       </div>
@@ -58,7 +54,7 @@
   </div>
   <div *ngIf="page < lastPage" class="mt-8 flex items-center justify-center">
     <button
-      (click)="loadMoreTrips()"
+      (click)="loadMoreGuides()"
       class="btn btn-outline btn-sm rounded-full normal-case"
     >
       See more

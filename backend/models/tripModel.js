@@ -92,6 +92,12 @@ const tripSchema = new Schema(
             type: Boolean,
             default: false,
         },
+        likes: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
     },
     { timestamps: true }
 )

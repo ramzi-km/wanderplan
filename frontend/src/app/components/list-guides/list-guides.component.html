@@ -1,0 +1,201 @@
+<div class="mt-20"></div>
+<section id="guides" class="text-textp">
+  <div class="container mx-auto w-3/4">
+    <form
+      [formGroup]="searchForm"
+      (ngSubmit)="submitSearchForm()"
+      class="flex w-full flex-col items-center justify-center py-14"
+    >
+      <div class="flex-col items-center justify-center">
+        <h1 class="text-4xl font-bold">
+          Explore travel guides and itineraries
+        </h1>
+        <div class="relative my-6">
+          <div
+            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+          >
+            <svg
+              class="h-4 w-4 text-gray-500"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+              />
+            </svg>
+          </div>
+          <input
+            type="text"
+            id="default-search"
+            class="block w-full rounded-lg border border-textg bg-secondary p-4 pl-10 text-sm text-textp focus:border-blue-500 focus:ring-blue-500"
+            placeholder="Search place or guide name"
+            formControlName="searchText"
+          />
+          <button
+            type="submit"
+            class="absolute bottom-2.5 right-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
+          >
+            Search
+          </button>
+        </div>
+      </div>
+      <div class="my-8 flex w-full justify-between">
+        <div class="join">
+          <input
+            class="btn join-item px-8 normal-case text-textp"
+            type="radio"
+            name="filter"
+            aria-label="Guides"
+            formControlName="filter"
+            value="guides"
+            (change)="submitSearchForm()"
+          />
+          <input
+            class="btn join-item btn-wide px-8 normal-case text-textp"
+            type="radio"
+            name="filter"
+            aria-label="Itineraries"
+            formControlName="filter"
+            value="itineraries"
+            (change)="submitSearchForm()"
+          />
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="mr-2 font-medium">Sort by:</span>
+          <select
+            id="sort"
+            class="block rounded-lg border border-gray-300 bg-secondary p-2.5 text-sm text-textp focus:border-blue-500 focus:ring-blue-500"
+            formControlName="sort"
+            (change)="submitSearchForm()"
+          >
+            <option value="popularity">Most popular</option>
+            <option value="newest">Recent</option>
+            <option value="oldest">Oldest</option>
+          </select>
+        </div>
+      </div>
+      <div class="relative min-h-[300px] w-full">
+        <div
+          *ngIf="guides.length < 1 && itineraries.length < 1"
+          class="mb-10 flex w-full flex-col items-center"
+        >
+          <img
+            class="w-1/3"
+            src="../../../../../assets/images/noTrips-removebg.png"
+          />
+          <h1 class="text-xl text-textp">
+            We don't have any guides yet for '{{ searchText }}'.<a
+              class="text-blue-400"
+              routerLink="/create/guide"
+              >write one if you've been there!</a
+            >
+          </h1>
+        </div>
+        <div class="grid w-full grid-cols-4 gap-6">
+          <div
+            *ngFor="let guide of guides; let guideIndex = index"
+            class="card card-compact justify-between bg-secondary shadow-xl hover:shadow-gray-700"
+          >
+            <figure class="h-40">
+              <img
+                class="h-full w-full object-cover"
+                [src]="guide.coverPhoto"
+                alt="cover"
+              />
+            </figure>
+            <div class="card-body flex flex-col justify-between">
+              <h2 class="card-title line-clamp-1">{{ guide.name }}</h2>
+              <p class="line-clamp-2 text-textg">
+                {{ guide.writersRelation }}
+              </p>
+              <div class="card-actions items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div class="avatar">
+                    <div class="w-8 rounded-full">
+                      <img [src]="guide.writer?.profilePic" />
+                    </div>
+                  </div>
+                  <p class="w-32 truncate">
+                    {{ guide.writer?.username }}
+                  </p>
+                </div>
+                <div>
+                  <i class="fa-regular fa-heart"></i> {{ guide.likesCount }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            *ngFor="let itinerary of itineraries; let itineraryIndex = index"
+            class="card-compact card justify-between bg-secondary shadow-xl hover:shadow-gray-700"
+          >
+            <figure class="h-40">
+              <img
+                class="h-full w-full object-cover"
+                [src]="itinerary.coverPhoto"
+                alt="cover"
+              />
+            </figure>
+            <div class="card-body flex flex-col justify-between">
+              <h2 class="card-title line-clamp-1">{{ itinerary.name }}</h2>
+              <p class="line-clamp-2 text-textg">
+                Total places: {{ itinerary.totalItineraryPlaces }}
+              </p>
+              <div class="card-actions items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div class="avatar">
+                    <div class="w-8 rounded-full">
+                      <img [src]="itinerary.admin?.profilePic" />
+                    </div>
+                  </div>
+                  <p class="w-32 truncate">
+                    {{ itinerary.admin?.username }}
+                  </p>
+                </div>
+                <div>
+                  <i class="fa-regular fa-heart"></i> {{ itinerary.likesCount }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="loading">
+          <div
+            class="absolute inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-80 text-primary"
+          >
+            <span class="loading loading-infinity w-24"></span>
+          </div>
+        </div>
+      </div>
+
+      <div
+        *ngIf="guides.length > 0 || itineraries.length > 0"
+        class="join mt-12"
+      >
+        <button
+          (click)="prevPage()"
+          *ngIf="page > 0"
+          class="btn btn-secondary join-item"
+        >
+          «
+        </button>
+        <button class="btn btn-secondary join-item normal-case">
+          Page {{ page + 1 }}
+        </button>
+        <button
+          (click)="nextPage()"
+          *ngIf="lastPage > page"
+          class="btn btn-secondary join-item"
+        >
+          »
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

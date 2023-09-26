@@ -5,8 +5,8 @@ import { Observable, Subject, map, takeUntil } from 'rxjs';
 import { User } from 'src/app/interfaces/user.model';
 import { UserAuthService } from 'src/app/services/user/user-auth.service';
 import { UserService } from 'src/app/services/user/user.service';
-import * as UserActions from '../../../store/user/user.actions';
-import * as UserSelector from '../../../store/user/user.selectors';
+import * as UserActions from '../../store/user/user.actions';
+import * as UserSelector from '../../store/user/user.selectors';
 declare const google: any;
 
 @Component({

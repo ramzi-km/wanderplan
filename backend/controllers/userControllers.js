@@ -209,7 +209,7 @@ export async function resetPassword(req, res) {
     }
 }
 
-export async function getAllTrips(req, res) {
+export async function getAllUserTrips(req, res) {
     try {
         const user = req.user
         let page = Number(req.query.page ?? 0)
@@ -269,7 +269,7 @@ export async function getAllTrips(req, res) {
         res.status(500).json({ message: 'Internal Server Error' })
     }
 }
-export async function getAllGuides(req, res) {
+export async function getAllUserGuides(req, res) {
     try {
         const user = req.user
 
@@ -411,53 +411,6 @@ export async function getUpcomingTrips(req, res) {
                 },
             ])
             .exec()
-
-        // const recent = await userModel
-        //     .aggregate([
-        //         { $match: { _id: user._id } },
-        //         {
-        //             $project: {
-        //                 history: 1,
-        //             },
-        //         },
-        //     ])
-        //     .exec()
-
-        // const recentArr = [...recent[0].history]
-
-        // const recentTrips = await tripModel.aggregate([
-        //     {
-        //         $match: {
-        //             _id: {
-        //                 $in: recentArr.map(
-        //                     (id) => new mongoose.Types.ObjectId(id)
-        //                 ),
-        //             },
-        //         },
-        //     },
-        //     {
-        //         $addFields: {
-        //             totalPlacesToVisit: {
-        //                 $size: '$overview.placesToVisit',
-        //             },
-        //             totalItineraryPlaces: {
-        //                 $sum: '$itinerary.places.length',
-        //             },
-        //         },
-        //     },
-        //     {
-        //         $project: {
-        //             _id: 1,
-        //             name: 1,
-        //             coverPhoto: 1,
-        //             startDate: 1,
-        //             endDate: 1,
-        //             totalPlacesToVisit: 1,
-        //             totalItineraryPlaces: 1,
-        //         },
-        //     },
-        // ])
-
         res.status(200).json({
             message: 'success',
             upcomingTrips: tripsWithin10Days,
@@ -465,5 +418,91 @@ export async function getUpcomingTrips(req, res) {
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: 'Internal Server Error' })
+    }
+}
+
+export async function getAllTripsAndGuides(req, res) {
+    let page = Number(req.query.page ?? 0)
+    page = Math.max(page, 0)
+    const filter = req.query.filter ?? 'guides'
+    const sort = req.query.sort ?? 'popularity'
+    let search = req.query.searchText ?? ''
+    search = search.trim()
+    let sortField = {}
+
+    if (sort === 'popularity') {
+        sortField = { likesCount: 1 }
+    } else if (sort === 'oldest') {
+        sortField = { createdAt: 1 }
+    } else {
+        sortField = { createdAt: -1 }
+    }
+
+    if (filter == 'itineraries') {
+        console.log(filter)
+    } else {
+        const totalGuides = await guideModel.countDocuments({
+            $or: [
+                { name: new RegExp(search, 'i') },
+                { 'place.name': new RegExp(search, 'i') },
+            ],
+            unList: false,
+        })
+
+        const perPage = 8
+        const lastPage = Math.max(Math.ceil(totalGuides / perPage) - 1, 0)
+        page = Math.min(page, lastPage)
+
+        const guides = await guideModel.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { name: new RegExp(search, 'i') },
+                        { 'place.name': new RegExp(search, 'i') },
+                    ],
+                    unList: false,
+                },
+            },
+            {
+                $addFields: {
+                    likesCount: { $size: '$likes' },
+                },
+            },
+            {
+                $sort: sortField,
+            },
+            {
+                $skip: page * perPage,
+            },
+            {
+                $limit: perPage,
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'writer',
+                    foreignField: '_id',
+                    as: 'writer',
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    coverPhoto: 1,
+                    place: 1,
+                    writersRelation: 1,
+                    likesCount: 1,
+                    unList: 1,
+                    writer: { $arrayElemAt: ['$writer', 0] },
+                },
+            },
+        ])
+        res.status(200).json({
+            message: 'success',
+            guides: guides,
+            page,
+            lastPage,
+        })
     }
 }

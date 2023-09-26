@@ -1,10 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
+import {
+  MatDatepicker,
+  MatDatepickerInputEvent,
+} from '@angular/material/datepicker';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
@@ -14,40 +25,45 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs';
-import { MapboxPlaceFeature } from 'src/app/interfaces/mapbox-interface';
-import { GuideService } from 'src/app/services/guide/guide.service';
+import {
+  MapboxGeocodingResponse,
+  MapboxPlaceFeature,
+} from 'src/app/interfaces/mapbox-interface';
 import { MapboxService } from 'src/app/services/mapbox/mapbox.service';
-import * as guideEditActions from '../../../store/editingGuide/guide-edit.actions';
+import { TripService } from 'src/app/services/trip/trip.service';
+import * as tripEditActions from '../../store/editingTrip/trip-edit.actions';
 
 @Component({
-  selector: 'app-create-guide',
-  templateUrl: './create-guide.component.html',
-  styleUrls: ['./create-guide.component.scss'],
+  selector: 'app-create-plan',
+  templateUrl: './create-plan.component.html',
+  styleUrls: ['./create-plan.component.scss'],
 })
-export class CreateGuideComponent implements OnInit {
-  createGuideForm!: FormGroup;
-  inputControl = new FormControl();
+export class CreatePlanComponent implements OnInit, OnDestroy {
   loading = false;
   showResults: boolean = false;
+  inputControl = new FormControl();
+  currentDate = new Date();
+  createPlanForm: FormGroup;
   showErrors: boolean = false;
   places: Array<MapboxPlaceFeature> = [];
   private unsubscribe$ = new Subject<void>();
+  @ViewChild('picker') picker!: MatDatepicker<any>;
 
   constructor(
+    private hostElement: ElementRef,
     fb: FormBuilder,
     private mapboxService: MapboxService,
-    private guideService: GuideService,
+    private tripService: TripService,
     private router: Router,
     private store: Store,
   ) {
-    this.createGuideForm = fb.group({
+    this.createPlanForm = fb.group({
       place: ['', [Validators.required]],
+      startDate: ['', [Validators.required]],
+      endDate: ['', [Validators.required]],
+      visibility: ['private', [Validators.required]],
     });
-  }
-  get fc() {
-    return this.createGuideForm.controls;
-  }
-  ngOnInit(): void {
+
     this.inputControl.valueChanges
       .pipe(
         debounceTime(500),
@@ -62,7 +78,24 @@ export class CreateGuideComponent implements OnInit {
         this.places = response.features;
       });
   }
+  ngOnInit(): void {}
+  get fc() {
+    return this.createPlanForm.controls;
+  }
+  openDatePicker() {
+    this.picker.open();
+  }
 
+  startChange(event: MatDatepickerInputEvent<Date>) {
+    this.createPlanForm.patchValue({
+      startDate: event.value,
+    });
+  }
+  endChange(event: MatDatepickerInputEvent<Date>) {
+    this.createPlanForm.patchValue({
+      endDate: event.value,
+    });
+  }
   blurResults() {
     setTimeout(() => {
       this.showResults = false;
@@ -75,11 +108,11 @@ export class CreateGuideComponent implements OnInit {
       coordinates: selectedPlace.center,
       extendedName: selectedPlace.place_name,
     };
-    this.createGuideForm.patchValue({
+    this.createPlanForm.patchValue({
       place: place,
     });
   }
-  selectedPlaceIndex: number = 0;
+  selectedPlaceIndex: number = -1;
   onKeyDown(event: KeyboardEvent) {
     if (event.key === 'ArrowDown') {
       this.selectedPlaceIndex =
@@ -91,28 +124,25 @@ export class CreateGuideComponent implements OnInit {
       event.preventDefault();
       if (this.selectedPlaceIndex >= 0) {
         this.selectPlace(this.places[this.selectedPlaceIndex]);
-        this.selectedPlaceIndex = 0;
+        this.selectedPlaceIndex = -1;
       }
       (event.target as HTMLInputElement).blur();
     }
   }
 
   submitForm() {
-    if (this.createGuideForm.invalid || this.loading) {
+    if (this.createPlanForm.invalid || this.loading) {
       this.showErrors = true;
       return;
     } else {
       this.loading = true;
-      const formValues = this.createGuideForm.value;
-      this.guideService.createGuide(formValues).subscribe({
+      const form = this.createPlanForm.value;
+      this.tripService.createTrip(form).subscribe({
         next: (response) => {
-          const guide = response.guide;
-          this.store.dispatch(
-            guideEditActions.setEditingGuide({ guide: guide }),
-          );
+          const trip = response.trip;
+          this.store.dispatch(tripEditActions.setTripEdit({ trip: trip }));
           this.loading = false;
-          console.log(guide);
-          this.router.navigate(['guide/edit', guide._id]);
+          this.router.navigate(['trip/edit', trip._id]);
         },
         error: (errMessage) => {
           console.log(errMessage);

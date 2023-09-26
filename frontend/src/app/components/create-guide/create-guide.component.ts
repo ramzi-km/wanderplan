@@ -1,69 +1,53 @@
+import { Component, OnInit } from '@angular/core';
 import {
-  Component,
-  ElementRef,
-  HostListener,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    Validators,
 } from '@angular/forms';
-import {
-  MatDatepicker,
-  MatDatepickerInputEvent,
-} from '@angular/material/datepicker';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
-  Subject,
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  takeUntil,
+    Subject,
+    debounceTime,
+    distinctUntilChanged,
+    switchMap,
+    takeUntil,
 } from 'rxjs';
-import {
-  MapboxGeocodingResponse,
-  MapboxPlaceFeature,
-} from 'src/app/interfaces/mapbox-interface';
+import { MapboxPlaceFeature } from 'src/app/interfaces/mapbox-interface';
+import { GuideService } from 'src/app/services/guide/guide.service';
 import { MapboxService } from 'src/app/services/mapbox/mapbox.service';
-import { TripService } from 'src/app/services/trip/trip.service';
-import * as tripEditActions from '../../../store/editingTrip/trip-edit.actions';
+import * as guideEditActions from '../../store/editingGuide/guide-edit.actions';
 
 @Component({
-  selector: 'app-create-plan',
-  templateUrl: './create-plan.component.html',
-  styleUrls: ['./create-plan.component.scss'],
+  selector: 'app-create-guide',
+  templateUrl: './create-guide.component.html',
+  styleUrls: ['./create-guide.component.scss'],
 })
-export class CreatePlanComponent implements OnInit, OnDestroy {
+export class CreateGuideComponent implements OnInit {
+  createGuideForm!: FormGroup;
+  inputControl = new FormControl();
   loading = false;
   showResults: boolean = false;
-  inputControl = new FormControl();
-  currentDate = new Date();
-  createPlanForm: FormGroup;
   showErrors: boolean = false;
   places: Array<MapboxPlaceFeature> = [];
   private unsubscribe$ = new Subject<void>();
-  @ViewChild('picker') picker!: MatDatepicker<any>;
 
   constructor(
-    private hostElement: ElementRef,
     fb: FormBuilder,
     private mapboxService: MapboxService,
-    private tripService: TripService,
+    private guideService: GuideService,
     private router: Router,
     private store: Store,
   ) {
-    this.createPlanForm = fb.group({
+    this.createGuideForm = fb.group({
       place: ['', [Validators.required]],
-      startDate: ['', [Validators.required]],
-      endDate: ['', [Validators.required]],
-      visibility: ['private', [Validators.required]],
     });
-
+  }
+  get fc() {
+    return this.createGuideForm.controls;
+  }
+  ngOnInit(): void {
     this.inputControl.valueChanges
       .pipe(
         debounceTime(500),
@@ -78,24 +62,7 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
         this.places = response.features;
       });
   }
-  ngOnInit(): void {}
-  get fc() {
-    return this.createPlanForm.controls;
-  }
-  openDatePicker() {
-    this.picker.open();
-  }
 
-  startChange(event: MatDatepickerInputEvent<Date>) {
-    this.createPlanForm.patchValue({
-      startDate: event.value,
-    });
-  }
-  endChange(event: MatDatepickerInputEvent<Date>) {
-    this.createPlanForm.patchValue({
-      endDate: event.value,
-    });
-  }
   blurResults() {
     setTimeout(() => {
       this.showResults = false;
@@ -108,11 +75,11 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
       coordinates: selectedPlace.center,
       extendedName: selectedPlace.place_name,
     };
-    this.createPlanForm.patchValue({
+    this.createGuideForm.patchValue({
       place: place,
     });
   }
-  selectedPlaceIndex: number = -1;
+  selectedPlaceIndex: number = 0;
   onKeyDown(event: KeyboardEvent) {
     if (event.key === 'ArrowDown') {
       this.selectedPlaceIndex =
@@ -124,25 +91,28 @@ export class CreatePlanComponent implements OnInit, OnDestroy {
       event.preventDefault();
       if (this.selectedPlaceIndex >= 0) {
         this.selectPlace(this.places[this.selectedPlaceIndex]);
-        this.selectedPlaceIndex = -1;
+        this.selectedPlaceIndex = 0;
       }
       (event.target as HTMLInputElement).blur();
     }
   }
 
   submitForm() {
-    if (this.createPlanForm.invalid || this.loading) {
+    if (this.createGuideForm.invalid || this.loading) {
       this.showErrors = true;
       return;
     } else {
       this.loading = true;
-      const form = this.createPlanForm.value;
-      this.tripService.createTrip(form).subscribe({
+      const formValues = this.createGuideForm.value;
+      this.guideService.createGuide(formValues).subscribe({
         next: (response) => {
-          const trip = response.trip;
-          this.store.dispatch(tripEditActions.setTripEdit({ trip: trip }));
+          const guide = response.guide;
+          this.store.dispatch(
+            guideEditActions.setEditingGuide({ guide: guide }),
+          );
           this.loading = false;
-          this.router.navigate(['trip/edit', trip._id]);
+          console.log(guide);
+          this.router.navigate(['guide/edit', guide._id]);
         },
         error: (errMessage) => {
           console.log(errMessage);
