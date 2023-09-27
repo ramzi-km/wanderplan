@@ -5,6 +5,9 @@ export interface ShortTripInfo {
   _id?: string;
   name?: string;
   admin?: User;
+  overview: {
+    description: string;
+  };
   startDate?: string;
   endDate?: string;
   coverPhoto?: string;

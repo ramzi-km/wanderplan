@@ -14,6 +14,8 @@ export interface Trip {
   overview?: Overview;
   itinerary?: Itinerary[];
   budget?: Budget;
+  likes?: string[];
+  likesCount?: number;
   unList?: boolean;
 }
 

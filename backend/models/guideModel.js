@@ -63,6 +63,7 @@ const guideSchema = new Schema(
                 ref: 'User',
             },
         ],
+        likesCount: { type: Number, default: 0 },
         unList: {
             type: Boolean,
             default: false,

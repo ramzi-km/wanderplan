@@ -1,16 +1,16 @@
 <div class="mt-20"></div>
 <section id="guides" class="text-textp">
-  <div class="container mx-auto w-3/4">
+  <div class="container mx-auto w-5/6 lg:w-3/4">
     <form
       [formGroup]="searchForm"
       (ngSubmit)="submitSearchForm()"
       class="flex w-full flex-col items-center justify-center py-14"
     >
       <div class="flex-col items-center justify-center">
-        <h1 class="text-4xl font-bold">
+        <h1 class="text-center text-3xl font-bold sm:text-4xl">
           Explore travel guides and itineraries
         </h1>
-        <div class="relative my-6">
+        <div class="relative my-3 sm:my-6">
           <div
             class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
           >
@@ -33,22 +33,22 @@
           <input
             type="text"
             id="default-search"
-            class="block w-full rounded-lg border border-textg bg-secondary p-4 pl-10 text-sm text-textp focus:border-blue-500 focus:ring-blue-500"
+            class="block w-full rounded-lg border border-textg bg-secondary p-2 pl-10 text-sm text-textp focus:border-blue-500 focus:ring-blue-500 sm:p-4 sm:pl-10"
             placeholder="Search place or guide name"
             formControlName="searchText"
           />
           <button
             type="submit"
-            class="absolute bottom-2.5 right-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
+            class="absolute bottom-1.5 right-2.5 rounded-lg bg-blue-700 px-2 py-1 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 sm:bottom-2.5 sm:px-4 sm:py-2"
           >
             Search
           </button>
         </div>
       </div>
-      <div class="my-8 flex w-full justify-between">
+      <div class="my-8 flex w-full items-center justify-between">
         <div class="join">
           <input
-            class="btn join-item px-8 normal-case text-textp"
+            class="btn join-item btn-sm px-4 normal-case text-textp md:btn-md md:px-8"
             type="radio"
             name="filter"
             aria-label="Guides"
@@ -57,7 +57,7 @@
             (change)="submitSearchForm()"
           />
           <input
-            class="btn join-item btn-wide px-8 normal-case text-textp"
+            class="btn join-item btn-sm px-4 normal-case text-textp md:btn-md md:px-8"
             type="radio"
             name="filter"
             aria-label="Itineraries"
@@ -66,11 +66,11 @@
             (change)="submitSearchForm()"
           />
         </div>
-        <div class="flex items-center justify-between">
-          <span class="mr-2 font-medium">Sort by:</span>
+        <div class="flex flex-col items-center justify-between sm:flex-row">
+          <span class="mr-2 sm:font-medium">Sort by:</span>
           <select
             id="sort"
-            class="block rounded-lg border border-gray-300 bg-secondary p-2.5 text-sm text-textp focus:border-blue-500 focus:ring-blue-500"
+            class="block rounded-lg border border-gray-300 bg-secondary p-1 text-sm text-textp focus:border-blue-500 focus:ring-blue-500 md:p-2.5"
             formControlName="sort"
             (change)="submitSearchForm()"
           >
@@ -86,21 +86,24 @@
           class="mb-10 flex w-full flex-col items-center"
         >
           <img
-            class="w-1/3"
+            class="w-1/2 md:w-1/3"
             src="../../../../../assets/images/noTrips-removebg.png"
           />
-          <h1 class="text-xl text-textp">
-            We don't have any guides yet for '{{ searchText }}'.<a
-              class="text-blue-400"
-              routerLink="/create/guide"
+          <h1 class="text-center text-xl text-textp">
+            We don't have any
+            {{ filter == "guides" ? "guides" : "itineraries" }} yet for '{{
+              searchText
+            }}'.<a class="text-blue-400" routerLink="/create/guide"
               >write one if you've been there!</a
             >
           </h1>
         </div>
-        <div class="grid w-full grid-cols-4 gap-6">
+        <div
+          class="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 cXl:grid-cols-4"
+        >
           <div
             *ngFor="let guide of guides; let guideIndex = index"
-            class="card card-compact justify-between bg-secondary shadow-xl hover:shadow-gray-700"
+            class="card card-compact justify-between bg-secondary shadow-xl hover:cursor-pointer hover:shadow-gray-700"
           >
             <figure class="h-40">
               <img
@@ -145,7 +148,7 @@
             <div class="card-body flex flex-col justify-between">
               <h2 class="card-title line-clamp-1">{{ itinerary.name }}</h2>
               <p class="line-clamp-2 text-textg">
-                Total places: {{ itinerary.totalItineraryPlaces }}
+                {{ itinerary.overview.description }}
               </p>
               <div class="card-actions items-center justify-between">
                 <div class="flex items-center space-x-2">

@@ -14,6 +14,7 @@ export interface Guide {
   generalTips?: string;
   sections?: Section[];
   likes?: string[];
+  likesCount?: number;
   createdAt?: Date;
   updatedAt?: Date;
   unList?: boolean;

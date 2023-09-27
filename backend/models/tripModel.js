@@ -88,16 +88,17 @@ const tripSchema = new Schema(
             limit: { type: Number },
             expenses: [{ type: Schema.Types.ObjectId, ref: 'Expense' }],
         },
-        unList: {
-            type: Boolean,
-            default: false,
-        },
         likes: [
             {
                 type: Schema.Types.ObjectId,
                 ref: 'User',
             },
         ],
+        likesCount: { type: Number, default: 0 },
+        unList: {
+            type: Boolean,
+            default: false,
+        },
     },
     { timestamps: true }
 )

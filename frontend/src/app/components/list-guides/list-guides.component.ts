@@ -41,7 +41,7 @@ export class ListGuidesComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res) => {
           this.loading = false;
-          this.guides = res.guides??[]
+          this.guides = res.guides ?? [];
           this.page = res.page;
           this.lastPage = res.lastPage;
         },
@@ -109,6 +109,7 @@ export class ListGuidesComponent implements OnInit, OnDestroy {
           this.loading = false;
           this.page = res.page;
           this.lastPage = res.lastPage;
+          window.scrollTo(0, 0);
         },
         error: (errMessage) => {
           console.log(errMessage);
@@ -136,6 +137,7 @@ export class ListGuidesComponent implements OnInit, OnDestroy {
           this.loading = false;
           this.page = res.page;
           this.lastPage = res.lastPage;
+          window.scrollTo(0, 0);
         },
         error: (errMessage) => {
           console.log(errMessage);

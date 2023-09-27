@@ -428,18 +428,68 @@ export async function getAllTripsAndGuides(req, res) {
     const sort = req.query.sort ?? 'popularity'
     let search = req.query.searchText ?? ''
     search = search.trim()
-    let sortField = {}
 
-    if (sort === 'popularity') {
-        sortField = { likesCount: 1 }
-    } else if (sort === 'oldest') {
-        sortField = { createdAt: 1 }
-    } else {
-        sortField = { createdAt: -1 }
+    let sortOption
+
+    switch (sort) {
+        case 'oldest':
+            sortOption = { createdAt: 1 }
+            break
+        case 'newest':
+            sortOption = { createdAt: -1 }
+            break
+        case 'popularity':
+            sortOption = { likesCount: -1 }
+            break
+        default:
+            sortOption = { likesCount: -1 }
     }
 
     if (filter == 'itineraries') {
-        console.log(filter)
+        const totalItineraries = await tripModel.countDocuments({
+            $or: [
+                { name: new RegExp(search, 'i') },
+                { 'place.name': new RegExp(search, 'i') },
+            ],
+            unList: false,
+        })
+
+        const perPage = 8
+        const lastPage = Math.max(Math.ceil(totalItineraries / perPage) - 1, 0)
+        page = Math.min(page, lastPage)
+
+        const itineraries = await tripModel
+            .find({
+                $or: [
+                    { name: new RegExp(search, 'i') },
+                    { 'place.name': new RegExp(search, 'i') },
+                ],
+                unList: false,
+                visibility: 'public',
+            })
+            .sort(sortOption)
+            .populate('admin', '_id username name profilePic')
+            .select({
+                _id: 1,
+                name: 1,
+                coverPhoto: 1,
+                place: 1,
+                likesCount: 1,
+                unList: 1,
+                admin: 1,
+                'overview.description': 1,
+            })
+            .skip(page * perPage)
+            .limit(perPage)
+            .lean()
+            .exec()
+
+        res.status(200).json({
+            message: 'success',
+            itineraries: itineraries,
+            page,
+            lastPage,
+        })
     } else {
         const totalGuides = await guideModel.countDocuments({
             $or: [
@@ -453,51 +503,31 @@ export async function getAllTripsAndGuides(req, res) {
         const lastPage = Math.max(Math.ceil(totalGuides / perPage) - 1, 0)
         page = Math.min(page, lastPage)
 
-        const guides = await guideModel.aggregate([
-            {
-                $match: {
-                    $or: [
-                        { name: new RegExp(search, 'i') },
-                        { 'place.name': new RegExp(search, 'i') },
-                    ],
-                    unList: false,
-                },
-            },
-            {
-                $addFields: {
-                    likesCount: { $size: '$likes' },
-                },
-            },
-            {
-                $sort: sortField,
-            },
-            {
-                $skip: page * perPage,
-            },
-            {
-                $limit: perPage,
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'writer',
-                    foreignField: '_id',
-                    as: 'writer',
-                },
-            },
-            {
-                $project: {
-                    _id: 1,
-                    name: 1,
-                    coverPhoto: 1,
-                    place: 1,
-                    writersRelation: 1,
-                    likesCount: 1,
-                    unList: 1,
-                    writer: { $arrayElemAt: ['$writer', 0] },
-                },
-            },
-        ])
+        const guides = await guideModel
+            .find({
+                $or: [
+                    { name: new RegExp(search, 'i') },
+                    { 'place.name': new RegExp(search, 'i') },
+                ],
+                unList: false,
+            })
+            .sort(sortOption)
+            .populate('writer', '_id username name profilePic')
+            .select({
+                _id: 1,
+                name: 1,
+                coverPhoto: 1,
+                place: 1,
+                writersRelation: 1,
+                likesCount: 1,
+                unList: 1,
+                writer: 1,
+            })
+            .skip(page * perPage)
+            .limit(perPage)
+            .lean()
+            .exec()
+
         res.status(200).json({
             message: 'success',
             guides: guides,
