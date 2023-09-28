@@ -72,7 +72,22 @@ export async function getEditGuideDetails(req, res) {
             .exec()
         return res.status(200).json({ message: 'Success', guide: guide })
     } catch (error) {
-        console.log(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function getViewGuideDetails(req, res) {
+    try {
+        const guideId = req.params.guideId
+        const guide = await guideModel
+            .findOne({ _id: guideId, unList: false })
+            .populate('writer', '_id username name profilePic')
+            .exec()
+        if (!guide) {
+            return res.status(400).json({ message: 'Invalid guide id' })
+        }
+        return res.status(200).json({ message: 'Success', guide: guide })
+    } catch (error) {
         return res.status(500).json({ message: 'Internal server error' })
     }
 }
