@@ -82,9 +82,8 @@ const routes: Routes = [
             canActivate: [guideEditGuard],
           },
           {
-            path: 'view/:id',
+            path: 'view/:guideId',
             component: GuideViewComponent,
-            canActivate: [userAuthGuard],
           },
         ],
       },

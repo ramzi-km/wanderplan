@@ -56,6 +56,9 @@
               {{ place.name }}
             </div>
             <div class="collapse-content text-textp">
+              <div class="my-2 text-sm text-blue-500 md:hidden">
+                <a (click)="viewMapFn()">View in map</a>
+              </div>
               <div class="relative h-36 w-full sm:hidden">
                 <button
                   type="button"

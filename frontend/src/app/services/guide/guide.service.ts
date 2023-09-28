@@ -24,6 +24,12 @@ export class GuideService {
     );
   }
 
+  getViewGuideDetails(guideId: string) {
+    return this.http.get<{ guide: Guide; message: string }>(
+      `${this.baseUrl}/${guideId}/view`,
+    );
+  }
+
   deleteGuide(guideId: string) {
     return this.http.delete<{ message: string }>(`${this.baseUrl}/${guideId}`);
   }

@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   OnDestroy,
@@ -7,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { MatDrawer } from '@angular/material/sidenav';
+import { MatDrawer, MatSidenavContainer } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { environment } from 'environment';
@@ -25,9 +26,10 @@ import * as userSelectors from '../../../store/user/user.selectors';
   templateUrl: './guide-edit.component.html',
   styleUrls: ['./guide-edit.component.scss'],
 })
-export class GuideEditComponent implements OnInit, OnDestroy {
+export class GuideEditComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('drawer') drawer!: MatDrawer;
   @ViewChild('overview') overview!: ElementRef;
+  @ViewChild(MatSidenavContainer) sidenavContainer!: MatSidenavContainer;
 
   scrollToSection(section: ElementRef, sectionName: string): void {
     section.nativeElement.scrollIntoView({ behavior: 'smooth' });
@@ -40,7 +42,22 @@ export class GuideEditComponent implements OnInit, OnDestroy {
       sectionElement.scrollIntoView({ behavior: 'smooth' });
     }
   }
+  ngAfterViewInit() {
+    this.setSidenavMode();
+    window.addEventListener('resize', () => {
+      this.setSidenavMode();
+    });
+  }
+  private setSidenavMode() {
+    if (window.innerWidth >= 1200) {
+      this.drawer.mode = 'side';
+    } else {
+      this.drawer.mode = 'over';
+    }
+  }
 
+  currentPosition = 0;
+  showMap = false;
   private ngUnsubscribe$ = new Subject<void>();
   guide$ = this.store.select(guideEditSelectors.selectEditingGuide);
   user$ = this.store.select(userSelectors.selectUser);
@@ -314,6 +331,22 @@ export class GuideEditComponent implements OnInit, OnDestroy {
       }
       this.currentMarker = this.markers[index];
     }
+  }
+
+  showMapFn() {
+    this.currentPosition =
+      this.sidenavContainer.scrollable.measureScrollOffset('top');
+    this.showMap = true;
+  }
+  closeMap() {
+    this.showMap = false;
+    setTimeout(() => {
+      this.sidenavContainer.scrollable.scrollTo({
+        top: this.currentPosition,
+        behavior: 'auto',
+      });
+    }, 100);
+
   }
 
   ngOnDestroy(): void {

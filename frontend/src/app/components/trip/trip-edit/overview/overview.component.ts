@@ -31,6 +31,7 @@ import * as tripEditActions from '../../../../store/editingTrip/trip-edit.action
 export class OverviewComponent implements OnInit, OnDestroy {
   @Input() trip: Trip | undefined;
   @Output() accordionClicked: EventEmitter<any> = new EventEmitter<any>();
+  @Output() viewMap: EventEmitter<any> = new EventEmitter();
 
   placeToVisitDescriptionSaving = false;
   descriptionSavingIndex!: number;
@@ -245,6 +246,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.router.navigate(['/guides'], {
       queryParams: { search: this.trip?.place!.name, page: 0 },
     });
+  }
+
+  viewMapFn() {
+    this.viewMap.emit(); 
   }
 
   ngOnDestroy(): void {

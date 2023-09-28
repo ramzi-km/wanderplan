@@ -31,6 +31,7 @@ export class GuideSectionComponent implements OnInit, OnDestroy {
   @Input() section: Section | undefined;
   @Input() sectionI: number | undefined;
   @Output() accordionClicked: EventEmitter<any> = new EventEmitter<any>();
+  @Output() viewMap: EventEmitter<any> = new EventEmitter();
 
   private ngUnsubscribe$ = new Subject<void>();
   places: Array<MapboxPlaceFeature> = [];
@@ -55,7 +56,7 @@ export class GuideSectionComponent implements OnInit, OnDestroy {
     value: false,
     index: 0,
   };
-
+  deletingSection = { Component };
   constructor(
     private mapboxService: MapboxService,
     private store: Store,
@@ -134,7 +135,19 @@ export class GuideSectionComponent implements OnInit, OnDestroy {
         },
       });
   }
+  showDeleteSectionModal(sectionId: string) {
+    const deleteSectionModal = document.getElementById(
+      'deleteSection-' + sectionId,
+    ) as HTMLDialogElement;
+    deleteSectionModal.showModal();
+  }
 
+  closeDeleteSectionModal(sectionId: string) {
+    const deleteSectionModal = document.getElementById(
+      'deleteSection-' + sectionId,
+    ) as HTMLDialogElement;
+    deleteSectionModal.close();
+  }
   deleteSection(sectionId: string) {
     if (!this.deleteSectionLoading) {
       this.deleteSectionLoading = true;
@@ -147,10 +160,12 @@ export class GuideSectionComponent implements OnInit, OnDestroy {
             this.store.dispatch(
               guideEditActions.deleteSection({ sectionId: sectionId }),
             );
+            this.closeDeleteSectionModal(sectionId);
           },
           error: (errMessage) => {
             console.log(errMessage);
             this.deleteSectionLoading = false;
+            this.closeDeleteSectionModal(sectionId);
           },
         });
     }
@@ -346,7 +361,9 @@ export class GuideSectionComponent implements OnInit, OnDestroy {
         },
       });
   }
-
+  viewMapFn() {
+    this.viewMap.emit(); 
+  }
   ngOnDestroy(): void {
     this.ngUnsubscribe$.next();
     this.ngUnsubscribe$.complete();

@@ -84,7 +84,12 @@ export class NavComponent {
   }
 
   shouldShowFooter(): boolean {
-    const excludedRoutePatterns = [/^\/trip\/edit\/.*/, /^\/guide\/edit\/.*/];
+    const excludedRoutePatterns = [
+      /^\/trip\/edit\/.*/,
+      /^\/guide\/edit\/.*/,
+      /^\/guide\/view\/.*/,
+      /^\/trip\/view\/.*/,
+    ];
     const currentUrl = this.router.url;
 
     const shouldExclude = excludedRoutePatterns.some((pattern) =>

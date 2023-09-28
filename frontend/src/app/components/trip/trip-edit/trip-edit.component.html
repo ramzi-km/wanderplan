@@ -100,11 +100,11 @@
   </mat-sidenav>
   <mat-sidenav-content #sideNavContent class="bg-base-100">
     <div
-      *ngIf="!showMap"
       class="flex h-screen w-full md:w-2/3 lg:w-1/2"
       [ngClass]="{
         'cXl:w-[55%]': isDrawerOpen(),
-        'cXl:w-[50%]': !isDrawerOpen()
+        'cXl:w-[50%]': !isDrawerOpen(),
+        hidden: showMap
       }"
     >
       <div class="mt-20 w-full" *ngIf="trip$ | async as trip" #overview>
@@ -542,6 +542,7 @@
             <div class="w-full">
               <app-overview
                 (accordionClicked)="onAccordionClicked($event)"
+                (viewMap)="showMapFn()"
                 [trip]="trip"
               ></app-overview>
             </div>
@@ -550,6 +551,7 @@
             <div #itinerary class="w-full scroll-m-20">
               <app-itinerary
                 (accordionClicked)="onAccordionClicked2($event)"
+                (viewMap)="showMapFn()"
                 [trip]="trip"
               ></app-itinerary>
             </div>
@@ -560,7 +562,6 @@
           </div>
         </div>
       </div>
-
 
       <dialog id="chatModal" class="modal modal-bottom md:modal-middle">
         <div
@@ -583,8 +584,9 @@
       </dialog>
 
       <button
+        (click)="$event.stopPropagation()"
         *ngIf="!showMap"
-        class="btn btn-success btn-sm fixed bottom-6 left-1/2 -translate-x-1/2 transform normal-case sm:hidden"
+        class="btn btn-success btn-sm fixed bottom-6 left-1/2 z-50 -translate-x-1/2 transform normal-case md:hidden"
         (click)="showMapFn()"
       >
         <i class="fa-solid fa-map-location-dot"></i>
@@ -596,24 +598,26 @@
       [ngClass]="{
         'cXl:w-[41%]': isDrawerOpen(),
         'cXl:w-[51%]': !isDrawerOpen(),
-        'w-full': showMap
+        'slide-in': showMap,
+        'sm:slide-in': !showMap,
+        'slide-out': !showMap
       }"
-      class="fixed bottom-0 right-0 top-20 md:w-1/3 lg:w-1/2"
+      class="no-animation fixed bottom-0 right-0 top-20 w-full md:w-1/3 lg:w-1/2"
     ></div>
     <button
       *ngIf="showMap"
-      class="btn btn-success btn-sm fixed right-4 top-28 normal-case"
+      class="btn btn-success btn-sm fixed right-4 top-28 normal-case md:hidden"
       (click)="closeMap()"
     >
       <i class="fa-solid fa-xmark"></i>
       Exit map
     </button>
     <button
-    *ngIf="!showMap"
-    class="btn btn-circle btn-success fixed bottom-6 right-6 text-lg sm:btn-lg sm:bottom-14 sm:right-14 sm:text-2xl"
-    onclick="chatModal.showModal()"
-  >
-    <i class="fa-solid fa-message"></i>
-  </button>
+      *ngIf="!showMap"
+      class="btn btn-circle btn-success fixed bottom-6 right-6 z-50 text-lg sm:btn-lg sm:bottom-14 sm:right-14 sm:text-2xl"
+      onclick="chatModal.showModal()"
+    >
+      <i class="fa-solid fa-message"></i>
+    </button>
   </mat-sidenav-content>
 </mat-sidenav-container>

@@ -1,11 +1,11 @@
 <button
-  *ngIf="!isDrawerOpen()"
+  *ngIf="!isDrawerOpen() && !showMap"
   class="btn btn-primary fixed top-20 z-10 rounded-e-md rounded-s-none text-textp"
   (click)="drawer.toggle()"
 >
   <i class="fa-solid fa-angles-right"></i>
 </button>
-<mat-sidenav-container autosize class="bg-base-100">
+<mat-sidenav-container autosize="true" class="bg-base-100">
   <mat-sidenav
     style="background-color: var(--secondary-color)"
     mode="side"
@@ -38,13 +38,13 @@
                 <p class="line-clamp-1">General Tips</p>
               </li>
               <li
-                class="w-28"
+                class="w-32"
                 (click)="scrollToDynamicSection('' + sectionI)"
                 *ngFor="let section of guide.sections; let sectionI = index"
               >
-                <p *ngIf="section.name" class="line-clamp-1">
+                <span *ngIf="section.name" class="line-clamp-1 w-28">
                   {{ section.name }}
-                </p>
+                </span>
                 <p *ngIf="!section.name" class="line-clamp-1">Untitled</p>
               </li>
             </ul>
@@ -53,14 +53,17 @@
       </ul>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content class="bg-base-100">
-    <div class="flex h-screen w-full">
-      <div
-        [ngClass]="isDrawerOpen() ? 'w-[55%]' : 'w-1/2'"
-        class="mt-20 w-1/2"
-        *ngIf="guide$ | async as guide"
-        #overview
-      >
+  <mat-sidenav-content #sideNavContent class="bg-base-100">
+    <div
+      class="flex h-screen w-full md:w-2/3 lg:w-1/2"
+      [ngClass]="{
+        'cXl:w-[55%]': isDrawerOpen(),
+        'cXl:w-[50%]': !isDrawerOpen(),
+        'w-full': !showMap,
+        hidden: showMap
+      }"
+    >
+      <div class="mt-20 w-full" *ngIf="guide$ | async as guide" #overview>
         <div class="relative h-2/5 w-full">
           <div *ngIf="coverPhotoLoading">
             <div
@@ -101,7 +104,7 @@
                   ></span>
                   <input
                     type="text"
-                    class="input card-title input-ghost w-full max-w-md text-ellipsis text-3xl text-textp"
+                    class="input card-title input-ghost input-sm w-full max-w-md text-ellipsis text-xl text-textp sm:input-sm sm:text-3xl"
                     [(ngModel)]="guideHeadingInput"
                     (blur)="onHeadingBlur()"
                   />
@@ -128,7 +131,7 @@
                 <!---------- delete guide modal ------------->
                 <dialog id="deleteGuideModal" class="modal">
                   <div
-                    class="modal-box relative h-full w-full max-w-md bg-secondary p-4 md:h-auto"
+                    class="modal-box w-5/6 max-w-md bg-secondary p-4 md:h-auto"
                   >
                     <!-- Modal content -->
                     <div class="relative p-4 text-center sm:p-5">
@@ -182,8 +185,8 @@
                 </dialog>
                 <!---------- delete guide modal end ------------->
 
-                <div class="card-actions mt-8 justify-between">
-                  <span class="text-texts">
+                <div class="card-actions mt-4 justify-between sm:mt-8">
+                  <span class="text-sm text-texts sm:text-base">
                     <i class="fa-regular fa-calendar mr-2"></i>
                     Created at:
                     {{ guide.createdAt! | date }}
@@ -196,18 +199,18 @@
           <div
             class="my-10 flex w-full flex-col items-center justify-center text-textp"
           >
-            <div class="w-full space-y-4 px-10">
+            <div class="w-full space-y-4 px-5 sm:px-10">
               <div class="flex w-full items-center justify-between px-10">
                 <div class="flex items-center space-x-2">
                   <div class="avatar">
-                    <div class="w-14 rounded-full">
+                    <div class="w-8 rounded-full sm:w-14">
                       <img [src]="guide.writer?.profilePic" />
                     </div>
                   </div>
                   <span>{{ guide.writer?.username }}</span>
                 </div>
                 <div>
-                  <button class="btn btn-square">
+                  <button class="btn btn-sm sm:btn-md">
                     <i class="fa-regular fa-heart"></i>
                     {{ guide.likes?.length }}
                   </button>
@@ -264,10 +267,11 @@
               <section
                 *ngFor="let section of guide?.sections; let sectionI = index"
                 ngClass="section-{{ sectionI }}"
-                class="scroll-m-20"
+                class="w-full scroll-m-20"
               >
                 <app-guide-section
                   (accordionClicked)="onAccordionClicked($event)"
+                  (viewMap)="showMapFn()"
                   [sectionI]="sectionI"
                   [guide]="guide"
                   [section]="section"
@@ -290,11 +294,34 @@
           </div>
         </div>
       </div>
-      <div
-        id="map"
-        [ngClass]="isDrawerOpen() ? 'w-[41%]' : 'w-1/2'"
-        class="fixed bottom-0 right-0 top-20 w-1/2"
-      ></div>
+      <button
+        (click)="$event.stopPropagation()"
+        *ngIf="!showMap"
+        type="button"
+        class="btn btn-success btn-sm fixed bottom-6 left-1/2 -translate-x-1/2 transform normal-case md:hidden"
+        (click)="showMapFn()"
+      >
+        <i class="fa-solid fa-map-location-dot"></i>
+        Map view
+      </button>
     </div>
+    <div
+      id="map"
+      [ngClass]="{
+        'cXl:w-[41%]': isDrawerOpen(),
+        'cXl:w-[51%]': !isDrawerOpen(),
+        'slide-in': showMap,
+        'slide-out': !showMap
+      }"
+      class="no-animation fixed bottom-0 right-0 top-20 w-full md:w-1/3 lg:w-1/2"
+    ></div>
+    <button
+      *ngIf="showMap"
+      class="btn btn-success btn-sm fixed right-4 top-28 normal-case"
+      (click)="closeMap()"
+    >
+      <i class="fa-solid fa-xmark"></i>
+      Exit map
+    </button>
   </mat-sidenav-content>
 </mat-sidenav-container>

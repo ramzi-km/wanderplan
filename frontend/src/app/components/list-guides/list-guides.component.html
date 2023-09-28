@@ -102,6 +102,7 @@
           class="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 cXl:grid-cols-4"
         >
           <div
+            routerLink="/guide/view/{{ guide._id }}"
             *ngFor="let guide of guides; let guideIndex = index"
             class="card card-compact justify-between bg-secondary shadow-xl hover:cursor-pointer hover:shadow-gray-700"
           >

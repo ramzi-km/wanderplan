@@ -482,7 +482,10 @@ export class TripEditComponent implements OnDestroy, OnInit, AfterViewInit {
   closeMap() {
     this.showMap = false;
     setTimeout(() => {
-      this.sidenavContainer.scrollable.scrollTo({ top: this.currentPosition });
+      this.sidenavContainer.scrollable.scrollTo({
+        top: this.currentPosition,
+        behavior: 'auto',
+      });
     }, 100);
   }
   ngOnDestroy(): void {

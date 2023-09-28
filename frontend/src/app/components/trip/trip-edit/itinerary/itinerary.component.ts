@@ -33,6 +33,7 @@ import * as tripEditActions from '../../../../store/editingTrip/trip-edit.action
 export class ItineraryComponent {
   @Input() trip: Trip | undefined;
   @Output() accordionClicked: EventEmitter<any> = new EventEmitter<any>();
+  @Output() viewMap: EventEmitter<any> = new EventEmitter();
 
   constructor(
     fb: FormBuilder,
@@ -458,6 +459,9 @@ export class ItineraryComponent {
       'addTimeModal',
     ) as HTMLDialogElement;
     addTimeModal.close();
+  }
+  viewMapFn() {
+    this.viewMap.emit(); 
   }
   ngOnDestroy(): void {
     this.ngUnsubscribe$.next();
