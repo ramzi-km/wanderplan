@@ -1,24 +1,24 @@
 <div class="flex w-full flex-col items-center justify-center space-y-4 px-6">
-  <div class="flex w-full justify-between p-6 pb-2">
+  <div class="flex w-full justify-between space-x-6 p-6 pb-2">
     <h1 class="text-3xl font-bold text-textp">Budgeting</h1>
     <button
       (click)="showAddExpenseModal()"
-      class="btn btn-primary rounded-full normal-case text-textp"
+      class="btn btn-primary btn-sm rounded-full normal-case text-textp sm:btn-md"
     >
       <i class="fa-solid fa-plus mr-2"></i> Add expense
     </button>
   </div>
   <div class="card -ml-4 w-5/6 bg-secondary shadow-xl">
     <div class="card-body space-y-2">
-      <h2 class="card-title text-4xl font-medium text-textp">
-        INR<i class="fa-solid fa-indian-rupee-sign mr-2 text-3xl"></i
+      <h2 class="card-title text-2xl font-medium text-textp sm:text-4xl">
+        INR<i class="fa-solid fa-indian-rupee-sign mr-2 text-xl sm:text-3xl"></i
         ><span>{{ totalAmount }}</span>
       </h2>
       <div
         *ngIf="trip?.budget?.limit !== undefined"
         class="flex w-full flex-col items-end"
       >
-        <span class="font-medium text-textg"
+        <span class="text-sm font-medium text-textg sm:text-base"
           >Budget: <i class="fa-solid fa-indian-rupee-sign"></i
           >{{ trip?.budget?.limit }}
         </span>
@@ -40,7 +40,9 @@
     </div>
   </div>
 
-  <div class="collapse-arrow collapse w-full bg-base-100 text-textp">
+  <div
+    class="section-view collapse collapse-arrow w-full scroll-m-20 bg-base-100 text-textp"
+  >
     <input checked type="checkbox" />
     <div class="collapse-title text-xl font-medium">Expenses</div>
     <div class="collapse-content w-full">
@@ -60,22 +62,24 @@
         >
           <div class="flex w-full max-w-full flex-row items-center space-x-1">
             <div
-              class="mr-3 flex w-5/6 items-center rounded-md bg-secondary px-6 py-2 text-textp"
+              class="mr-1 flex w-5/6 items-center rounded-md bg-secondary px-3 py-1 text-textp sm:mr-3 sm:px-6 sm:py-2"
             >
-              <span class="text-2xl text-textg">
+              <span class="text-xl text-textg sm:text-2xl">
                 <i [ngClass]="expense.category?.icon"></i>
               </span>
               <div class="w-30 ml-4 overflow-hidden lg:w-40 xl:w-60">
-                <span class="mb-2 whitespace-pre-wrap text-lg font-medium">
-                  {{ expense.description }}
-                </span>
-                <span class="text-sm text-texts"
+                <span
+                  class="mb-2 whitespace-pre-wrap text-base font-medium sm:text-lg"
+                >
+                  {{ expense.description }} </span
+                ><br />
+                <span class="text-xs text-texts sm:text-sm"
                   >{{ expense.date | date }} .
                   {{ expense.category?.name }}</span
                 >
               </div>
               <div class="ml-auto flex items-center space-x-3">
-                <span class="text-lg font-semibold"
+                <span class="text-sm font-semibold sm:text-lg"
                   ><i class="fa-solid fa-indian-rupee-sign"></i>
                   {{ expense.amount }}</span
                 >
@@ -84,7 +88,7 @@
                   class="avatar tooltip"
                   [attr.data-tip]="'paid by ' + expense.paidBy?.name"
                 >
-                  <div class="h-10 w-10 rounded-full">
+                  <div class="h-6 w-6 rounded-full sm:h-10 sm:w-10">
                     <img src="{{ expense.paidBy?.profilePic }}" />
                   </div>
                 </label>

@@ -26,11 +26,11 @@
   <div class="grid grid-cols-1 gap-4 pt-10 md:grid-cols-2 lg:grid-cols-3">
     <ng-container *ngFor="let guide of userGuides">
       <div class="relative max-w-sm">
-        <button
+        <!-- <button
           class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
         >
           <i class="fa-solid fa-ellipsis"></i>
-        </button>
+        </button> -->
         <a (click)="navigateTo(guide._id!)">
           <img
             class="h-40 w-full rounded-lg object-cover"

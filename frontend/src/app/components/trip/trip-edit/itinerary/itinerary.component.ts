@@ -189,16 +189,23 @@ export class ItineraryComponent {
   }
 
   onFocus(index: number) {
-    this.showResultsIndex = index;
-    this.showResults = true;
+    setTimeout(() => {
+      this.showResultsIndex = index;
+      this.showResults = true;
+    }, 200);
   }
+
   blurResults() {
     setTimeout(() => {
       this.inputControl.setValue('');
       this.showResults = false;
-    }, 200);
+    }, 100);
   }
-  selectPlace(selectedPlace: MapboxPlaceFeature, dayId: string, dayIndex: number) {
+  selectPlace(
+    selectedPlace: MapboxPlaceFeature,
+    dayId: string,
+    dayIndex: number,
+  ) {
     this.inputControl.setValue('');
     const place = {
       name: selectedPlace.text,
@@ -211,7 +218,6 @@ export class ItineraryComponent {
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe({
         next: (res) => {
-          console.log(res);
           this.store.dispatch(
             tripEditActions.addItineraryPlace({ place: res.place, dayIndex }),
           );

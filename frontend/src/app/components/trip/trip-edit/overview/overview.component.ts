@@ -8,6 +8,7 @@ import {
   Output,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
   Subject,
@@ -47,6 +48,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     private store: Store,
     private mapboxService: MapboxService,
     private elementRef: ElementRef,
+    private router: Router,
   ) {}
   ngOnInit(): void {
     this.inputControl.valueChanges
@@ -238,6 +240,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
           this.changeImageLoading = false;
         },
       });
+  }
+  navigateToGuidesWithQueryParams() {
+    this.router.navigate(['/guides'], {
+      queryParams: { search: this.trip?.place!.name, page: 0 },
+    });
   }
 
   ngOnDestroy(): void {

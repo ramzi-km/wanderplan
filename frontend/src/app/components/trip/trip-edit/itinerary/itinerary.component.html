@@ -2,7 +2,7 @@
   <div class="flex justify-between p-6 pb-2">
     <h1 class="text-3xl font-bold text-textp">Itinerary</h1>
     <span
-      class="flex items-center justify-center rounded-full bg-secondary p-3 font-semibold text-textp"
+      class="flex items-center justify-center rounded-full bg-secondary p-2 text-xs font-semibold text-textp sm:p-3 sm:text-base"
     >
       <i class="fa-solid fa-calendar-days mr-2"></i>
       {{ [trip!.startDate!, trip!.endDate!] | dateRange }}
@@ -15,7 +15,7 @@
     <div class="collapse collapse-arrow bg-base-100 text-textp">
       <input checked type="checkbox" />
       <div
-        class="collapse-title text-xl font-semibold underline underline-offset-4"
+        class="collapse-title text-lg font-semibold underline underline-offset-4 sm:text-xl"
       >
         {{ day.Date | customDateFormat }}
       </div>
@@ -24,7 +24,7 @@
           <input
             type="text"
             placeholder="Add subheading"
-            class="input input-ghost input-sm -ml-2 -mt-2 w-full max-w-sm text-ellipsis text-xl font-medium text-texts underline underline-offset-4"
+            class="input input-ghost input-sm -ml-2 -mt-2 w-full max-w-sm text-ellipsis text-lg font-medium text-texts underline underline-offset-4 sm:text-xl"
             #subheadingInput
             (blur)="
               saveSubheading(day.subheading!, subheadingInput.value, dayIndex)
@@ -42,7 +42,7 @@
         >
           <div
             (click)="onPlaceClick(place)"
-            class="collapse collapse-open basis-2/3 bg-secondary"
+            class="collapse collapse-open bg-secondary"
           >
             <input type="checkbox" />
 
@@ -56,6 +56,32 @@
               {{ place.name }}
             </div>
             <div class="collapse-content text-textp">
+              <div class="relative h-36 w-full sm:hidden">
+                <button
+                  type="button"
+                  class="btn btn-circle btn-info btn-sm absolute right-3 top-3"
+                  (click)="fileInput.click()"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+                <img
+                  class="h-32 w-full rounded-lg object-cover"
+                  src="{{ place.image }}"
+                  alt=""
+                />
+                <div>
+                  <div
+                    *ngIf="
+                      changeImageLoading.value &&
+                      changeImageLoading.dayIndex == dayIndex &&
+                      changeImageLoading.placeIndex == placeIndex
+                    "
+                    class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 text-primary"
+                  >
+                    <span class="loading loading-spinner loading-lg"></span>
+                  </div>
+                </div>
+              </div>
               <textarea
                 (click)="$event.stopPropagation()"
                 #placeDescTextArea
@@ -148,9 +174,19 @@
                   <i class="fa-solid fa-indian-rupee-sign"></i> Add cost
                 </button>
               </div>
+              <div class="mt-3 block p-2 sm:hidden">
+                <button
+                  type="button"
+                  (click)="showDeletePlace(dayIndex, placeIndex)"
+                  class="btn btn-error btn-sm w-full rounded-full normal-case text-white"
+                >
+                  <i class="fa-solid fa-trash-can"></i>
+                  Delete place
+                </button>
+              </div>
             </div>
           </div>
-          <div class="mt-1 w-full basis-1/3 space-y-2">
+          <div class="mt-1 hidden w-full basis-1/3 space-y-2 sm:block">
             <div class="relative h-32 w-full">
               <img
                 class="h-32 w-full rounded-lg object-cover"

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -34,6 +34,7 @@ export class BudgetComponent implements OnInit, OnDestroy {
     private budgetManagementService: BudgetManagementService,
     fb: FormBuilder,
     private store: Store,
+    private elementRef: ElementRef,
   ) {
     this.addExpenseForm = fb.group({
       amount: ['', [Validators.required]],
@@ -76,6 +77,16 @@ export class BudgetComponent implements OnInit, OnDestroy {
         },
       });
   }
+
+  scrollToSection(sectionId: string) {
+    const sectionElement = this.elementRef.nativeElement.querySelector(
+      `.section-${sectionId}`,
+    );
+    if (sectionElement) {
+      sectionElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
   showAddExpenseModal() {
     this.addExpenseForm.reset();
     this.addExpenseErrMessage = '';

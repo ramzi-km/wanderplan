@@ -1,7 +1,8 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 import { ShortGuideInfo } from 'src/app/interfaces/short-guide.interface';
 import { ShortTripInfo } from 'src/app/interfaces/short-trip.interface';
 import { ListGuidesService } from 'src/app/services/listGuides/list-guides.service';
@@ -26,6 +27,8 @@ export class ListGuidesComponent implements OnInit, OnDestroy {
   constructor(
     fb: FormBuilder,
     private listGuidesService: ListGuidesService,
+    private route: ActivatedRoute,
+    private router: Router,
   ) {
     this.searchForm = fb.group({
       searchText: ['', [Validators.required]],
@@ -34,14 +37,43 @@ export class ListGuidesComponent implements OnInit, OnDestroy {
     });
   }
   ngOnInit(): void {
-    this.loading = true;
-    this.listGuidesService
-      .getAllGuidesAndItineraries()
-      .pipe(takeUntil(this.ngUnsubscribe$))
+    this.route.queryParams
+      .pipe(
+        takeUntil(this.ngUnsubscribe$),
+        switchMap((params) => {
+          const querySearch = params['search'] ?? '';
+          const queryPage = params['page'] ?? 0;
+          const queryFilter = params['filter'] ?? 'guides';
+          const querySort = params['sort'] ?? 'popularity';
+
+          this.searchForm.patchValue({
+            searchText: querySearch,
+            filter: queryFilter,
+            sort: querySort,
+          });
+          this.searchText = querySearch;
+          this.filter = queryFilter;
+          this.sort = querySort;
+
+          const paramsToPass = new HttpParams()
+            .set('page', queryPage.toString())
+            .set('searchText', querySearch)
+            .set('filter', queryFilter)
+            .set('sort', querySort);
+
+          this.loading = true;
+
+          return this.listGuidesService.getAllGuidesAndItineraries(
+            paramsToPass,
+          );
+        }),
+        takeUntil(this.ngUnsubscribe$),
+      )
       .subscribe({
         next: (res) => {
           this.loading = false;
           this.guides = res.guides ?? [];
+          this.itineraries = res.itineraries ?? [];
           this.page = res.page;
           this.lastPage = res.lastPage;
         },
@@ -63,87 +95,35 @@ export class ListGuidesComponent implements OnInit, OnDestroy {
     ) {
       return;
     }
-    this.searchText = formText;
-    this.filter = filter;
-    this.sort = sort;
-    const params = new HttpParams()
-      .set('page', 0)
-      .set('searchText', formText)
-      .set('filter', filter)
-      .set('sort', sort);
-    this.loading = true;
-    this.listGuidesService
-      .getAllGuidesAndItineraries(params)
-      .pipe(takeUntil(this.ngUnsubscribe$))
-      .subscribe({
-        next: (res) => {
-          this.guides = res.guides ?? [];
-          this.itineraries = res.itineraries ?? [];
-          this.loading = false;
-          this.page = res.page;
-          this.lastPage = res.lastPage;
-        },
-        error: (errMessage) => {
-          console.log(errMessage);
-          this.loading = false;
-        },
-      });
+    this.router.navigate(['/guides'], {
+      queryParams: { search: formText, page: 0, sort: sort, filter: filter },
+    });
   }
   nextPage() {
     const formText = this.searchText;
     const filter = this.filter;
     const sort = this.sort;
-    const params = new HttpParams()
-      .set('page', this.page + 1)
-      .set('searchText', formText)
-      .set('filter', filter)
-      .set('sort', sort);
-    this.loading = true;
-    this.listGuidesService
-      .getAllGuidesAndItineraries(params)
-      .pipe(takeUntil(this.ngUnsubscribe$))
-      .subscribe({
-        next: (res) => {
-          this.guides = res.guides ?? [];
-          this.itineraries = res.itineraries ?? [];
-          this.loading = false;
-          this.page = res.page;
-          this.lastPage = res.lastPage;
-          window.scrollTo(0, 0);
-        },
-        error: (errMessage) => {
-          console.log(errMessage);
-          this.loading = false;
-        },
-      });
+    this.router.navigate(['/guides'], {
+      queryParams: {
+        search: formText,
+        page: this.page + 1,
+        sort: sort,
+        filter: filter,
+      },
+    });
   }
   prevPage() {
     const formText = this.searchText;
     const filter = this.filter;
     const sort = this.sort;
-    const params = new HttpParams()
-      .set('page', this.page - 1)
-      .set('searchText', formText)
-      .set('filter', filter)
-      .set('sort', sort);
-    this.loading = true;
-    this.listGuidesService
-      .getAllGuidesAndItineraries(params)
-      .pipe(takeUntil(this.ngUnsubscribe$))
-      .subscribe({
-        next: (res) => {
-          this.guides = res.guides ?? [];
-          this.itineraries = res.itineraries ?? [];
-          this.loading = false;
-          this.page = res.page;
-          this.lastPage = res.lastPage;
-          window.scrollTo(0, 0);
-        },
-        error: (errMessage) => {
-          console.log(errMessage);
-          this.loading = false;
-        },
-      });
+    this.router.navigate(['/guides'], {
+      queryParams: {
+        search: formText,
+        page: this.page - 1,
+        sort: sort,
+        filter: filter,
+      },
+    });
   }
 
   ngOnDestroy(): void {

@@ -40,11 +40,11 @@
           <swiper-container class="mySwiper">
             <swiper-slide *ngFor="let upcomingTrip of upcomingTrips"
               ><div class="relative max-w-sm">
-                <button
+                <!-- <button
                   class="btn btn-circle btn-secondary btn-xs absolute right-2 top-2"
                 >
                   <i class="fa-solid fa-ellipsis"></i>
-                </button>
+                </button> -->
                 <button class="btn btn-neutral btn-xs absolute left-2 top-2">
                   {{ upcomingTrip.startDate! | daysTo }}
                 </button>

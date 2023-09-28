@@ -1,0 +1,24 @@
+swiper-container {
+    width: 100%;
+    height: 100%;
+  }
+  /* Style the previous button */
+  swiper-container::part(button-prev) {
+    background-color: white;
+    color: black;
+    padding: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+  }
+  
+  /* Style the next button */
+  swiper-container::part(button-next) {
+    background-color: white;
+    color: black;
+    padding: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+  }
+  

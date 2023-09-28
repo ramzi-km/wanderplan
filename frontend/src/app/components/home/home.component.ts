@@ -5,7 +5,6 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { ShortTripInfo } from 'src/app/interfaces/short-trip.interface';
 import { UserService } from 'src/app/services/user/user.service';
-import * as UserSelector from '../../store/user/user.selectors';
 
 @Component({
   selector: 'app-home',
@@ -20,8 +19,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     private router: Router,
   ) {}
   private ngUnsubscribe = new Subject<void>();
-  user$ = this.store.select(UserSelector.selectUser);
-  isLoggedIn$ = this.store.select(UserSelector.selectIsLoggedIn);
   upcomingTrips: Array<ShortTripInfo> = [];
   errMessage!: string;
   loading = false;

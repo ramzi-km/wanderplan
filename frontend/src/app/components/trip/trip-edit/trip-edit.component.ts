@@ -1,6 +1,8 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
+  HostListener,
   OnDestroy,
   OnInit,
   Renderer2,
@@ -12,7 +14,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { MatDrawer } from '@angular/material/sidenav';
+import { MatDrawer, MatSidenavContainer } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { environment } from 'environment';
@@ -37,6 +39,7 @@ import { UserService } from 'src/app/services/user/user.service';
 import * as tripEditActions from '../../../store/editingTrip/trip-edit.actions';
 import * as tripEditSelector from '../../../store/editingTrip/trip-edit.selectors';
 import * as userSelector from '../../../store/user/user.selectors';
+import { BudgetComponent } from './budget/budget.component';
 import { ItineraryComponent } from './itinerary/itinerary.component';
 import { OverviewComponent } from './overview/overview.component';
 
@@ -45,15 +48,20 @@ import { OverviewComponent } from './overview/overview.component';
   templateUrl: './trip-edit.component.html',
   styleUrls: ['./trip-edit.component.scss'],
 })
-export class TripEditComponent implements OnDestroy, OnInit {
+export class TripEditComponent implements OnDestroy, OnInit, AfterViewInit {
+  @ViewChild(MatSidenavContainer) sidenavContainer!: MatSidenavContainer;
   @ViewChild('drawer') drawer!: MatDrawer;
   @ViewChild('overview') overview!: ElementRef;
   @ViewChild('itinerary') itinerary!: ElementRef;
   @ViewChild('budget') budget!: ElementRef;
   @ViewChild(OverviewComponent) appOverview!: OverviewComponent;
   @ViewChild(ItineraryComponent) appItinerary!: ItineraryComponent;
+  @ViewChild(BudgetComponent) appBudget!: BudgetComponent;
   scrollToOverviewSections(sectionId: string) {
     this.appOverview.scrollToSection(sectionId);
+  }
+  scrollToBudgetSections(sectionId: string) {
+    this.appBudget.scrollToSection(sectionId);
   }
   scrollToDynamicSection(sectionId: string) {
     this.appItinerary.scrollToSection(sectionId);
@@ -62,7 +70,22 @@ export class TripEditComponent implements OnDestroy, OnInit {
     section.nativeElement.scrollIntoView({ behavior: 'smooth' });
     this.activeSection = sectionName;
   }
+  ngAfterViewInit() {
+    this.setSidenavMode();
+    window.addEventListener('resize', () => {
+      this.setSidenavMode();
+    });
+  }
+  private setSidenavMode() {
+    if (window.innerWidth >= 1200) {
+      this.drawer.mode = 'side';
+    } else {
+      this.drawer.mode = 'over';
+    }
+  }
 
+  currentPosition = 0;
+  showMap = false;
   map!: mapboxgl.Map;
   markers: mapboxgl.Marker[] = [];
   markers2: mapboxgl.Marker[] = [];
@@ -93,6 +116,7 @@ export class TripEditComponent implements OnDestroy, OnInit {
   private ngUnsubscribe = new Subject<void>();
   trip$ = this.store.select(tripEditSelector.selectEditingTrip);
   user$ = this.store.select(userSelector.selectUser);
+
   constructor(
     private store: Store,
     private tripService: TripService,
@@ -194,7 +218,7 @@ export class TripEditComponent implements OnDestroy, OnInit {
               .setPopup(
                 new mapboxgl.Popup().setHTML(
                   `<h1 class="text-lg font-bold">${place.name}</h1><br>
-                  <div class="flex flex-col space-y-2"><img class="h-24 w-38 max-w-full rounded-lg object-cover"
+                  <div class="flex flex-col space-y-2"><img class="h-24 min-w-[150px] w-full rounded-lg object-cover"
                   src="${place.image}">
                   </div>
                   `,
@@ -448,6 +472,18 @@ export class TripEditComponent implements OnDestroy, OnInit {
       'viewTripmatesModal',
     ) as HTMLDialogElement;
     viewTripmatesModal.showModal();
+  }
+
+  showMapFn() {
+    this.currentPosition =
+      this.sidenavContainer.scrollable.measureScrollOffset('top');
+    this.showMap = true;
+  }
+  closeMap() {
+    this.showMap = false;
+    setTimeout(() => {
+      this.sidenavContainer.scrollable.scrollTo({ top: this.currentPosition });
+    }, 100);
   }
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();

@@ -1,137 +1,51 @@
-<div class="flex h-full w-full items-center justify-center px-4 py-24 sm:py-8">
-  <div class="relative flex w-full items-center justify-center">
-    <button
-      aria-label="slide backward"
-      class="btn btn-circle btn-info absolute -left-8 z-30"
-      (click)="goPrev()"
-    >
-      <svg
-        width="16"
-        height="28"
-        viewBox="0 0 8 14"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M7 1L1 7L7 13"
-          stroke="white"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </button>
-    <div class="mx-auto h-full w-full overflow-x-hidden overflow-y-hidden">
-      <div
-        id="slider"
-        class="flex h-full items-center justify-start gap-14 transition duration-700 ease-out md:gap-6 lg:gap-8"
-      >
-        <div
-          class="card card-compact w-1/3 flex-shrink-0 bg-secondary shadow-xl"
-        >
-          <figure>
-            <img src="../../../../../assets/images/dubai.jpeg" alt="Shoes" />
-          </figure>
-          <div class="card-body">
-            <h2 class="card-title text-lg">Sheccka Moses's Dubai Guide</h2>
-            <p>Popular guide by a Wanderlog community member</p>
-            <div class="card-actions items-center justify-start">
-              <img
-                class="h-7 w-7 rounded-full"
-                src="../../../../../assets/images/profile.png"
-                alt=""
-              />
-              <div class="font-medium">
-                <div>Sheccka Moses</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="card-compact card w-1/3 flex-shrink-0 bg-secondary shadow-xl"
-        >
-          <figure>
-            <img src="../../../../../assets/images/dubai.jpeg" alt="Shoes" />
-          </figure>
-          <div class="card-body">
-            <h2 class="card-title text-lg">Sheccka Moses's Dubai Guide</h2>
-            <p>Popular guide by a Wanderlog community member</p>
-            <div class="card-actions items-center justify-start">
-              <img
-                class="h-7 w-7 rounded-full"
-                src="../../../../../assets/images/profile.png"
-                alt=""
-              />
-              <div class="font-medium">
-                <div>Sheccka Moses</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="card-compact card w-1/3 flex-shrink-0 bg-secondary shadow-xl"
-        >
-          <figure>
-            <img src="../../../../../assets/images/dubai.jpeg" alt="Shoes" />
-          </figure>
-          <div class="card-body">
-            <h2 class="card-title text-lg">Sheccka Moses's Dubai Guide</h2>
-            <p>Popular guide by a Wanderlog community member</p>
-            <div class="card-actions items-center justify-start">
-              <img
-                class="h-7 w-7 rounded-full"
-                src="../../../../../assets/images/profile.png"
-                alt=""
-              />
-              <div class="font-medium">
-                <div>Sheccka Moses</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="card-compact card w-1/3 flex-shrink-0 bg-secondary shadow-xl"
-        >
-          <figure>
-            <img src="../../../../../assets/images/dubai.jpeg" alt="Shoes" />
-          </figure>
-          <div class="card-body">
-            <h2 class="card-title text-lg">Sheccka Moses's Dubai Guide</h2>
-            <p>Popular guide by a Wanderlog community member</p>
-            <div class="card-actions items-center justify-start">
-              <img
-                class="h-7 w-7 rounded-full"
-                src="../../../../../assets/images/profile.png"
-                alt=""
-              />
-              <div class="font-medium">
-                <div>Sheccka Moses</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <button
-      aria-label="slide forward"
-      class="btn btn-circle btn-info absolute -right-8 z-30"
-      (click)="goNext()"
-    >
-      <svg
-        width="16"
-        height="28"
-        viewBox="0 0 8 14"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M1 1L7 7L1 13"
-          stroke="white"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </button>
+<div *ngIf="loading">
+  <div
+    class="absolute inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-90 text-primary"
+  >
+    <span class="loading loading-infinity w-24"></span>
   </div>
 </div>
+<div *ngIf="!guides[0]" class="flex w-full flex-col items-center">
+  <img
+    class="w-1/2 md:w-1/3"
+    src="../../../../../assets/images/noTrips-removebg.png"
+  />
+  <h1 class="text-center text-lg text-textp">
+    We don't have any guides yet for {{ place?.name }}.
+  </h1>
+</div>
+<swiper-container class="mySwiper2">
+  <swiper-slide *ngFor="let guide of guides; let guideIndex = index"
+    ><div
+      
+      class="card card-compact justify-between bg-secondary shadow-xl hover:cursor-pointer hover:shadow-gray-700"
+    >
+      <figure class="h-40">
+        <img
+          class="h-full w-full object-cover"
+          [src]="guide.coverPhoto"
+          alt="cover"
+        />
+      </figure>
+      <div class="card-body flex flex-col justify-between">
+        <h2 class="card-title line-clamp-1">{{ guide.name }}</h2>
+        <p class="line-clamp-2 text-textg">
+          {{ guide.writersRelation }}
+        </p>
+        <div class="card-actions items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <div class="avatar">
+              <div class="w-6 rounded-full">
+                <img [src]="guide.writer?.profilePic" />
+              </div>
+            </div>
+            <p class="w-24 truncate">
+              {{ guide.writer?.username }}
+            </p>
+          </div>
+          <div><i class="fa-regular fa-heart"></i> {{ guide.likesCount }}</div>
+        </div>
+      </div>
+    </div></swiper-slide
+  >
+</swiper-container>
