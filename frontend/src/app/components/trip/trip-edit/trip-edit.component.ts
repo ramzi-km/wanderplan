@@ -194,7 +194,8 @@ export class TripEditComponent implements OnDestroy, OnInit, AfterViewInit {
               new mapboxgl.Popup().setHTML(
                 `<h1 class="text-lg font-bold">${element.name}</h1><br>
                 <div class="flex flex-col space-y-2"><img class="h-24 min-w-[150px] w-full rounded-lg object-cover"
-                src="${element.image}">
+                src="${element.image}"><br>
+                <p class="line-clamp-3 break-words">${element.description}</p>
                 </div>
                 `,
               ),
@@ -219,7 +220,8 @@ export class TripEditComponent implements OnDestroy, OnInit, AfterViewInit {
                 new mapboxgl.Popup().setHTML(
                   `<h1 class="text-lg font-bold">${place.name}</h1><br>
                   <div class="flex flex-col space-y-2"><img class="h-24 min-w-[150px] w-full rounded-lg object-cover"
-                  src="${place.image}">
+                  src="${place.image}"><br>
+                  <p class="line-clamp-3 break-words">${place.description}</p>
                   </div>
                   `,
                 ),

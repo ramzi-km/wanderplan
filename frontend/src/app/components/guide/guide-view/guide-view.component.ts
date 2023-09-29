@@ -8,6 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatDrawer, MatSidenavContainer } from '@angular/material/sidenav';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'environment';
 import mapboxgl from 'mapbox-gl';
@@ -58,6 +59,7 @@ export class GuideViewComponent implements OnInit, OnDestroy {
     private renderer: Renderer2,
     private router: Router,
     private elementRef: ElementRef,
+    private sanitizer: DomSanitizer,
   ) {
     mapboxgl.accessToken = environment.MAPBOX_TOKEN;
   }
@@ -72,6 +74,7 @@ export class GuideViewComponent implements OnInit, OnDestroy {
   map!: mapboxgl.Map;
   markers: mapboxgl.Marker[] = [];
   currentMarker!: mapboxgl.Marker;
+  activePlace = '';
 
   ngOnInit(): void {
     this.loading = true;
@@ -115,7 +118,8 @@ export class GuideViewComponent implements OnInit, OnDestroy {
                   new mapboxgl.Popup().setHTML(
                     `<h1 class="text-lg font-bold">${place.name}</h1><br>
                     <div class="flex flex-col space-y-2"><img class="h-24 w-full rounded-lg object-cover"
-                    src="${place.image}">
+                    src="${place.image}"><br>
+                    <p class="line-clamp-3 break-words">${place.description}</p>
                     </div>
                     `,
                   ),
@@ -137,7 +141,8 @@ export class GuideViewComponent implements OnInit, OnDestroy {
   isDrawerOpen(): boolean {
     return this.drawer?.opened || false;
   }
-  onAccordionClicked(place: Place) {
+  onPlaceClick(place: Place) {
+    this.activePlace = place._id!;
     this.map.flyTo({ center: place.coordinates, zoom: 13 });
     let count = 0;
     let flag = false;
@@ -186,6 +191,16 @@ export class GuideViewComponent implements OnInit, OnDestroy {
         behavior: 'auto',
       });
     }, 100);
+  }
+
+  convertTextToTextWithLinks(text: string) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+    const replacedText = text.replace(urlRegex, (url) => {
+      return `<a href="${url}" class="link text-blue-500 link-hover" target="_blank">${url}</a>`;
+    });
+
+    return replacedText;
   }
 
   ngOnDestroy(): void {

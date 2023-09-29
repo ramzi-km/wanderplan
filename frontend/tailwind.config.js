@@ -50,4 +50,8 @@ export const daisyui = {
     },
   ],
 };
-export const plugins = [require("daisyui"), require("@tailwindcss/line-clamp")];
+export const plugins = [
+  require("daisyui"),
+  require("@tailwindcss/line-clamp"),
+  require("@tailwindcss/typography"),
+];
