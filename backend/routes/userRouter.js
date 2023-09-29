@@ -95,6 +95,8 @@ import {
     deleteSectionPlace,
     getEditGuideDetails,
     getViewGuideDetails,
+    likeGuide,
+    unlikeGuide,
     updateGeneralTips,
     updateSectionName,
     updateSectionNote,
@@ -288,6 +290,8 @@ router.get(
     getEditGuideDetails
 )
 router.get('/guide/:guideId/view', getViewGuideDetails)
+router.patch('/guide/:guideId/like', verifyUser, likeGuide)
+router.patch('/guide/:guideId/unlike', verifyUser, unlikeGuide)
 router.delete('/guide/:guideId', verifyUser, verifyGuideWriter, deleteGuide)
 router.patch(
     '/guide/:guideId/coverPhoto',

@@ -92,6 +92,76 @@ export async function getViewGuideDetails(req, res) {
     }
 }
 
+export async function likeGuide(req, res) {
+    try {
+        const guideId = req.params.guideId
+        const userId = req.user._id
+
+        const guide = await guideModel.findById(guideId)
+
+        if (!guide) {
+            return res.status(404).json({ message: 'Guide not found' })
+        }
+
+        if (guide.likes.includes(userId)) {
+            return res
+                .status(400)
+                .json({ message: 'You have already liked this guide' })
+        }
+
+        guide.likes.push(userId)
+
+        guide.likesCount++
+
+        await guide.save()
+
+        res.status(200).json({
+            message: 'Guide liked successfully',
+            likesCount: guide.likesCount,
+            likes: guide.likes,
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function unlikeGuide(req, res) {
+    try {
+        const guideId = req.params.guideId
+        const userId = req.user._id
+
+        const guide = await guideModel.findById(guideId)
+
+        if (!guide) {
+            return res.status(404).json({ message: 'Guide not found' })
+        }
+
+        if (!guide.likes.includes(userId)) {
+            return res
+                .status(400)
+                .json({ message: 'You have not liked this guide' })
+        }
+
+        guide.likes = guide.likes.filter(
+            (likedUserId) => likedUserId.toString() !== userId.toString()
+        )
+
+        guide.likesCount--
+
+        await guide.save()
+
+        res.status(200).json({
+            message: 'Guide unliked successfully',
+            likesCount: guide.likesCount,
+            likes: guide.likes,
+        })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
 export async function deleteGuide(req, res) {
     try {
         const guideId = req.guide.id
