@@ -30,6 +30,22 @@ export class GuideService {
     );
   }
 
+  likeGuide(guideId: string) {
+    return this.http.patch<{
+      likes: string[];
+      likesCount: number;
+      message: string;
+    }>(`${this.baseUrl}/${guideId}/like`, {});
+  }
+
+  unlikeGuide(guideId: string) {
+    return this.http.patch<{
+      likes: string[];
+      likesCount: number;
+      message: string;
+    }>(`${this.baseUrl}/${guideId}/unlike`, {});
+  }
+
   deleteGuide(guideId: string) {
     return this.http.delete<{ message: string }>(`${this.baseUrl}/${guideId}`);
   }

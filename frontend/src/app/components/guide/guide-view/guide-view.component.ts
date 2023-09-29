@@ -10,11 +10,14 @@ import {
 import { MatDrawer, MatSidenavContainer } from '@angular/material/sidenav';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { environment } from 'environment';
 import mapboxgl from 'mapbox-gl';
 import { Subject, take, takeUntil } from 'rxjs';
 import { Guide, Place } from 'src/app/interfaces/guide.interface';
+import { User } from 'src/app/interfaces/user.model';
 import { GuideService } from 'src/app/services/guide/guide.service';
+import * as userSelectors from '../../../store/user/user.selectors';
 
 @Component({
   selector: 'app-guide-view',
@@ -60,6 +63,7 @@ export class GuideViewComponent implements OnInit, OnDestroy {
     private router: Router,
     private elementRef: ElementRef,
     private sanitizer: DomSanitizer,
+    private store: Store,
   ) {
     mapboxgl.accessToken = environment.MAPBOX_TOKEN;
   }
@@ -75,8 +79,18 @@ export class GuideViewComponent implements OnInit, OnDestroy {
   markers: mapboxgl.Marker[] = [];
   currentMarker!: mapboxgl.Marker;
   activePlace = '';
+  user!: User;
 
   ngOnInit(): void {
+    this.store
+      .select(userSelectors.selectUser)
+      .pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe({
+        next: (res) => {
+          this.user = res;
+        },
+      });
+
     this.loading = true;
     this.loadingGuide = true;
     this.route.params.pipe(take(1)).subscribe((params) => {
@@ -201,6 +215,40 @@ export class GuideViewComponent implements OnInit, OnDestroy {
     });
 
     return replacedText;
+  }
+
+  likeOrUnlikeGuide() {
+    if (this.user._id) {
+      if (this.guide.likes?.includes(this.user._id)) {
+        this.guideService
+          .unlikeGuide(this.guide._id!)
+          .pipe(takeUntil(this.ngUnsubscribe$))
+          .subscribe({
+            next: (res) => {
+              this.guide.likes = res.likes;
+              this.guide.likesCount = res.likesCount;
+            },
+            error: (errMessage) => {
+              console.log(errMessage);
+            },
+          });
+      } else {
+        this.guideService
+          .likeGuide(this.guide._id!)
+          .pipe(takeUntil(this.ngUnsubscribe$))
+          .subscribe({
+            next: (res) => {
+              this.guide.likes = res.likes;
+              this.guide.likesCount = res.likesCount;
+            },
+            error: (errMessage) => {
+              console.log(errMessage);
+            },
+          });
+      }
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 
   ngOnDestroy(): void {

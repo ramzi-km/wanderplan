@@ -115,8 +115,18 @@
                     </div>
                   </div>
                   <div>
-                    <button class="btn btn-ghost btn-sm sm:btn-md">
-                      <i class="fa-regular fa-heart text-xl"></i>
+                    <button
+                      (click)="likeOrUnlikeGuide()"
+                      class="btn btn-ghost btn-sm sm:btn-md"
+                    >
+                      <i
+                        *ngIf="!guide.likes?.includes(this.user._id!)"
+                        class="fa-regular fa-heart text-xl"
+                      ></i>
+                      <i
+                        *ngIf="guide.likes?.includes(this.user._id!)"
+                        class="fa-solid fa-heart text-xl text-red-600"
+                      ></i>
                       {{ guide.likes?.length }}
                     </button>
                   </div>
@@ -130,7 +140,7 @@
                   *ngIf="guide.generalTips"
                   class="section-generalTips max-w-full scroll-m-20"
                 >
-                  <details open class="collapse collapse-arrow bg-secondary">
+                  <details open class="collapse-arrow collapse bg-secondary">
                     <summary
                       class="collapse-title text-xl font-bold sm:text-3xl"
                     >
