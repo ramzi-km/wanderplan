@@ -252,7 +252,12 @@ export async function postLogin(req, res) {
                     }
                 }
             } else {
-                res.cookie('userToken', '', { maxAge: 0 })
+                res.cookie('userToken', '', {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'none',
+                    maxAge: 0,
+                })
                 res.status(403).json({ message: 'user is banned' })
             }
         } else {

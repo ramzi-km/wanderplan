@@ -39,7 +39,12 @@ export async function postAdminLogin(req, res) {
 }
 export async function postAdminLogout(req, res) {
     try {
-        res.cookie('adminToken', '', { maxAge: 0 })
+        res.cookie('adminToken', '', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 0,
+        })
         res.status(200).send({ message: 'success' })
     } catch (error) {
         res.status(500).json({ message: 'Internal server error' })

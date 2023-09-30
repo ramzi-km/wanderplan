@@ -33,11 +33,21 @@ export default async function verifyUser(req, res, next) {
             })
             .exec()
         if (!user) {
-            res.cookie('userToken', '', { maxAge: 0 })
+            res.cookie('userToken', '', {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none',
+                maxAge: 0,
+            })
             return res.status(401).json({ message: 'User not found.' })
         }
         if (user.ban) {
-            res.cookie('userToken', '', { maxAge: 0 })
+            res.cookie('userToken', '', {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none',
+                maxAge: 0,
+            })
             return res.status(401).json({ message: 'User is banned.' })
         }
         req.user = user
