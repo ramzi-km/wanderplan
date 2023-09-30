@@ -8,7 +8,7 @@ describe('GuideViewComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [GuideViewComponent]
+      declarations: [GuideViewComponent],
     });
     fixture = TestBed.createComponent(GuideViewComponent);
     component = fixture.componentInstance;

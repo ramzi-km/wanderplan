@@ -57,11 +57,10 @@ export const addPlaceToSection = createAction(
 
 export const updatePlaceInSection = createAction(
   '[Guide Edit] UpdatePlaceInSection',
-  props<{ sectionId: string; placeId: string; updatedPlace: Partial<Place> }>()
+  props<{ sectionId: string; placeId: string; updatedPlace: Partial<Place> }>(),
 );
 
 export const deletePlaceInSection = createAction(
   '[Guide Edit] Delete Place in Section',
-  props<{ sectionId: string; placeId: string }>()
+  props<{ sectionId: string; placeId: string }>(),
 );
-

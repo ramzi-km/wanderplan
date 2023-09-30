@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import {
-    FormBuilder,
-    FormControl,
-    FormGroup,
-    Validators,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
-    Subject,
-    debounceTime,
-    distinctUntilChanged,
-    switchMap,
-    takeUntil,
+  Subject,
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  takeUntil,
 } from 'rxjs';
 import { MapboxPlaceFeature } from 'src/app/interfaces/mapbox-interface';
 import { GuideService } from 'src/app/services/guide/guide.service';

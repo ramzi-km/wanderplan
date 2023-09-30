@@ -347,7 +347,6 @@ export class GuideEditComponent implements OnInit, OnDestroy, AfterViewInit {
         behavior: 'auto',
       });
     }, 100);
-
   }
 
   ngOnDestroy(): void {

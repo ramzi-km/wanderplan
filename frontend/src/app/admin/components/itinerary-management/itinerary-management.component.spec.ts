@@ -8,7 +8,7 @@ describe('ItineraryManagementComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ItineraryManagementComponent]
+      declarations: [ItineraryManagementComponent],
     });
     fixture = TestBed.createComponent(ItineraryManagementComponent);
     component = fixture.componentInstance;

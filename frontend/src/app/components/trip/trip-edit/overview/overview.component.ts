@@ -249,7 +249,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   viewMapFn() {
-    this.viewMap.emit(); 
+    this.viewMap.emit();
   }
 
   ngOnDestroy(): void {

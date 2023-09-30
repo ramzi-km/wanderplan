@@ -45,7 +45,9 @@
             </h5>
           </a>
           <p class="text-sm font-normal text-texts">
-            <span>&bull; {{ [trip.startDate!, trip.endDate!] | dateRange }}</span>
+            <span
+              >&bull; {{ [trip.startDate!, trip.endDate!] | dateRange }}</span
+            >
             <span class="ml-5"
               >&bull;
               {{ trip.totalPlacesToVisit! + trip.totalItineraryPlaces! }}

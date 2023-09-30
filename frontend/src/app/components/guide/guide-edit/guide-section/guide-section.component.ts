@@ -362,7 +362,7 @@ export class GuideSectionComponent implements OnInit, OnDestroy {
       });
   }
   viewMapFn() {
-    this.viewMap.emit(); 
+    this.viewMap.emit();
   }
   ngOnDestroy(): void {
     this.ngUnsubscribe$.next();

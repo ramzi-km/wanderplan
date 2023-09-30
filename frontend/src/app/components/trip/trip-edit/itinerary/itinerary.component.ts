@@ -461,7 +461,7 @@ export class ItineraryComponent {
     addTimeModal.close();
   }
   viewMapFn() {
-    this.viewMap.emit(); 
+    this.viewMap.emit();
   }
   ngOnDestroy(): void {
     this.ngUnsubscribe$.next();

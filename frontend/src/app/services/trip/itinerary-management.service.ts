@@ -7,7 +7,7 @@ import { ItineraryPlace, Place } from 'src/app/interfaces/trip.interface';
   providedIn: 'root',
 })
 export class ItineraryManagementService {
-  private baseUrl = environment.API_URL+ '/api/trip'
+  private baseUrl = environment.API_URL + '/api/trip';
   constructor(private http: HttpClient) {}
 
   updateSubheading(

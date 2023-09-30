@@ -29,7 +29,7 @@
           (blur)="blurResults()"
           (keydown)="onKeyDown($event)"
         />
-        <div class="text-sm text-red-500 ml-2" *ngIf="showErrors">
+        <div class="ml-2 text-sm text-red-500" *ngIf="showErrors">
           <label *ngIf="fc['place'].errors?.['required']"
             >Choose a destination to start writing
           </label>

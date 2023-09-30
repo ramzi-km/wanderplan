@@ -9,7 +9,6 @@ export const selectUser = createSelector(
   (state) => state.user,
 );
 
-
 export const selectLoading = createSelector(
   selectUserState,
   (state) => state.loading,
@@ -19,7 +18,6 @@ export const selectIsLoggedIn = createSelector(
   selectUserState,
   (state) => state.isLoggedIn,
 );
-
 
 export const selectError = createSelector(
   selectUserState,

@@ -13,9 +13,7 @@ import { ListGuidesService } from 'src/app/services/listGuides/list-guides.servi
 export class CarouselComponent {
   @Input() place: Place | undefined;
 
-  constructor(
-    private listGuidesService: ListGuidesService,
-  ) {}
+  constructor(private listGuidesService: ListGuidesService) {}
   private ngUnsubscribe$ = new Subject<void>();
   errMessage!: string;
   loading = false;
@@ -65,8 +63,6 @@ export class CarouselComponent {
     });
     swiperEl?.initialize();
   }
-
-
 
   ngOnDestroy(): void {
     this.ngUnsubscribe$.next();

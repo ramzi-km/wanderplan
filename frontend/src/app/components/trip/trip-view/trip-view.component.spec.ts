@@ -8,7 +8,7 @@ describe('TripViewComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TripViewComponent]
+      declarations: [TripViewComponent],
     });
     fixture = TestBed.createComponent(TripViewComponent);
     component = fixture.componentInstance;

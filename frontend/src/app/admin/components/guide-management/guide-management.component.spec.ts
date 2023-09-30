@@ -8,7 +8,7 @@ describe('GuideManagementComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [GuideManagementComponent]
+      declarations: [GuideManagementComponent],
     });
     fixture = TestBed.createComponent(GuideManagementComponent);
     component = fixture.componentInstance;

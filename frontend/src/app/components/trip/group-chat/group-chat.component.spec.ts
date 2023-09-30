@@ -8,7 +8,7 @@ describe('GroupChatComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [GroupChatComponent]
+      declarations: [GroupChatComponent],
     });
     fixture = TestBed.createComponent(GroupChatComponent);
     component = fixture.componentInstance;
