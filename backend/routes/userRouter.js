@@ -49,9 +49,12 @@ import {
     deletePlaceToVisit,
     deleteTrip,
     getTripDetails,
+    getViewTripDetails,
     inviteTripMate,
     leaveTrip,
+    likeTrip,
     removeTripMate,
+    unlikeTrip,
     updateDescription,
     updateNotes,
     updatePlaceToVisitDescription,
@@ -145,6 +148,11 @@ router.get('/user/getAllGuides', verifyUser, getAllUserGuides)
 
 router.post('/trip/create', verifyUser, createNewTrip)
 router.get('/trip/:id/editTrip', verifyUser, verifyTripMate, getTripDetails)
+
+router.get('/trip/:id/view', getViewTripDetails)
+router.patch('/trip/:id/like', verifyUser, likeTrip)
+router.patch('/trip/:id/unlike', verifyUser, unlikeTrip)
+
 router.post(
     '/trip/:id/inviteTripmate',
     verifyUser,

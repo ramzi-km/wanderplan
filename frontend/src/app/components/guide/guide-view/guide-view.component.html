@@ -115,6 +115,14 @@
                     </div>
                   </div>
                   <div>
+                    <a
+                      *ngIf="guide.writer?._id == user._id"
+                      routerLink="/guide/edit/{{ guide._id }}"
+                      class="btn btn-primary btn-sm rounded-full text-white"
+                    >
+                      <i class="fa-solid fa-pen"></i>
+                      Edit
+                    </a>
                     <button
                       (click)="likeOrUnlikeGuide()"
                       class="btn btn-ghost btn-sm sm:btn-md"
@@ -140,7 +148,7 @@
                   *ngIf="guide.generalTips"
                   class="section-generalTips max-w-full scroll-m-20"
                 >
-                  <details open class="collapse-arrow collapse bg-secondary">
+                  <details open class="collapse collapse-arrow bg-secondary">
                     <summary
                       class="collapse-title text-xl font-bold sm:text-3xl"
                     >
@@ -179,48 +187,52 @@
                           "
                           class="prose prose-sm prose-slate whitespace-pre-wrap break-words sm:max-w-none"
                         ></p>
+
+                        <section
+                          *ngFor="
+                            let place of section.places;
+                            let placeI = index
+                          "
+                          class="prose prose-sm prose-slate max-w-none rounded-md border-t-2 p-5 hover:bg-base-100"
+                          [ngClass]="
+                            activePlace == place._id
+                              ? 'border-blue-600'
+                              : 'border-base-100'
+                          "
+                          (click)="onPlaceClick(place)"
+                        >
+                          <h1 class="text-xl font-medium text-textp">
+                            <button
+                              type="button"
+                              class="btn btn-circle btn-sm mr-3 bg-indigo-600 text-white"
+                            >
+                              {{ sectionI! + 1 }}.{{ placeI + 1 }}
+                            </button>
+                            {{ place.name }}
+                          </h1>
+                          <div class="my-2 text-sm md:hidden">
+                            <a
+                              class="text-blue-500 no-underline"
+                              (click)="showMapFn()"
+                              >View in map</a
+                            >
+                          </div>
+
+                          <img
+                            [src]="place.image"
+                            class="float-right h-20 w-1/2 rounded-lg object-cover sm:h-32 sm:w-1/3"
+                          />
+
+                          <p
+                            style="min-height: 150px"
+                            class="whitespace-pre-wrap break-words"
+                            [innerHTML]="
+                              convertTextToTextWithLinks(place.description!)
+                            "
+                          ></p>
+                        </section>
                       </div>
                     </details>
-                    <section
-                      *ngFor="let place of section.places; let placeI = index"
-                      class="prose prose-sm prose-slate max-w-none rounded-md border-t-2 p-5 hover:bg-base-100"
-                      [ngClass]="
-                        activePlace == place._id
-                          ? 'border-blue-600'
-                          : 'border-base-100'
-                      "
-                      (click)="onPlaceClick(place)"
-                    >
-                      <h1 class="text-xl font-medium text-textp">
-                        <button
-                          type="button"
-                          class="btn btn-circle btn-sm mr-3 bg-indigo-600 text-white"
-                        >
-                          {{ sectionI! + 1 }}.{{ placeI + 1 }}
-                        </button>
-                        {{ place.name }}
-                      </h1>
-                      <div class="my-2 text-sm md:hidden">
-                        <a
-                          class="text-blue-500 no-underline"
-                          (click)="showMapFn()"
-                          >View in map</a
-                        >
-                      </div>
-
-                      <img
-                        [src]="place.image"
-                        class="float-right h-20 w-1/2 rounded-lg object-cover sm:h-32 sm:w-1/3"
-                      />
-
-                      <p
-                        style="min-height: 150px"
-                        class="whitespace-pre-wrap break-words"
-                        [innerHTML]="
-                          convertTextToTextWithLinks(place.description!)
-                        "
-                      ></p>
-                    </section>
                   </ng-container>
                 </section>
                 <div class="divider"></div>
@@ -232,7 +244,7 @@
           (click)="$event.stopPropagation()"
           *ngIf="!showMap"
           type="button"
-          class="btn btn-success btn-sm fixed bottom-6 left-1/2 -translate-x-1/2 transform normal-case md:hidden"
+          class="btn btn-success btn-sm fixed bottom-6 left-1/2 z-10 -translate-x-1/2 transform normal-case md:hidden"
           (click)="showMapFn()"
         >
           <i class="fa-solid fa-map-location-dot"></i>

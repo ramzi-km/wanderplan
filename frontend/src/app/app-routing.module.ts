@@ -67,9 +67,8 @@ const routes: Routes = [
             canActivate: [tripEditGuard],
           },
           {
-            path: 'view/:id',
+            path: 'view/:tripId',
             component: TripViewComponent,
-            canActivate: [userAuthGuard],
           },
         ],
       },

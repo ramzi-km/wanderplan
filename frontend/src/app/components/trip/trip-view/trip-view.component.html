@@ -1,1 +1,263 @@
-<p>trip-view works!</p>
+<div *ngIf="loading" class="h-screen">
+  <div
+    class="fixed inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-60 text-primary"
+  >
+    <span class="loading loading-infinity w-32"></span>
+  </div>
+</div>
+<div>
+  <button
+    *ngIf="!isDrawerOpen() && !showMap"
+    class="btn btn-primary fixed top-20 z-10 rounded-e-md rounded-s-none text-textp"
+    (click)="drawer.toggle()"
+  >
+    <i class="fa-solid fa-angles-right"></i>
+  </button>
+  <mat-sidenav-container autosize="true" class="bg-base-100">
+    <mat-sidenav
+      style="background-color: var(--bg-color)"
+      mode="side"
+      closed
+      #drawer
+      class="relative mt-20"
+    >
+      <button
+        *ngIf="isDrawerOpen()"
+        class="btn btn-ghost absolute bottom-0 z-10 w-auto rounded-e-md rounded-s-none text-textp"
+        (click)="drawer.toggle()"
+      >
+        <i class="fa-solid fa-angles-left"></i>
+        Hide sidebar
+      </button>
+      <mat-nav-list *ngIf="!loadingTrip" class="mb-12 space-y-2">
+        <ul class="menu rounded-box">
+          <li>
+            <details open>
+              <summary class="btn-success">
+                <a
+                  class="text-lg font-semibold"
+                  (click)="$event.stopPropagation()"
+                  (click)="scrollToSection(overview)"
+                  >Overview</a
+                >
+              </summary>
+              <ul class="text-textp">
+                <li
+                  *ngIf="trip.overview?.notes"
+                  (click)="scrollToDynamicSection('notes')"
+                  class="w-28"
+                >
+                  <p class="line-clamp-1">Notes</p>
+                </li>
+                <ng-container
+                  *ngFor="let section of trip.itinerary; let sectionI = index"
+                >
+                  <li
+                    class="w-32"
+                    (click)="scrollToDynamicSection('' + sectionI)"
+                    *ngIf="section.places![0]"
+                  >
+                    <span *ngIf="section.Date" class="line-clamp-1 w-28">
+                      {{ section.Date | customDateFormat2 }}
+                    </span>
+                    <p *ngIf="!section.Date" class="line-clamp-1">Untitled</p>
+                  </li>
+                </ng-container>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content #sideNavContent class="bg-secondary">
+      <div
+        *ngIf="!loadingTrip"
+        class="flex h-screen w-full md:w-2/3 lg:w-1/2"
+        [ngClass]="{
+          'cXl:w-[55%]': isDrawerOpen(),
+          'cXl:w-[50%]': !isDrawerOpen(),
+          'w-full': !showMap,
+          hidden: showMap
+        }"
+      >
+        <div class="mt-20 w-full" *ngIf="trip" #overview>
+          <div class="relative h-3/6 w-full">
+            <img
+              src="{{ trip.coverPhoto }}"
+              class="h-full w-full object-cover"
+            />
+            <h1
+              class="absolute bottom-4 left-8 max-w-full truncate rounded-lg bg-secondary bg-opacity-50 px-6 py-2 text-2xl font-bold text-textp sm:text-3xl"
+            >
+              {{ trip.name }}
+            </h1>
+          </div>
+
+          <div class="flex flex-col items-center">
+            <div
+              class="my-10 flex w-full flex-col items-center justify-center text-textp"
+            >
+              <div class="w-full space-y-4 px-6">
+                <div class="flex w-full items-center justify-between px-4">
+                  <div class="flex items-center space-x-2">
+                    <div class="avatar">
+                      <div class="w-8 rounded-full sm:w-12">
+                        <img [src]="trip.admin?.profilePic" />
+                      </div>
+                    </div>
+                    <div class="ml-5 flex flex-col items-start justify-center">
+                      <span class="text-lg font-medium">{{
+                        trip.admin?.username
+                      }}</span>
+                      <span class="text-sm text-textg">
+                        {{ [trip.startDate!, trip.endDate!] | dateRange }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between space-x-2">
+                    <button
+                      *ngIf="trip.admin?._id == user._id"
+                      routerLink="/trip/edit/{{ trip._id }}"
+                      class="btn btn-primary btn-sm rounded-full text-white"
+                    >
+                      <i class="fa-solid fa-pen"></i>
+                      Edit
+                    </button>
+                    <button
+                      (click)="likeOrUnlikeTrip()"
+                      class="btn btn-ghost btn-sm sm:btn-md"
+                    >
+                      <i
+                        *ngIf="!trip.likes?.includes(this.user._id!)"
+                        class="fa-regular fa-heart text-xl"
+                      ></i>
+                      <i
+                        *ngIf="trip.likes?.includes(this.user._id!)"
+                        class="fa-solid fa-heart text-xl text-red-600"
+                      ></i>
+                      {{ trip.likes?.length }}
+                    </button>
+                  </div>
+                </div>
+                <section id="description" class="w-full">
+                  <p class="prose prose-slate max-w-full break-words">
+                    {{ trip.overview?.description }}
+                  </p>
+                </section>
+                <section
+                  *ngIf="trip.overview?.notes"
+                  class="section-notes max-w-full scroll-m-20"
+                >
+                  <details open class="collapse collapse-arrow bg-secondary">
+                    <summary
+                      class="collapse-title text-xl font-bold sm:text-3xl"
+                    >
+                      Notes
+                    </summary>
+                    <div class="collapse-content">
+                      <p
+                        [innerHTML]="
+                          convertTextToTextWithLinks(trip.overview?.notes!)
+                        "
+                        class="prose prose-sm prose-slate whitespace-pre-wrap break-words sm:max-w-none"
+                      ></p>
+                    </div>
+                  </details>
+                </section>
+                <section
+                  *ngFor="let section of trip?.itinerary; let sectionI = index"
+                  ngClass="section-{{ sectionI }}"
+                  class="w-full scroll-m-20"
+                >
+                  <ng-container *ngIf="section.places![0]">
+                    <details open class="collapse-arrow collapse bg-secondary">
+                      <summary
+                        class="collapse-title text-xl font-bold sm:text-3xl"
+                      >
+                        {{ section.Date | customDateFormat }}
+                      </summary>
+                      <div class="collapse-content">
+                        <section
+                          *ngFor="
+                            let place of section.places;
+                            let placeI = index
+                          "
+                          class="prose prose-sm prose-slate max-w-none rounded-md border-t-2 p-5 hover:bg-base-100"
+                          [ngClass]="
+                            activePlace == place._id
+                              ? 'border-blue-600'
+                              : 'border-base-100'
+                          "
+                          (click)="onPlaceClick(place)"
+                        >
+                          <h1 class="text-xl font-medium text-textp">
+                            <button
+                              type="button"
+                              class="btn btn-circle btn-sm mr-3 bg-indigo-600 text-white"
+                            >
+                              {{ sectionI! + 1 }}.{{ placeI + 1 }}
+                            </button>
+                            {{ place.name }}
+                          </h1>
+                          <div class="my-2 text-sm md:hidden">
+                            <a
+                              class="text-blue-500 no-underline"
+                              (click)="showMapFn()"
+                              >View in map</a
+                            >
+                          </div>
+
+                          <img
+                            [src]="place.image"
+                            class="float-right h-20 w-1/2 rounded-lg object-cover sm:h-32 sm:w-1/3"
+                          />
+
+                          <p
+                            style="min-height: 150px"
+                            class="whitespace-pre-wrap break-words"
+                            [innerHTML]="
+                              convertTextToTextWithLinks(place.description!)
+                            "
+                          ></p>
+                        </section>
+                      </div>
+                    </details>
+                  </ng-container>
+                </section>
+                <div class="divider"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          (click)="$event.stopPropagation()"
+          *ngIf="!showMap"
+          type="button"
+          class="btn btn-success btn-sm fixed bottom-6 left-1/2 z-10 -translate-x-1/2 transform normal-case md:hidden"
+          (click)="showMapFn()"
+        >
+          <i class="fa-solid fa-map-location-dot"></i>
+          Map view
+        </button>
+      </div>
+      <div
+        id="map"
+        [ngClass]="{
+          'cXl:w-[41%]': isDrawerOpen(),
+          'cXl:w-[51%]': !isDrawerOpen(),
+          'slide-in': showMap,
+          'slide-out': !showMap
+        }"
+        class="no-animation fixed bottom-0 right-0 top-20 w-full md:w-1/3 lg:w-1/2"
+      ></div>
+      <button
+        *ngIf="showMap"
+        class="btn btn-success btn-sm fixed right-4 top-28 normal-case"
+        (click)="closeMap()"
+      >
+        <i class="fa-solid fa-xmark"></i>
+        Exit map
+      </button>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

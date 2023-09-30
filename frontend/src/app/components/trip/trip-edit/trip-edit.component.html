@@ -160,7 +160,7 @@
                     ></label>
                     <ul
                       tabindex="0"
-                      class="menu dropdown-content rounded-box z-[1] w-40 bg-base-100 p-2 text-textp shadow"
+                      class="menu dropdown-content rounded-box z-[1] w-44 bg-base-100 p-2 text-textp shadow"
                     >
                       <li>
                         <a (click)="showViewTripmatesModal()"
@@ -168,8 +168,13 @@
                         >
                       </li>
                       <li>
+                        <a routerLink="/trip/view/{{ trip._id }}"
+                          ><i class="fa-regular fa-eye"></i> View only mode</a
+                        >
+                      </li>
+                      <li>
                         <a (click)="showEditTripPrivacyModal()"
-                          ><i class="fa-regular fa-eye"></i> Visibility</a
+                          ><i class="fa-solid fa-user-lock"></i> visibility</a
                         >
                       </li>
                       <li *ngIf="trip.admin?._id == user._id">
@@ -586,7 +591,7 @@
       <button
         (click)="$event.stopPropagation()"
         *ngIf="!showMap"
-        class="btn btn-success btn-sm fixed bottom-6 left-1/2 z-50 -translate-x-1/2 transform normal-case md:hidden"
+        class="btn btn-success btn-sm fixed bottom-6 left-1/2 z-20 -translate-x-1/2 transform normal-case md:hidden"
         (click)="showMapFn()"
       >
         <i class="fa-solid fa-map-location-dot"></i>
@@ -614,7 +619,7 @@
     </button>
     <button
       *ngIf="!showMap"
-      class="btn btn-circle btn-success fixed bottom-6 right-6 z-50 text-lg sm:btn-lg sm:bottom-14 sm:right-14 sm:text-2xl"
+      class="btn btn-circle btn-success fixed bottom-6 right-6 z-20 text-lg sm:btn-lg sm:bottom-14 sm:right-14 sm:text-2xl"
       onclick="chatModal.showModal()"
     >
       <i class="fa-solid fa-message"></i>

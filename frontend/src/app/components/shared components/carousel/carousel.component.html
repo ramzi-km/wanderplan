@@ -17,7 +17,7 @@
 <swiper-container class="mySwiper2">
   <swiper-slide *ngFor="let guide of guides; let guideIndex = index"
     ><div
-      
+      routerLink="/guide/view/{{ guide._id }}"
       class="card card-compact justify-between bg-secondary shadow-xl hover:cursor-pointer hover:shadow-gray-700"
     >
       <figure class="h-40">

@@ -17,6 +17,8 @@ export interface Trip {
   likes?: string[];
   likesCount?: number;
   unList?: boolean;
+  createdAt?:Date;
+  updatedAt?:Date;
 }
 
 export interface Place {

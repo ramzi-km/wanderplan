@@ -117,13 +117,13 @@ export class NavComponent {
       this.userAuthService.userLogout().subscribe({
         next: (res) => {
           this.store.dispatch(UserActions.userLogout());
-          this.logoutLoading = true;
+          this.logoutLoading = false;
           this.closeLogoutModal();
           this.router.navigate(['/']);
         },
         error: (err) => {
           console.log(err);
-          this.logoutLoading = true;
+          this.logoutLoading = false;
         },
       });
     }

@@ -23,6 +23,29 @@ export class TripService {
       `${this.baseUrl}/${id}/editTrip`,
     );
   }
+
+  getViewTripDetails(tripId: string) {
+    return this.http.get<{ trip: Trip; message: string }>(
+      `${this.baseUrl}/${tripId}/view`,
+    );
+  }
+
+  likeTrip(tripId: string) {
+    return this.http.patch<{
+      likes: string[];
+      likesCount: number;
+      message: string;
+    }>(`${this.baseUrl}/${tripId}/like`, {});
+  }
+
+  unlikeTrip(tripId: string) {
+    return this.http.patch<{
+      likes: string[];
+      likesCount: number;
+      message: string;
+    }>(`${this.baseUrl}/${tripId}/unlike`, {});
+  }
+
   inviteTripMate(tripId: string, body: { userId: string }) {
     return this.http.post<{ invitedTripMates: string[]; message: string }>(
       `${this.baseUrl}/${tripId}/inviteTripmate`,

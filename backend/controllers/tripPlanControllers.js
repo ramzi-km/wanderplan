@@ -1,4 +1,5 @@
 import axios from 'axios'
+import jwt from 'jsonwebtoken'
 import cloudinary from '../config/cloudinary.js'
 
 //------------------ models --------------------//
@@ -128,6 +129,108 @@ export async function getTripDetails(req, res) {
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function getViewTripDetails(req, res) {
+    try {
+        const tripId = req.params.id
+        const token = req.cookies.userToken
+        let user = undefined
+        if (token) {
+            const secret = process.env.JWT_SECRET_KEY
+            const decoded = jwt.verify(token, secret)
+            user = await userModel.findOne({ _id: decoded._id })
+        }
+
+        const trip = await tripModel
+            .findOne({
+                _id: tripId,
+                $or: [
+                    { unList: false, visibility: 'public' },
+                    { tripMates: user?._id },
+                ],
+            })
+            .populate('admin', '_id username name profilePic')
+            .select('-budget -tripMates -invitedTripMates -visibility')
+            .exec()
+
+        if (!trip) {
+            return res.status(400).json({ message: 'Invalid trip id' })
+        }
+        return res.status(200).json({ message: 'Success', trip: trip })
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function likeTrip(req, res) {
+    try {
+        const tripId = req.params.id
+        const userId = req.user._id
+
+        const trip = await tripModel.findById(tripId)
+
+        if (!trip) {
+            return res.status(404).json({ message: 'Trip not found' })
+        }
+
+        if (trip.likes.includes(userId)) {
+            return res
+                .status(400)
+                .json({ message: 'You have already liked this trip' })
+        }
+
+        trip.likes.push(userId)
+
+        trip.likesCount++
+
+        await trip.save()
+
+        res.status(200).json({
+            message: 'Trip liked successfully',
+            likesCount: trip.likesCount,
+            likes: trip.likes,
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function unlikeTrip(req, res) {
+    try {
+        const tripId = req.params.id
+        const userId = req.user._id
+
+        const trip = await tripModel.findById(tripId)
+
+        if (!trip) {
+            return res.status(404).json({ message: 'Guide not found' })
+        }
+
+        if (!trip.likes.includes(userId)) {
+            return res
+                .status(400)
+                .json({ message: 'You have not liked this Trip' })
+        }
+
+        trip.likes = trip.likes.filter(
+            (likedUserId) => likedUserId.toString() !== userId.toString()
+        )
+
+        trip.likesCount--
+
+        await trip.save()
+
+        res.status(200).json({
+            message: 'Trip unliked successfully',
+            likesCount: trip.likesCount,
+            likes: trip.likes,
+        })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'Internal server error' })
     }
 }
 

@@ -119,6 +119,12 @@
                       class="menu dropdown-content rounded-box z-[1] w-44 bg-base-100 p-2 text-textp shadow"
                     >
                       <li>
+                        <a routerLink="/guide/view/{{ guide._id }}"
+                          ><i class="fa-solid fa-file-image"></i> Preview
+                          guide</a
+                        >
+                      </li>
+                      <li>
                         <a (click)="showDeleteGuideModal()"
                           ><i class="fa-regular fa-trash-can"></i> Delete this
                           guide</a
@@ -210,7 +216,7 @@
                   <span>{{ guide.writer?.username }}</span>
                 </div>
                 <div>
-                  <button class="btn btn-sm sm:btn-md">
+                  <button class="cursor-not-allowed">
                     <i class="fa-regular fa-heart"></i>
                     {{ guide.likes?.length }}
                   </button>
@@ -298,7 +304,7 @@
         (click)="$event.stopPropagation()"
         *ngIf="!showMap"
         type="button"
-        class="btn btn-success btn-sm fixed bottom-6 left-1/2 -translate-x-1/2 transform normal-case md:hidden"
+        class="btn btn-success btn-sm fixed bottom-6 left-1/2 z-10 -translate-x-1/2 transform normal-case md:hidden"
         (click)="showMapFn()"
       >
         <i class="fa-solid fa-map-location-dot"></i>
