@@ -327,7 +327,12 @@ export async function postGoogleLogin(req, res) {
 
 export async function logout(req, res) {
     try {
-        res.cookie('userToken', '', { maxAge: 0, httpOnly: true })
+        res.cookie('userToken', '', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 0,
+        })
         res.status(200).json({ message: 'success' })
     } catch (error) {
         console.log(error)
