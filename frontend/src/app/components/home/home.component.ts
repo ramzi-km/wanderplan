@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
+import { ShortGuideInfo } from 'src/app/interfaces/short-guide.interface';
 import { ShortTripInfo } from 'src/app/interfaces/short-trip.interface';
 import { UserService } from 'src/app/services/user/user.service';
 
@@ -20,6 +21,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
   private ngUnsubscribe = new Subject<void>();
   upcomingTrips: Array<ShortTripInfo> = [];
+  userTrips: Array<ShortTripInfo> = [];
+  userGuides: Array<ShortGuideInfo> = [];
   errMessage!: string;
   loading = false;
   ngOnInit(): void {
@@ -62,6 +65,30 @@ export class HomeComponent implements OnInit, OnDestroy {
       navigation: true,
     });
     swiperEl?.initialize();
+
+    this.userService
+      .getAllTrips()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (res) => {
+          this.userTrips = res.trips;
+        },
+        error: (errMessage: string) => {
+          console.log(errMessage);
+        },
+      });
+
+    this.userService
+      .getAllGuides()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (res) => {
+          this.userGuides = res.guides;
+        },
+        error: (errMessage: string) => {
+          console.log(errMessage);
+        },
+      });
   }
   navigateTo(id: string) {
     this.router.navigate(['trip/edit', id]);

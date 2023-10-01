@@ -86,7 +86,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
               },
             ],
             chart: {
-              height: 350,
+              height: 250,
               type: 'line',
             },
             xaxis: {
@@ -126,7 +126,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
           this.expensesChartOptions = {
             series2: [...this.categoryAmount],
             chart: {
-              width: 380,
+              width: 400,
               type: 'pie',
             },
             labels: [...this.categoryNames],
@@ -172,7 +172,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
             ],
 
             chart: {
-              height: 350,
+              height: 300,
               type: 'treemap',
             },
           };

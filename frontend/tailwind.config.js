@@ -50,4 +50,4 @@ export const daisyui = {
     },
   ],
 };
-export const plugins = [require("daisyui"), require("@tailwindcss/typography")];
+export const plugins = [require("@tailwindcss/typography"), require("daisyui")];

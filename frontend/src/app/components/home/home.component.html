@@ -1,7 +1,9 @@
 <div class="mt-20"></div>
-<section id="recent">
-  <div class="container mx-auto flex w-3/4 items-center justify-center">
-    <div class="flex w-full flex-col gap-5 py-14">
+<main>
+  <div
+    class="container mx-auto flex w-full md:w-3/4 flex-col items-center justify-center"
+  >
+    <section id="recent" class="flex w-full flex-col gap-5 py-14 px-8">
       <div
         class="flex flex-col-reverse md:flex-row md:items-center md:justify-between"
       >
@@ -85,6 +87,132 @@
           </swiper-container>
         </div>
       </div>
-    </div>
+    </section>
+
+    <section
+      class="my-4 grid w-full grid-cols-1 place-content-center gap-6 p-5 md:mb-20 md:grid-cols-2"
+    >
+      <div class="card bg-secondary shadow-xl">
+        <div class="card-body">
+          <div class="flex items-center justify-between">
+            <h2 class="card-title text-2xl">Your trips</h2>
+            <button
+              routerLink="/create/plan"
+              class="btn btn-xs rounded-full normal-case text-textp md:btn-sm"
+            >
+              <i class="fa-solid fa-plus"></i>Plan new trip
+            </button>
+          </div>
+
+          <ul class="mb-4 mt-6 max-w-full divide-y divide-textg">
+            <p *ngIf="!userTrips[0]" class="text-lg text-textp">
+              You don't have any trips.<a
+                class="text-blue-400"
+                routerLink="/create/plan"
+                >start planning</a
+              >
+            </p>
+            <ng-container *ngFor="let trip of userTrips; let tripI = index">
+              <li
+                (click)="navigateTo(trip._id!)"
+                *ngIf="tripI < 4"
+                class="py-3 hover:cursor-pointer sm:py-4"
+              >
+                <div class="flex items-center space-x-4">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="h-20 w-20 rounded-md"
+                      [src]="trip.coverPhoto"
+                      [alt]="trip.name"
+                    />
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-lg font-medium text-textp">
+                      {{ trip.name }}
+                    </p>
+                    <p class="truncate text-xs md:text-base text-textg">
+                      <span
+                        >&bull;
+                        {{ [trip.startDate!, trip.endDate!] | dateRange }}</span
+                      >
+                      <span class="ml-5"
+                        >&bull;{{
+                          trip.totalPlacesToVisit! + trip.totalItineraryPlaces!
+                        }}
+                        places</span
+                      >
+                    </p>
+                  </div>
+                  <!-- <div
+                  class="inline-flex items-center text-base font-semibold text-textp"
+                >
+                  $320
+                </div> -->
+                </div>
+              </li>
+            </ng-container>
+          </ul>
+          <a
+            class="link-hover self-end font-semibold text-texts"
+            routerLink="/profile"
+            >See all</a
+          >
+        </div>
+      </div>
+      <div class="card bg-secondary shadow-xl">
+        <div class="card-body">
+          <div class="flex items-center justify-between">
+            <h2 class="card-title text-2xl">Your guides</h2>
+            <button
+              routerLink="/create/guide"
+              class="btn btn-xs rounded-full normal-case text-textp md:btn-sm"
+            >
+              <i class="fa-solid fa-plus"></i>Create new guide
+            </button>
+          </div>
+
+          <ul class="mb-4 mt-6 max-w-full divide-y divide-textg">
+            <p *ngIf="!userGuides[0]" class="text-lg text-textp">
+              You don't have any guides.<a
+                class="text-blue-400"
+                routerLink="/create/guide"
+                >start writing</a
+              >
+            </p>
+            <ng-container *ngFor="let guide of userGuides; let guideI = index">
+              <li
+                routerLink="/guide/edit/{{ guide._id }}"
+                *ngIf="guideI < 4"
+                class="py-3 hover:cursor-pointer sm:py-4"
+              >
+                <div class="flex items-center space-x-4">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="h-20 w-20 rounded-md"
+                      [src]="guide.coverPhoto"
+                      [alt]="guide.name"
+                    />
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-lg font-medium text-textp">
+                      {{ guide.name }}
+                    </p>
+                    <p class="truncate text-base text-textg">
+                      <i class="fa-regular fa-heart"></i>
+                      {{ guide.likes!.length }}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ng-container>
+          </ul>
+          <a
+            class="link-hover self-end font-semibold text-texts"
+            routerLink="/profile/guides"
+            >See all</a
+          >
+        </div>
+      </div>
+    </section>
   </div>
-</section>
+</main>
