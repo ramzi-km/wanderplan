@@ -25,7 +25,6 @@ const notificationSchema = new Schema({
     },
 })
 
-// Declare the Schema of the Mongo model
 var userSchema = new Schema({
     name: {
         type: String,
@@ -58,6 +57,17 @@ var userSchema = new Schema({
     },
     notifications: {
         type: [notificationSchema],
+    },
+    forgotPassOtp: {
+        otp: {
+            type: String,
+        },
+        expirationTime: {
+            type: Number,
+        },
+        verified: {
+            type: Number,
+        },
     },
     ban: {
         type: Boolean,

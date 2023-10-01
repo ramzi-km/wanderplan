@@ -1,11 +1,16 @@
 import bcrypt from 'bcrypt'
 import { OAuth2Client } from 'google-auth-library'
 import jwt from 'jsonwebtoken'
+
+//------------------helper-funcions-------------------//
 import otpGenerator from 'otp-generator'
 import { generateFromEmail } from 'unique-username-generator'
 import { handleLoggedInUser } from '../helpers/handleLoggedInUser.js'
 import sentForgotPassOtp from '../helpers/sentForgotPassOtp.js'
 import sentOtp from '../helpers/sentOtp.js'
+
+//-------------------models-------------------//
+import tempUserModel from '../models/tempUserModel.js'
 import userModel from '../models/userModel.js'
 
 export async function postSignup(req, res) {
@@ -18,12 +23,13 @@ export async function postSignup(req, res) {
         }
         const passwordHash = await bcrypt.hash(password, 10)
         const findEmail = await userModel.findOne({ email })
-        const findUser = await userModel.findOne({ username })
+        const findUserName = await userModel.findOne({ username })
+        const findUserName2 = await tempUserModel.findOne({ username })
 
         if (findEmail) {
             return res.status(403).json({ message: 'user already exists' })
         } else {
-            if (findUser) {
+            if (findUserName || findUserName2) {
                 return res
                     .status(403)
                     .json({ message: 'username already taken' })
@@ -34,18 +40,34 @@ export async function postSignup(req, res) {
                     lowerCaseAlphabets: false,
                     digits: true,
                 })
-                req.session.tempUser = {
-                    otp,
-                    userData: {
-                        name,
-                        email,
-                        password: passwordHash,
-                        username,
-                        mobile,
+                const tempUser = await tempUserModel.findOneAndUpdate(
+                    { email },
+                    {
+                        $set: {
+                            name,
+                            email,
+                            password: passwordHash,
+                            username,
+                            mobile,
+                            'otpData.otp': otp,
+                            'otpData.expirationTime':
+                                Date.now() + 3 * 60 * 1000,
+                        },
                     },
-                    expirationTime: Date.now() + 3 * 60 * 1000, // 3 minutes expiration time
-                }
+                    {
+                        new: true,
+                        upsert: true,
+                    }
+                )
                 sentOtp(email, otp)
+                const secret = process.env.JWT_SECRET_KEY
+                const token = jwt.sign({ _id: tempUser._id }, secret)
+                res.cookie('tempUserToken', token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'none',
+                    maxAge: 8 * 1000 * 60,
+                })
                 return res.json({ message: 'otp sented successfully' })
             }
         }
@@ -57,9 +79,28 @@ export async function postSignup(req, res) {
 export async function signupVerify(req, res) {
     try {
         const otp = req.body.otp
-        const tempUser = req.session.tempUser
-        if (otp == tempUser?.otp && Date.now() < tempUser.expirationTime) {
-            const user = new userModel(tempUser.userData)
+        const token = req.cookies.tempUserToken
+
+        if (!token) {
+            return res.status(401).json({ message: 'Please signup again' })
+        }
+
+        const secret = process.env.JWT_SECRET_KEY
+        const decoded = jwt.verify(token, secret)
+
+        const tempUser = await tempUserModel.findOne({ _id: decoded._id })
+
+        if (
+            otp == tempUser?.otpData.otp &&
+            Date.now() < tempUser.otpData.expirationTime
+        ) {
+            const user = new userModel({
+                name: tempUser.name,
+                email: tempUser.email,
+                password: tempUser.password,
+                mobile: tempUser.mobile,
+                username: tempUser.username,
+            })
             await user.save()
             const email = user.email
             const result = await userModel.findOne(
@@ -71,7 +112,14 @@ export async function signupVerify(req, res) {
                     ban: 0,
                 }
             )
-            req.session.tempUser = null
+            await tempUserModel.findByIdAndDelete(tempUser.id)
+            res.cookie('tempUserToken', '', {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none',
+                maxAge: 0,
+            })
+
             const secret = process.env.JWT_SECRET_KEY
             const token = jwt.sign({ _id: user._id }, secret)
             res.cookie('userToken', token, {
@@ -91,8 +139,17 @@ export async function signupVerify(req, res) {
 
 export async function resendOtp(req, res) {
     try {
-        const tempUser = req.session.tempUser
-        console.log(req.session)
+        const token = req.cookies.tempUserToken
+
+        if (!token) {
+            return res.status(401).json({ message: 'Please signup again' })
+        }
+
+        const secret = process.env.JWT_SECRET_KEY
+        const decoded = jwt.verify(token, secret)
+
+        const tempUser = await tempUserModel.findOne({ _id: decoded._id })
+
         if (tempUser) {
             const otp = otpGenerator.generate(6, {
                 upperCaseAlphabets: false,
@@ -100,9 +157,10 @@ export async function resendOtp(req, res) {
                 lowerCaseAlphabets: false,
                 digits: true,
             })
-            tempUser.otp = otp
-            tempUser.expirationTime = Date.now() + 3 * 60 * 1000 // 3 minutes expiration time
-            sentOtp(tempUser.userData.email, otp)
+            tempUser.otpData.otp = otp
+            tempUser.otpData.expirationTime = Date.now() + 3 * 60 * 1000
+            await tempUser.save()
+            sentOtp(tempUser.email, otp)
             return res.status(200).json({ message: 'otp resent successfull' })
         } else {
             return res.status(400).json({ message: 'invalid request' })
@@ -123,12 +181,20 @@ export async function forgotPassword(req, res) {
                 lowerCaseAlphabets: false,
                 digits: true,
             })
-            req.session.forgotPassOtp = {
+            user.forgotPassOtp = {
                 otp,
-                email,
                 expirationTime: Date.now() + 3 * 60 * 1000, // 3 minutes expiration time
-                verified: false,
             }
+            await user.save()
+
+            const secret = process.env.JWT_SECRET_KEY
+            const token = jwt.sign({ _id: user._id }, secret)
+            res.cookie('forgotPassUserToken', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none',
+                maxAge: 8 * 1000 * 60,
+            })
             sentForgotPassOtp(email, otp)
             return res.json({ message: 'otp sented successfully' })
         } else {
@@ -141,8 +207,23 @@ export async function forgotPassword(req, res) {
 export async function forgotPasswordVerify(req, res) {
     try {
         const otp = req.body.otp
-        console.log(otp)
-        const forgotPassOtp = req.session.forgotPassOtp
+        const token = req.cookies.forgotPassUserToken
+
+        if (!token) {
+            return res.status(401).json({ message: 'Please enter email again' })
+        }
+
+        const secret = process.env.JWT_SECRET_KEY
+        const decoded = jwt.verify(token, secret)
+
+        const forgotPassUser = await userModel.findOne({ _id: decoded._id })
+
+        if (!forgotPassUser) {
+            return res.status(403).json({ message: 'user not found' })
+        }
+
+        const forgotPassOtp = forgotPassUser.forgotPassOtp
+
         if (!forgotPassOtp) {
             return res.status(403).json({ message: 'provide email first' })
         }
@@ -150,14 +231,9 @@ export async function forgotPasswordVerify(req, res) {
             otp == forgotPassOtp?.otp &&
             Date.now() < forgotPassOtp.expirationTime
         ) {
-            const email = forgotPassOtp.email
-            const user = await userModel.findOne({ email })
-            if (!user) {
-                res.status(403).json({ message: 'provide email first' })
-            } else {
-                req.session.forgotPassOtp.verified = true
-                res.status(200).json({ message: 'success' })
-            }
+            forgotPassUser.forgotPassOtp.verified = Date.now()
+            await forgotPassUser.save()
+            res.status(200).json({ message: 'success' })
         } else {
             res.status(403).json({ message: 'invalid otp' })
         }
@@ -168,18 +244,35 @@ export async function forgotPasswordVerify(req, res) {
 export async function resetForgotPassword(req, res) {
     try {
         const password = req.body.password
+        const token = req.cookies.forgotPassUserToken
+
+        if (!token) {
+            return res.status(401).json({ message: 'Please enter email again' })
+        }
+
+        const secret = process.env.JWT_SECRET_KEY
+        const decoded = jwt.verify(token, secret)
+
+        const forgotPassUser = await userModel.findOne({ _id: decoded._id })
+
+        if (!forgotPassUser) {
+            return res.status(403).json({ message: 'user not found' })
+        }
+
         if (!password) {
             res.status(404).json({ message: 'provide password' })
         }
-        const forgotPassOtp = req.session.forgotPassOtp
+        const forgotPassOtp = forgotPassUser.forgotPassOtp
         if (forgotPassOtp) {
-            if (forgotPassOtp.verified) {
+            console.log(forgotPassOtp.verified);
+            if (forgotPassOtp.verified + 5 * 60 * 1000 > Date.now()) {
                 const passwordHash = await bcrypt.hash(password, 10)
                 await userModel.findOneAndUpdate(
-                    { email: forgotPassOtp.email },
+                    { email: forgotPassUser.email },
                     { password: passwordHash }
                 )
-                req.session.forgotPassOtp = null
+                forgotPassUser.forgotPassOtp = {}
+                await forgotPassUser.save()
                 res.status(200).json({ message: 'succes' })
             } else {
                 res.status(403).json({ message: 'otp is not verified' })
