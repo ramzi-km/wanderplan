@@ -12,6 +12,10 @@ import {
     getAllGuides,
     getAllItineraries,
     getAllUsers,
+    getCategoryWiseExpenditure,
+    getGeneralDetails,
+    getPopularDestinations,
+    getUsersJoinedByMonth,
     toggleUnlistCategory,
     toggleUnlistGuide,
     toggleUnlistItinerary,
@@ -22,6 +26,20 @@ const router = express.Router()
 router.post('/login', postAdminLogin)
 router.post('/logout', postAdminLogout)
 router.get('/data', verifyAdmin, getAdminData)
+
+//----------------------dashboard---------------------//
+router.get('/dashboard/general', verifyAdmin, getGeneralDetails)
+router.get('/dashboard/monthlyUsers', verifyAdmin, getUsersJoinedByMonth)
+router.get(
+    '/dashboard/categoryWiseExpenditure',
+    verifyAdmin,
+    getCategoryWiseExpenditure
+)
+router.get(
+    '/dashboard/popularDestinations',
+    verifyAdmin,
+    getPopularDestinations
+)
 
 //----------------------user management---------------------//
 router.get('/allUsers', verifyAdmin, getAllUsers)

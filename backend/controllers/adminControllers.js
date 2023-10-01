@@ -1,7 +1,109 @@
 import categoryModel from '../models/categoryModel.js'
+import expenseModel from '../models/expenseModel.js'
 import guideModel from '../models/guideModel.js'
+import tempUserModel from '../models/tempUserModel.js'
 import tripModel from '../models/tripModel.js'
 import userModel from '../models/userModel.js'
+
+export async function getGeneralDetails(req, res) {
+    try {
+        const totalUsers = await userModel.countDocuments()
+        const totalTrips = await tripModel.countDocuments()
+        const totalGuides = await guideModel.countDocuments()
+        const totalUnverifiedUsers = await tempUserModel.countDocuments()
+
+        res.json({
+            totalUsers,
+            totalTrips,
+            totalGuides,
+            totalUnverifiedUsers,
+        })
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: 'Internal Server Error' })
+    }
+}
+
+export async function getUsersJoinedByMonth(req, res) {
+    const currentYear = new Date().getFullYear()
+    const pipeline = [
+        {
+            $match: {
+                createdAt: {
+                    $gte: new Date(`${currentYear}-01-01T00:00:00.000Z`),
+                    $lt: new Date(`${currentYear + 1}-01-01T00:00:00.000Z`),
+                },
+            },
+        },
+        {
+            $group: {
+                _id: { $month: '$createdAt' },
+                count: { $sum: 1 },
+            },
+        },
+        {
+            $sort: { _id: 1 },
+        },
+    ]
+
+    const monthlyCounts = Array(12).fill(0)
+
+    try {
+        const result = await userModel.aggregate(pipeline)
+        result.forEach((entry) => {
+            monthlyCounts[entry._id - 1] = entry.count
+        })
+
+        res.json({ monthlyUsers: monthlyCounts })
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: 'Internal Server Error' })
+    }
+}
+
+export async function getCategoryWiseExpenditure(req, res) {
+    try {
+        const categoryWiseExpenditure = await expenseModel.aggregate([
+            {
+                $group: {
+                    _id: '$category.name',
+                    totalAmount: { $sum: '$amount' },
+                },
+            },
+        ])
+
+        res.json({ categoryWiseExpenditure })
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: 'Internal Server Error' })
+    }
+}
+
+export async function getPopularDestinations(req, res) {
+    try {
+        const pipeline = [
+            {
+                $group: {
+                    _id: '$place.name',
+                    totalTrips: { $sum: 1 },
+                },
+            },
+            {
+                $sort: { totalTrips: -1 },
+            },
+            {
+                $limit: 10,
+            },
+        ]
+
+        const popularDestinations = await tripModel.aggregate(pipeline)
+
+        res.json({ popularDestinations })
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: 'Internal Server Error' })
+    }
+}
 
 export async function getAllUsers(req, res) {
     try {

@@ -2,21 +2,16 @@ import { CommonModule } from '@angular/common';
 import { NgModule, isDevMode } from '@angular/core';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { NgApexchartsModule } from 'ng-apexcharts';
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 import { AdminLoginComponent } from './components/admin-login/admin-login.component';
 import { AdminNavComponent } from './components/admin-nav/admin-nav.component';
-import { UserManagementComponent } from './components/user-management/user-management.component';
-import { adminEffects } from './store/admin/admin.effects';
-import { adminReducer } from './store/admin/admin.reducers';
-import { usersEffects } from './store/users/users.effects';
-import { usersReducer } from './store/users/users.reducers';
 import { CategoryManagementComponent } from './components/category-management/category-management.component';
 import { GuideManagementComponent } from './components/guide-management/guide-management.component';
 import { ItineraryManagementComponent } from './components/itinerary-management/itinerary-management.component';
+import { UserManagementComponent } from './components/user-management/user-management.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +24,7 @@ import { ItineraryManagementComponent } from './components/itinerary-management/
     ItineraryManagementComponent,
   ],
   imports: [
+    NgApexchartsModule,
     CommonModule,
     AdminRoutingModule,
     ReactiveFormsModule,
