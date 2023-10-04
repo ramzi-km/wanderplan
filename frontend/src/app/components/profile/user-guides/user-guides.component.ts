@@ -21,6 +21,7 @@ export class UserGuidesComponent {
   loadingMore = false;
   page = 0;
   lastPage = 0;
+  editLoading=false
 
   ngOnInit(): void {
     this.loading = true;
@@ -62,6 +63,7 @@ export class UserGuidesComponent {
     }
   }
   navigateTo(id: string) {
+    this.editLoading=true
     this.router.navigate(['guide/edit', id]);
   }
   ngOnDestroy(): void {

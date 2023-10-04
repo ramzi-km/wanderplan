@@ -63,7 +63,7 @@
     </div>
     <ng-container *ngIf="isLoggedIn$ | async; else guestNav">
       <div class="hidden flex-row space-x-5 md:flex">
-        <label class="swap swap-rotate">
+        <label class="swap-rotate swap">
           <!-- this hidden checkbox controls the state -->
           <input
             type="checkbox"
@@ -94,7 +94,7 @@
             />
           </svg>
         </label>
-        <div class="dropdown dropdown-end">
+        <div class="dropdown-end dropdown">
           <label tabindex="0" class="btn btn-circle btn-ghost text-textp">
             <div class="indicator">
               <svg
@@ -127,12 +127,13 @@
               >
               <ul
                 *ngIf="user$ | async as user"
-                class="max-h-96 w-full overflow-auto rounded-lg bg-secondary"
+                class="max-h-96 w-full overflow-y-auto overflow-x-hidden rounded-lg bg-secondary"
               >
                 <ng-container *ngFor="let notification of user.notifications">
                   <li
                     *ngIf="!notification.read"
                     class="my-2 cursor-pointer rounded-md bg-base-100 px-4 py-1 text-textp"
+                    [ngClass]="clearAllNotif ? 'slide-out' : ''"
                   >
                     <div
                       *ngIf="notification.type == 'tripInvite'"

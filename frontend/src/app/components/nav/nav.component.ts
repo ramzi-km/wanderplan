@@ -40,6 +40,7 @@ export class NavComponent implements OnInit, OnDestroy {
   user$: Observable<User>;
   isLoggedIn$ = this.store.select(UserSelector.selectIsLoggedIn);
   unreadNotifications$: Observable<boolean>;
+  clearAllNotif = false;
   acceptIvitationLoading = {
     value: false,
     id: '',
@@ -157,15 +158,18 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   markAllNotifRead() {
+    this.clearAllNotif = true;
     this.userService
       .markAllNotifRead()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
         next: (res) => {
           this.store.dispatch(UserActions.getUserSuccess({ user: res.user }));
+          this.clearAllNotif = false;
         },
         error: (errMessage) => {
           console.log(errMessage);
+          this.clearAllNotif = false;
         },
       });
   }

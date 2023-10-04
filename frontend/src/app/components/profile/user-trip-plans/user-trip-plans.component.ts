@@ -23,6 +23,7 @@ export class UserTripPlansComponent implements OnInit, OnDestroy {
   loadingMore = false;
   page = 0;
   lastPage = 0;
+  editLoading = false;
 
   ngOnInit(): void {
     this.loading = true;
@@ -64,6 +65,7 @@ export class UserTripPlansComponent implements OnInit, OnDestroy {
     }
   }
   navigateTo(id: string) {
+    this.editLoading=true
     this.router.navigate(['trip/edit', id]);
   }
   ngOnDestroy(): void {
