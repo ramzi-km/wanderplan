@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'environment';
 import { createGuide } from 'src/app/interfaces/create-guide.interface';
 import { Guide, Place, Section } from 'src/app/interfaces/guide.interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',

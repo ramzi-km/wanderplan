@@ -1,8 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'environment';
-import { Guide } from 'src/app/interfaces/guide.interface';
 import { Trip } from 'src/app/interfaces/trip.interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',

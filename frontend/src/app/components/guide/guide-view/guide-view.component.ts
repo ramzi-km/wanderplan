@@ -11,12 +11,12 @@ import { MatDrawer, MatSidenavContainer } from '@angular/material/sidenav';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { environment } from 'environment';
 import mapboxgl from 'mapbox-gl';
 import { Subject, take, takeUntil } from 'rxjs';
 import { Guide, Place } from 'src/app/interfaces/guide.interface';
 import { User } from 'src/app/interfaces/user.model';
 import { GuideService } from 'src/app/services/guide/guide.service';
+import { environment } from 'src/environments/environment';
 import * as userSelectors from '../../../store/user/user.selectors';
 
 @Component({

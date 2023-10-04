@@ -31,6 +31,8 @@ import {
     getAllUserTrips,
     getUpcomingTrips,
     getUser,
+    markAllUnreadNotifsAsRead,
+    markNotifRead,
     resetPassword,
     searchUsers,
     updateUser,
@@ -130,6 +132,16 @@ router.post(
     '/user/acceptTripInvitation/:tripId/:notificationId',
     verifyUser,
     acceptTripInvitation
+)
+router.patch(
+    '/user/notification/:notificationId/markAsRead',
+    verifyUser,
+    markNotifRead
+)
+router.patch(
+    '/user/notification/markAllAsRead',
+    verifyUser,
+    markAllUnreadNotifsAsRead
 )
 router.get('/user/search', verifyUser, searchUsers)
 router.get('/travelGuides', getAllTripsAndGuides)

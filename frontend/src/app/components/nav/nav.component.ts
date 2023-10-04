@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, map, takeUntil } from 'rxjs';
@@ -14,7 +14,7 @@ declare const google: any;
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss'],
 })
-export class NavComponent {
+export class NavComponent implements OnInit, OnDestroy {
   theme = 'light';
   logoutLoading = false;
   @HostListener('window:scroll', ['$event'])
@@ -154,5 +154,23 @@ export class NavComponent {
           };
         },
       });
+  }
+
+  markAllNotifRead() {
+    this.userService
+      .markAllNotifRead()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (res) => {
+          this.store.dispatch(UserActions.getUserSuccess({ user: res.user }));
+        },
+        error: (errMessage) => {
+          console.log(errMessage);
+        },
+      });
+  }
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

@@ -6,6 +6,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { ShortGuideInfo } from 'src/app/interfaces/short-guide.interface';
 import { ShortTripInfo } from 'src/app/interfaces/short-trip.interface';
 import { UserService } from 'src/app/services/user/user.service';
+import * as tripEditSelectors from '../../store/editingTrip/trip-edit.selectors';
 
 @Component({
   selector: 'app-home',
@@ -25,6 +26,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   userGuides: Array<ShortGuideInfo> = [];
   errMessage!: string;
   loading = false;
+  editLoading = false;
   ngOnInit(): void {
     this.loading = true;
     this.userService
@@ -90,8 +92,15 @@ export class HomeComponent implements OnInit, OnDestroy {
         },
       });
   }
+
   navigateTo(id: string) {
+    this.editLoading = true;
     this.router.navigate(['trip/edit', id]);
+  }
+
+  navigateToGuide(id: string) {
+    this.editLoading = true;
+    this.router.navigate(['guide/edit', id]);
   }
 
   showToast(message: string) {

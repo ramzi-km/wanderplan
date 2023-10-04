@@ -47,7 +47,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
           if (error.status === 401) {
             this.store.dispatch(adminActions.adminLogout());
-          } else if (error.status === 403 || error.status === 404) {
+          } else if (error.status === 403) {
             console.log(errorMessage);
           } else {
             this.showToast(errorMessage);
@@ -62,7 +62,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
         if (error.status === 401) {
           this.store.dispatch(userActions.userLogout());
-        } else if (error.status === 403 || error.status === 404) {
+        } else if (error.status === 403) {
           console.log(errorMessage);
         } else {
           this.showToast(errorMessage);

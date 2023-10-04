@@ -1,0 +1,81 @@
+<div class="mt-20"></div>
+<main>
+  <div
+    class="container mx-auto flex w-full flex-col items-center justify-center md:w-3/5"
+  >
+    <h1 class="p-5 text-3xl font-bold">All notifications</h1>
+    <a
+      class="link-hover ml-auto px-5 font-medium sm:px-0"
+      (click)="markAllNotifRead()"
+      >Mark all as read</a
+    >
+
+    <ul
+      *ngIf="user"
+      class="min-h-screen w-full overflow-auto rounded-lg bg-base-100 px-5 sm:px-0"
+    >
+      <li
+        *ngFor="let notification of notifications"
+        class="relative my-2 rounded-md bg-secondary px-4 py-2 text-textp"
+        [ngClass]="notification.read ? '' : 'border-l-4 border-blue-600'"
+      >
+        <div
+          *ngIf="notification.type == 'tripInvite'"
+          class="mr-3 flex items-center"
+        >
+          <label class="avatar">
+            <div class="h-10 w-10 rounded-full">
+              <img [src]="notification.sender.profilePic" />
+            </div>
+          </label>
+          <div class="ml-3 leading-tight">
+            <p class="text-base font-semibold sm:text-lg">Trip invite</p>
+            <span class="text-xs text-texts sm:text-sm">{{
+              notification.content
+            }}</span
+            ><br />
+            <span class="text-xs text-textg sm:text-sm">{{
+              notification.timestamp! | timeAgo
+            }}</span>
+          </div>
+          <div class="ml-auto flex flex-col">
+            <button
+              *ngIf="notification.status == 'pending'"
+              class="btn btn-primary btn-sm ml-4 normal-case"
+              (click)="
+                acceptTripInvitation(notification.trip._id!, notification._id!)
+              "
+            >
+              <span
+                *ngIf="
+                  !(
+                    acceptIvitationLoading.id == notification._id &&
+                    acceptIvitationLoading.value
+                  )
+                "
+                >Accept</span
+              ><span
+                *ngIf="
+                  acceptIvitationLoading.id == notification._id &&
+                  acceptIvitationLoading.value
+                "
+                class="loading loading-spinner loading-xs ml-1 text-textp"
+              ></span>
+            </button>
+            <label
+              *ngIf="notification.status == 'accepted'"
+              class="ml-4 normal-case text-primary"
+              >Accepted</label
+            >
+
+            <a
+              (click)="markNotifRead(notification._id!)"
+              class="link-hover absolute bottom-0.5 right-5 text-sm font-medium text-textg"
+              >Mark as read</a
+            >
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</main>

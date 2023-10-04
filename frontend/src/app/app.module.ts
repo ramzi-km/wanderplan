@@ -62,7 +62,7 @@ import { TripViewComponent } from './components/trip/trip-view/trip-view.compone
 import { AutoResizeTextareaDirective } from './directives/auto-resize-textarea.directive';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 
-import { environment } from '../../environment';
+import { environment } from 'src/environments/environment';
 import { HttpErrorInterceptor } from './interceptors/HttpErrorInterceptor.interceptor';
 
 import { adminEffects } from './admin/store/admin/admin.effects';
@@ -82,6 +82,8 @@ import { CustomDateFormat2Pipe } from './pipes/custom-date-format2.pipe';
 import { DateRangePipe } from './pipes/date-range.pipe';
 import { DateTimeFormatPipe } from './pipes/date-time-format.pipe';
 import { DaysToPipe } from './pipes/days-to.pipe';
+import { NotificationsComponent } from './components/notifications/notifications.component';
+import { TimeAgoPipe } from './time-ago.pipe';
 
 const config: SocketIoConfig = { url: environment.API_URL, options: {} };
 
@@ -122,6 +124,8 @@ const config: SocketIoConfig = { url: environment.API_URL, options: {} };
     GuideEditComponent,
     GuideViewComponent,
     GuideSectionComponent,
+    NotificationsComponent,
+    TimeAgoPipe,
   ],
   imports: [
     PickerComponent,

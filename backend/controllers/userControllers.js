@@ -341,12 +341,58 @@ export async function acceptTripInvitation(req, res) {
 
             if (notification) {
                 notification.status = 'accepted'
+                notification.read = true
                 await user.save()
             }
         }
 
         res.status(200).json({
             message: 'Trip invitation accepted successfully.',
+            user: user,
+        })
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function markNotifRead(req, res) {
+    try {
+        const user = req.user
+        const notificationId = req.params.notificationId
+
+        if (user) {
+            const notification = user.notifications.id(notificationId)
+
+            if (notification) {
+                notification.read = true
+                await user.save()
+                res.status(200).json({
+                    message: 'marked notification as read',
+                    user: user,
+                })
+            } else {
+                res.status(422).json({ message: 'notification not found' })
+            }
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export async function markAllUnreadNotifsAsRead(req, res) {
+    try {
+        const user = req.user
+
+        user.notifications.forEach((notification) => {
+            if (!notification.read) {
+                notification.read = true
+            }
+        })
+
+        await user.save()
+
+        res.status(200).json({
+            message: 'All unread notifications marked as read',
             user: user,
         })
     } catch (error) {

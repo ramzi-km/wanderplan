@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'environment';
 import { CreateTrip } from 'src/app/interfaces/create-trip.interface';
 import { PlaceToVisit, Trip } from 'src/app/interfaces/trip.interface';
 import { User } from 'src/app/interfaces/user.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +25,7 @@ export class TripService {
   }
 
   getViewTripDetails(tripId: string) {
-    return this.http.get<{ trip: Trip; message: string }>(
+    return this.http.get<{ trip: Trip; tripmates: string[]; message: string }>(
       `${this.baseUrl}/${tripId}/view`,
     );
   }

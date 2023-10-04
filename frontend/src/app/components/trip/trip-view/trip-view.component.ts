@@ -12,12 +12,12 @@ import { MatDrawer, MatSidenavContainer } from '@angular/material/sidenav';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { environment } from 'environment';
 import mapboxgl from 'mapbox-gl';
 import { Subject, take, takeUntil } from 'rxjs';
 import { ItineraryPlace, Place, Trip } from 'src/app/interfaces/trip.interface';
 import { User } from 'src/app/interfaces/user.model';
 import { TripService } from 'src/app/services/trip/trip.service';
+import { environment } from 'src/environments/environment';
 import * as userSelectors from '../../../store/user/user.selectors';
 
 @Component({
@@ -61,6 +61,7 @@ export class TripViewComponent implements OnInit, OnDestroy, AfterViewInit {
   tripId: string = '';
   loading = false;
   loadingTrip = false;
+  tripmates: string[] = [];
   currentPosition = 0;
   showMap = false;
   map!: mapboxgl.Map;
@@ -143,6 +144,7 @@ export class TripViewComponent implements OnInit, OnDestroy, AfterViewInit {
               this.markers.push(marker);
             });
           });
+          this.tripmates = res.tripmates;
           this.loading = false;
         },
         error: (errMessage: string) => {

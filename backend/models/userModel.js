@@ -11,7 +11,6 @@ const notificationSchema = new Schema({
     },
     timestamp: {
         type: Date,
-        default: Date.now(),
     },
     sender: { type: Schema.Types.ObjectId, ref: 'User' },
     trip: { type: Schema.Types.ObjectId, ref: 'Trip' },

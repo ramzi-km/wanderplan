@@ -116,7 +116,7 @@
                   </div>
                   <div class="flex items-center justify-between space-x-2">
                     <button
-                      *ngIf="trip.admin?._id == user._id"
+                      *ngIf="tripmates.includes(user._id!)"
                       routerLink="/trip/edit/{{ trip._id }}"
                       class="btn btn-primary btn-sm rounded-full text-white"
                     >
@@ -148,7 +148,7 @@
                   *ngIf="trip.overview?.notes"
                   class="section-notes max-w-full scroll-m-20"
                 >
-                  <details open class="collapse-arrow collapse bg-secondary">
+                  <details open class="collapse collapse-arrow bg-secondary">
                     <summary
                       class="collapse-title text-xl font-bold sm:text-3xl"
                     >

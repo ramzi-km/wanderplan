@@ -17,7 +17,6 @@ import {
 import { MatDrawer, MatSidenavContainer } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { environment } from 'environment';
 import mapboxgl from 'mapbox-gl';
 import {
   Subject,
@@ -36,6 +35,7 @@ import {
 import { User } from 'src/app/interfaces/user.model';
 import { TripService } from 'src/app/services/trip/trip.service';
 import { UserService } from 'src/app/services/user/user.service';
+import { environment } from 'src/environments/environment';
 import * as tripEditActions from '../../../store/editingTrip/trip-edit.actions';
 import * as tripEditSelector from '../../../store/editingTrip/trip-edit.selectors';
 import * as userSelector from '../../../store/user/user.selectors';

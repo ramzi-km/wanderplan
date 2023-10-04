@@ -152,7 +152,7 @@
                     class="input card-title input-ghost input-sm w-full max-w-md text-ellipsis text-xl text-textp sm:input-sm sm:text-3xl"
                     (blur)="onHeadingBlur()"
                   />
-                  <div class="dropdown dropdown-left ml-auto">
+                  <div class="dropdown-left dropdown ml-auto">
                     <label
                       tabindex="0"
                       class="btn btn-circle btn-ghost btn-sm m-1 text-textp"
@@ -454,6 +454,9 @@
               </div>
             </div>
           </ng-container>
+
+          <!---------- Invite-tripmate-modal  ------------>
+
           <dialog id="addTripmateModal" class="modal">
             <div class="modal-box bg-secondary text-textp">
               <form method="dialog">
@@ -464,6 +467,7 @@
                 </button>
               </form>
               <form class="p-3">
+                <h3 class="text-center text-2xl font-medium mb-5">Invite tripmates</h3>
                 <label
                   for="default-search"
                   class="sr-only mb-2 text-sm font-medium"
@@ -541,6 +545,9 @@
               <button>close</button>
             </form>
           </dialog>
+
+          <!---------- Invite-tripmate-modal-end  ------------>
+
           <div
             class="my-8 flex w-full flex-col items-center justify-center sm:my-16"
           >

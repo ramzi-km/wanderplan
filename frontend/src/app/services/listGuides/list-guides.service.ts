@@ -1,8 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'environment';
 import { ShortGuideInfo } from 'src/app/interfaces/short-guide.interface';
 import { ShortTripInfo } from 'src/app/interfaces/short-trip.interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',

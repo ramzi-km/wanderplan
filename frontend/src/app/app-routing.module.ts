@@ -20,6 +20,7 @@ import { SignupOtpComponent } from './components/sign-up/signup-otp/signup-otp.c
 import { TripEditComponent } from './components/trip/trip-edit/trip-edit.component';
 import { TripViewComponent } from './components/trip/trip-view/trip-view.component';
 
+import { NotificationsComponent } from './components/notifications/notifications.component';
 import { guestGuard } from './guards/guest.guard';
 import { guideEditGuard } from './guards/guide-edit.guard';
 import { tripEditGuard } from './guards/trip-edit.guard';
@@ -48,6 +49,11 @@ const routes: Routes = [
           { path: 'trip-plans', component: UserTripPlansComponent },
           { path: 'guides', component: UserGuidesComponent },
         ],
+      },
+      {
+        path: 'notifications',
+        component: NotificationsComponent,
+        canActivate: [userAuthGuard],
       },
       {
         path: 'create',

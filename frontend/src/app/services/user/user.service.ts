@@ -1,9 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'environment';
 import { ShortGuideInfo } from 'src/app/interfaces/short-guide.interface';
 import { ShortTripInfo } from 'src/app/interfaces/short-trip.interface';
 import { User } from 'src/app/interfaces/user.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -57,5 +57,13 @@ export class UserService {
   acceptTripInvitation(tripId: string, notificationId: string) {
     const url = `${this.baseUrl}/acceptTripInvitation/${tripId}/${notificationId}`;
     return this.http.post<{ user: User; message: string }>(url, {});
+  }
+  markNotifRead(notificationId: string) {
+    const url = `${this.baseUrl}/notification/${notificationId}/markAsRead`;
+    return this.http.patch<{ user: User; message: string }>(url, {});
+  }
+  markAllNotifRead() {
+    const url = `${this.baseUrl}/notification/markAllAsRead`;
+    return this.http.patch<{ user: User; message: string }>(url, {});
   }
 }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'environment';
 import { MapboxGeocodingResponse } from 'src/app/interfaces/mapbox-interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',

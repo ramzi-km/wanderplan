@@ -152,13 +152,15 @@ export async function getViewTripDetails(req, res) {
                 ],
             })
             .populate('admin', '_id username name profilePic')
-            .select('-budget -tripMates -invitedTripMates -visibility')
+            .select('-budget -invitedTripMates -visibility')
             .exec()
 
         if (!trip) {
             return res.status(400).json({ message: 'Invalid trip id' })
         }
-        return res.status(200).json({ message: 'Success', trip: trip })
+        return res
+            .status(200)
+            .json({ message: 'Success', trip: trip, tripmates: trip.tripMates })
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error' })
     }
@@ -249,12 +251,13 @@ export async function inviteTripMate(req, res) {
                 .status(400)
                 .json({ message: 'Trip mate is already invited' })
         }
-        trip.invitedTripMates.push(tripMateId)
+        trip.invitedTripMates.unshift(tripMateId)
         const notification = {
             type: 'tripInvite',
             content: `You have been invited to join the trip "${trip.name}" by ${admin.username}.`,
             sender: admin._id,
             trip: trip._id,
+            timestamp: new Date(),
         }
         tripMate.notifications.push(notification)
         await Promise.all([trip.save(), tripMate.save()])

@@ -1,9 +1,16 @@
 <div class="mt-20"></div>
+<div *ngIf="editLoading">
+  <div
+    class="fixed inset-0 z-20 flex items-center justify-center rounded-lg bg-black bg-opacity-90 text-primary"
+  >
+    <span class="loading loading-infinity w-24"></span>
+  </div>
+</div>
 <main>
   <div
-    class="container mx-auto flex w-full md:w-3/4 flex-col items-center justify-center"
+    class="container mx-auto flex w-full flex-col items-center justify-center md:w-3/4"
   >
-    <section id="recent" class="flex w-full flex-col gap-5 py-14 px-8">
+    <section id="recent" class="flex w-full flex-col gap-5 px-12 py-14">
       <div
         class="flex flex-col-reverse md:flex-row md:items-center md:justify-between"
       >
@@ -130,7 +137,7 @@
                     <p class="truncate text-lg font-medium text-textp">
                       {{ trip.name }}
                     </p>
-                    <p class="truncate text-xs md:text-base text-textg">
+                    <p class="truncate text-xs text-textg md:text-base">
                       <span
                         >&bull;
                         {{ [trip.startDate!, trip.endDate!] | dateRange }}</span
@@ -181,7 +188,7 @@
             </p>
             <ng-container *ngFor="let guide of userGuides; let guideI = index">
               <li
-                routerLink="/guide/edit/{{ guide._id }}"
+                (click)="navigateToGuide(guide._id!)"
                 *ngIf="guideI < 4"
                 class="py-3 hover:cursor-pointer sm:py-4"
               >

@@ -63,7 +63,7 @@
     </div>
     <ng-container *ngIf="isLoggedIn$ | async; else guestNav">
       <div class="hidden flex-row space-x-5 md:flex">
-        <label class="swap-rotate swap">
+        <label class="swap swap-rotate">
           <!-- this hidden checkbox controls the state -->
           <input
             type="checkbox"
@@ -94,7 +94,7 @@
             />
           </svg>
         </label>
-        <div class="dropdown-end dropdown">
+        <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-circle btn-ghost text-textp">
             <div class="indicator">
               <svg
@@ -129,60 +129,62 @@
                 *ngIf="user$ | async as user"
                 class="max-h-96 w-full overflow-auto rounded-lg bg-secondary"
               >
-                <li
-                  *ngFor="let notification of user.notifications"
-                  class="my-2 cursor-pointer rounded-md bg-base-100 px-4 py-1 text-textp"
-                >
-                  <div
-                    *ngIf="notification.type == 'tripInvite'"
-                    class="mr-3 flex items-center"
+                <ng-container *ngFor="let notification of user.notifications">
+                  <li
+                    *ngIf="!notification.read"
+                    class="my-2 cursor-pointer rounded-md bg-base-100 px-4 py-1 text-textp"
                   >
-                    <label class="avatar">
-                      <div class="h-10 w-10 rounded-full">
-                        <img [src]="notification.sender.profilePic" />
+                    <div
+                      *ngIf="notification.type == 'tripInvite'"
+                      class="mr-3 flex items-center"
+                    >
+                      <label class="avatar">
+                        <div class="h-10 w-10 rounded-full">
+                          <img [src]="notification.sender.profilePic" />
+                        </div>
+                      </label>
+                      <div class="ml-3">
+                        <p class="font-semibold">Trip invite</p>
+                        <span class="text-xs text-texts">{{
+                          notification.content
+                        }}</span>
                       </div>
-                    </label>
-                    <div class="ml-3">
-                      <p class="font-semibold">Trip invite</p>
-                      <span class="text-xs text-texts">{{
-                        notification.content
-                      }}</span>
-                    </div>
-                    <div class="ml-auto">
-                      <button
-                        *ngIf="notification.status == 'pending'"
-                        class="btn btn-primary btn-sm ml-4 normal-case"
-                        (click)="
-                          acceptTripInvitation(
-                            notification.trip._id!,
-                            notification._id!
-                          )
-                        "
-                      >
-                        <span
-                          *ngIf="
-                            !(
-                              acceptIvitationLoading.id == notification._id &&
-                              acceptIvitationLoading.value
+                      <div class="ml-auto">
+                        <button
+                          *ngIf="notification.status == 'pending'"
+                          class="btn btn-primary btn-sm ml-4 normal-case"
+                          (click)="
+                            acceptTripInvitation(
+                              notification.trip._id!,
+                              notification._id!
                             )
                           "
-                          >Accept</span
-                        ><span
-                          *ngIf="
-                            acceptIvitationLoading.id == notification._id &&
-                            acceptIvitationLoading.value
-                          "
-                          class="loading loading-spinner loading-xs ml-1 text-textp"
-                        ></span>
-                      </button>
-                      <label
-                        *ngIf="notification.status == 'accepted'"
-                        class="ml-4 normal-case text-primary"
-                        >Accepted</label
-                      >
+                        >
+                          <span
+                            *ngIf="
+                              !(
+                                acceptIvitationLoading.id == notification._id &&
+                                acceptIvitationLoading.value
+                              )
+                            "
+                            >Accept</span
+                          ><span
+                            *ngIf="
+                              acceptIvitationLoading.id == notification._id &&
+                              acceptIvitationLoading.value
+                            "
+                            class="loading loading-spinner loading-xs ml-1 text-textp"
+                          ></span>
+                        </button>
+                        <label
+                          *ngIf="notification.status == 'accepted'"
+                          class="ml-4 normal-case text-primary"
+                          >Accepted</label
+                        >
+                      </div>
                     </div>
-                  </div>
-                </li>
+                  </li>
+                </ng-container>
               </ul>
               <div
                 *ngIf="!(unreadNotifications$ | async)"
@@ -192,10 +194,16 @@
               </div>
               <div class="card-actions border-t-2 border-textp">
                 <div class="flex w-full justify-between p-2">
-                  <a class="font-medium hover:text-blue-500"
+                  <a
+                    (click)="markAllNotifRead()"
+                    class="font-medium hover:text-blue-500"
                     >mark all as read</a
                   >
-                  <a class="font-medium hover:text-blue-500">see all</a>
+                  <a
+                    routerLink="/notifications"
+                    class="font-medium hover:text-blue-500"
+                    >see all</a
+                  >
                 </div>
               </div>
             </div>
@@ -237,8 +245,12 @@
         >
           <label
             tabindex="0"
-            class="swap-rotate btn btn-circle btn-ghost swap m-1 text-textp"
+            class="swap-rotate btn btn-circle btn-ghost indicator swap m-1 text-textp"
           >
+            <span
+              *ngIf="unreadNotifications$ | async"
+              class="badge indicator-item badge-primary badge-xs -ml-2 mt-2 text-textp"
+            ></span>
             <!-- this hidden checkbox controls the state -->
 
             <input
@@ -329,7 +341,7 @@
                 >
               </li>
               <li>
-                <a
+                <a routerLink="/notifications"
                   ><div class="indicator mr-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -346,9 +358,9 @@
                       />
                     </svg>
                     <span
-                      class="badge indicator-item badge-primary badge-sm text-textp"
-                      >8</span
-                    >
+                      *ngIf="unreadNotifications$ | async"
+                      class="badge indicator-item badge-primary badge-xs text-textp"
+                    ></span>
                   </div>
                   Notifications</a
                 >
