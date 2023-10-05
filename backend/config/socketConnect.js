@@ -11,6 +11,9 @@ export default function socketConnect(io) {
                 console.log(`${user.username} joined room ${roomId}`)
             }
         })
+        socket.on('joinNotifications',()=>{
+            
+        })
         socket.on('leave', (data) => {
             const { user, roomId } = data
             socket.leave(roomId)

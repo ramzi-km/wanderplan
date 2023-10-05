@@ -63,7 +63,7 @@
     </div>
     <ng-container *ngIf="isLoggedIn$ | async; else guestNav">
       <div class="hidden flex-row space-x-5 md:flex">
-        <label class="swap-rotate swap">
+        <label class="swap swap-rotate">
           <!-- this hidden checkbox controls the state -->
           <input
             type="checkbox"
@@ -94,7 +94,7 @@
             />
           </svg>
         </label>
-        <div class="dropdown-end dropdown">
+        <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-circle btn-ghost text-textp">
             <div class="indicator">
               <svg
@@ -196,6 +196,7 @@
               <div class="card-actions border-t-2 border-textp">
                 <div class="flex w-full justify-between p-2">
                   <a
+                    *ngIf="unreadNotifications$ | async"
                     (click)="markAllNotifRead()"
                     class="font-medium hover:text-blue-500"
                     >mark all as read</a

@@ -67,9 +67,12 @@ export class NotificationsComponent implements OnInit, OnDestroy {
         },
       });
   }
-  markNotifRead(notificationId: string) {
+  markNotifRead(notification: Notification) {
+    if (notification.read) {
+      return;
+    }
     this.userService
-      .markNotifRead(notificationId)
+      .markNotifRead(notification._id!)
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe({
         next: (res) => {
