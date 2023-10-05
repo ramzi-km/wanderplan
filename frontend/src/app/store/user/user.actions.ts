@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { User } from 'src/app/interfaces/user.model';
+import { Notification, User } from 'src/app/interfaces/user.model';
 
 // load user
 export const getUser = createAction('[App Component] getUser');
@@ -17,3 +17,8 @@ export const userLogin = createAction(
   props<{ user: Readonly<User> }>(),
 );
 export const userLogout = createAction('[Nav Component] userLogout');
+
+export const addNotification = createAction(
+  '[App Component] AddNotification',
+  props<{ notification: Notification }>(),
+);

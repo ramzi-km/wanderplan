@@ -33,6 +33,7 @@ import {
   Trip,
 } from 'src/app/interfaces/trip.interface';
 import { User } from 'src/app/interfaces/user.model';
+import { NotificationService } from 'src/app/services/notification/notification.service';
 import { TripService } from 'src/app/services/trip/trip.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { environment } from 'src/environments/environment';
@@ -123,6 +124,7 @@ export class TripEditComponent implements OnDestroy, OnInit, AfterViewInit {
     private renderer: Renderer2,
     private el: ElementRef,
     private userService: UserService,
+    private notificationService: NotificationService,
     private router: Router,
     fb: FormBuilder,
   ) {
@@ -359,6 +361,8 @@ export class TripEditComponent implements OnDestroy, OnInit, AfterViewInit {
               invitedTripmates: res.invitedTripMates,
             }),
           );
+          const data = { notification: res.notification, receiverId: userId };
+          this.notificationService.sendNotification(data);
           this.inviteTripmateLoading = { value: false, index };
         },
         error: (errMessage) => {
@@ -367,6 +371,7 @@ export class TripEditComponent implements OnDestroy, OnInit, AfterViewInit {
         },
       });
   }
+
   removeTripMate(index: number, tripMateId: string) {
     this.removeTripmateLoading = { value: true, index };
     this.tripService

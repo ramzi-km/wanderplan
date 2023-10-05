@@ -259,11 +259,12 @@ export async function inviteTripMate(req, res) {
             trip: trip._id,
             timestamp: new Date(),
         }
-        tripMate.notifications.push(notification)
+        tripMate.notifications.unshift(notification)
         await Promise.all([trip.save(), tripMate.save()])
         return res.status(200).json({
             message: 'Trip mate invited successfully',
             invitedTripMates: trip.invitedTripMates,
+            notification: notification,
         })
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error' })

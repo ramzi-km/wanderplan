@@ -8,9 +8,9 @@ import {
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { ToastrService } from 'ngx-toastr';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import * as adminActions from '../admin/store/admin/admin.actions';
+import { ErrorEventService } from '../services/error-event.service';
 import * as userActions from '../store/user/user.actions';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   constructor(
     private store: Store,
     private router: Router,
-    private toastr: ToastrService,
+    private errorEventService: ErrorEventService,
   ) {}
 
   intercept(
@@ -50,7 +50,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           } else if (error.status === 403) {
             console.log(errorMessage);
           } else {
-            this.showToast(errorMessage);
+            this.errorEventService.triggerError(errorMessage);
           }
           return throwError(errorMessage);
         }),
@@ -65,15 +65,10 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         } else if (error.status === 403) {
           console.log(errorMessage);
         } else {
-          this.showToast(errorMessage);
+          this.errorEventService.triggerError(errorMessage);
         }
         return throwError(errorMessage);
       }),
     );
-  }
-  showToast(message: string) {
-    this.toastr.error(message, 'Error!', {
-      timeOut: 3000,
-    });
   }
 }

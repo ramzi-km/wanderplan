@@ -29,6 +29,8 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { ToastrModule } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 import { AppInitializerService } from './app-intializer.service';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -77,12 +79,12 @@ import { userReducer } from './store/user/user.reducers';
 import { GuideEditComponent } from './components/guide/guide-edit/guide-edit.component';
 import { GuideSectionComponent } from './components/guide/guide-edit/guide-section/guide-section.component';
 import { GuideViewComponent } from './components/guide/guide-view/guide-view.component';
+import { NotificationsComponent } from './components/notifications/notifications.component';
 import { CustomDateFormatPipe } from './pipes/custom-date-format.pipe';
 import { CustomDateFormat2Pipe } from './pipes/custom-date-format2.pipe';
 import { DateRangePipe } from './pipes/date-range.pipe';
 import { DateTimeFormatPipe } from './pipes/date-time-format.pipe';
 import { DaysToPipe } from './pipes/days-to.pipe';
-import { NotificationsComponent } from './components/notifications/notifications.component';
 import { TimeAgoPipe } from './time-ago.pipe';
 
 const config: SocketIoConfig = { url: environment.API_URL, options: {} };
@@ -130,6 +132,7 @@ const config: SocketIoConfig = { url: environment.API_URL, options: {} };
   imports: [
     PickerComponent,
     SocialLoginModule,
+    ToastModule,
     GoogleSigninButtonModule,
     MatSidenavModule,
     MatButtonModule,
@@ -160,6 +163,7 @@ const config: SocketIoConfig = { url: environment.API_URL, options: {} };
   ],
   providers: [
     AppInitializerService,
+    MessageService,
     {
       provide: APP_INITIALIZER,
       useFactory: (appInitializerService: AppInitializerService) => () =>

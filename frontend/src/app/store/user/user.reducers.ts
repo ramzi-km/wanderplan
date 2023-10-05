@@ -1,5 +1,4 @@
 import { createReducer, on } from '@ngrx/store';
-import { TypedAction } from '@ngrx/store/src/models';
 import { User } from 'src/app/interfaces/user.model';
 import * as userActions from './user.actions';
 
@@ -37,6 +36,17 @@ export const userReducer = createReducer(
       ...state,
       isLoggedIn: true,
       user,
+    };
+  }),
+  on(userActions.addNotification, (state, { notification }) => {
+    const updatedUser: User = {
+      ...state.user,
+      notifications: [notification, ...state.user.notifications!],
+    };
+
+    return {
+      ...state,
+      user: updatedUser,
     };
   }),
   on(userActions.userLogout, (state) => ({

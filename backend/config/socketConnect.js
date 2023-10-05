@@ -2,6 +2,7 @@ import tripModel from '../models/tripModel.js'
 
 export default function socketConnect(io) {
     io.on('connection', (socket) => {
+        console.log('user connected', socket.id)
         socket.on('join', async (data) => {
             const { user, roomId } = data
             const trip = await tripModel.findById(roomId)
@@ -11,9 +12,7 @@ export default function socketConnect(io) {
                 console.log(`${user.username} joined room ${roomId}`)
             }
         })
-        socket.on('joinNotifications',()=>{
-            
-        })
+
         socket.on('leave', (data) => {
             const { user, roomId } = data
             socket.leave(roomId)
@@ -27,8 +26,23 @@ export default function socketConnect(io) {
             console.log(`Message sent to room ${roomId}: ${messageData}`)
         })
 
+        socket.on('joinNotifications', (data) => {
+            socket.join(data.user._id)
+            console.log(data.user.email, 'joined notif')
+        })
+
+        socket.on('notification', (data) => {
+            io.to(data.receiverId).emit('new notification', data.notification)
+            console.log('notificaion', data)
+        })
+
+        socket.on('leaveNotifications', (data) => {
+            socket.leave(data.user._id)
+            console.log(data.user.email, 'left notif')
+        })
+
         socket.on('disconnect', () => {
-            console.log('user disconnected')
+            console.log('user disconnected', socket.id)
         })
     })
 }
