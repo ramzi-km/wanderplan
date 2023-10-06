@@ -30,7 +30,6 @@ export async function getUser(req, res) {
                     },
                 ],
             })
-            .exec()
         res.status(200).json({ user: user })
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' })

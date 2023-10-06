@@ -312,7 +312,6 @@ export async function inviteTripMate(req, res) {
                     },
                 ],
             })
-            .exec()
 
         const savedNotification = tripmate.notifications.shift()
 
