@@ -171,7 +171,10 @@ export async function likeTrip(req, res) {
         const tripId = req.params.id
         const userId = req.user._id
 
-        const trip = await tripModel.findById(tripId)
+        const [likedUser, trip] = await Promise.all([
+            userModel.findById(userId),
+            tripModel.findById(tripId).populate('admin'),
+        ])
 
         if (!trip) {
             return res.status(404).json({ message: 'Trip not found' })
@@ -183,16 +186,47 @@ export async function likeTrip(req, res) {
                 .json({ message: 'You have already liked this trip' })
         }
 
-        trip.likes.push(userId)
-
+        trip.likes.push(likedUser._id)
         trip.likesCount++
 
-        await trip.save()
+        const savedTrip = await trip.save()
+        const tripAdmin = savedTrip.admin
+
+        if (likedUser._id.toString() == tripAdmin._id.toString()) {
+            return res.status(200).json({
+                message: 'Trip liked successfully',
+                likesCount: trip.likesCount,
+                likes: trip.likes,
+            })
+        }
+
+        const notification = {
+            type: 'tripLike',
+            content: `${likedUser.username} liked your trip "${trip.name}".`,
+            sender: likedUser._id,
+            timestamp: new Date(),
+        }
+        tripAdmin.notifications.unshift(notification)
+        tripAdmin.save()
+
+        const admin = await userModel.findOne({ _id: tripAdmin._id }).populate({
+            path: 'notifications',
+            populate: [
+                {
+                    path: 'sender',
+                    model: 'User',
+                    select: 'name profilePic username _id',
+                },
+            ],
+        })
+
+        const savedNotification = admin.notifications.shift()
 
         res.status(200).json({
             message: 'Trip liked successfully',
             likesCount: trip.likesCount,
             likes: trip.likes,
+            notification: savedNotification,
         })
     } catch (error) {
         console.log(error)
@@ -261,12 +295,34 @@ export async function inviteTripMate(req, res) {
         }
         tripMate.notifications.unshift(notification)
         await Promise.all([trip.save(), tripMate.save()])
+        const tripmate = await userModel
+            .findOne({ _id: tripMate._id })
+            .populate({
+                path: 'notifications',
+                populate: [
+                    {
+                        path: 'sender',
+                        model: 'User',
+                        select: 'name profilePic username _id',
+                    },
+                    {
+                        path: 'trip',
+                        model: 'Trip',
+                        select: 'name _id',
+                    },
+                ],
+            })
+            .exec()
+
+        const savedNotification = tripmate.notifications.shift()
+
         return res.status(200).json({
             message: 'Trip mate invited successfully',
             invitedTripMates: trip.invitedTripMates,
-            notification: notification,
+            notification: savedNotification,
         })
     } catch (error) {
+        console.log(error)
         return res.status(500).json({ message: 'Internal server error' })
     }
 }

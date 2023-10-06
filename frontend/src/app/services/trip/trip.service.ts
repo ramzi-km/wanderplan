@@ -35,6 +35,7 @@ export class TripService {
       likes: string[];
       likesCount: number;
       message: string;
+      notification:Notification;
     }>(`${this.baseUrl}/${tripId}/like`, {});
   }
 

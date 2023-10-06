@@ -4,7 +4,7 @@ import cloudinary from '../config/cloudinary.js'
 //------------------ models --------------------//
 
 import guideModel from '../models/guideModel.js'
-// import userModel from '../models/userModel.js'
+import userModel from '../models/userModel.js'
 
 //-----------------------------------------------//
 
@@ -97,7 +97,10 @@ export async function likeGuide(req, res) {
         const guideId = req.params.guideId
         const userId = req.user._id
 
-        const guide = await guideModel.findById(guideId)
+        const [likedUser, guide] = await Promise.all([
+            userModel.findById(userId),
+            guideModel.findById(guideId).populate('writer'),
+        ])
 
         if (!guide) {
             return res.status(404).json({ message: 'Guide not found' })
@@ -113,12 +116,45 @@ export async function likeGuide(req, res) {
 
         guide.likesCount++
 
-        await guide.save()
+        const savedguide = await guide.save()
+        const guideWriter = savedguide.writer
+        console.log(likedUser._id, guideWriter._id)
+
+        if (likedUser._id.toString() == guideWriter._id.toString()) {
+            return res.status(200).json({
+                message: 'Guide liked successfully',
+                likesCount: guide.likesCount,
+                likes: guide.likes,
+            })
+        }
+        const notification = {
+            type: 'guideLike',
+            content: `${likedUser.username} liked your guide "${guide.name}".`,
+            sender: likedUser._id,
+            timestamp: new Date(),
+        }
+        guideWriter.notifications.unshift(notification)
+        guideWriter.save()
+
+        const writer = await userModel
+            .findOne({ _id: guideWriter._id })
+            .populate({
+                path: 'notifications',
+                populate: [
+                    {
+                        path: 'sender',
+                        model: 'User',
+                        select: 'name profilePic username _id',
+                    },
+                ],
+            })
+        const savedNotification = writer.notifications.shift()
 
         res.status(200).json({
             message: 'Guide liked successfully',
             likesCount: guide.likesCount,
             likes: guide.likes,
+            notification: savedNotification,
         })
     } catch (error) {
         console.log(error)

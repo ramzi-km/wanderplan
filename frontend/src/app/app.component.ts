@@ -41,12 +41,22 @@ export class AppComponent implements OnInit {
     this.notificationService.leaveNotifications(data);
   }
   newNotification(notification: Notification) {
-    console.log(notification);
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Trip invite',
-      detail: notification.content,
-    });
+    if (notification.type == 'tripInvite') {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Trip invite',
+        detail: notification.content,
+      });
+    } else if (
+      notification.type == 'tripLike' ||
+      notification.type == 'guideLike'
+    ) {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Like',
+        detail: notification.content,
+      });
+    }
     this.store.dispatch(userActions.addNotification({ notification }));
   }
 

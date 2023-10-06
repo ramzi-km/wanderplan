@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { createGuide } from 'src/app/interfaces/create-guide.interface';
 import { Guide, Place, Section } from 'src/app/interfaces/guide.interface';
+import { Notification } from 'src/app/interfaces/user.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -35,6 +36,7 @@ export class GuideService {
       likes: string[];
       likesCount: number;
       message: string;
+      notification:Notification
     }>(`${this.baseUrl}/${guideId}/like`, {});
   }
 

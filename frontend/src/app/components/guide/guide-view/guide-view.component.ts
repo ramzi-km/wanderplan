@@ -16,6 +16,7 @@ import { Subject, take, takeUntil } from 'rxjs';
 import { Guide, Place } from 'src/app/interfaces/guide.interface';
 import { User } from 'src/app/interfaces/user.model';
 import { GuideService } from 'src/app/services/guide/guide.service';
+import { NotificationService } from 'src/app/services/notification/notification.service';
 import { environment } from 'src/environments/environment';
 import * as userSelectors from '../../../store/user/user.selectors';
 
@@ -64,6 +65,7 @@ export class GuideViewComponent implements OnInit, OnDestroy {
     private elementRef: ElementRef,
     private sanitizer: DomSanitizer,
     private store: Store,
+    private notificationService: NotificationService,
   ) {
     mapboxgl.accessToken = environment.MAPBOX_TOKEN;
   }
@@ -240,6 +242,11 @@ export class GuideViewComponent implements OnInit, OnDestroy {
             next: (res) => {
               this.guide.likes = res.likes;
               this.guide.likesCount = res.likesCount;
+              const data = {
+                notification: res.notification,
+                receiverId: this.guide.writer?._id!,
+              };
+              this.notificationService.sendNotification(data);
             },
             error: (errMessage) => {
               console.log(errMessage);

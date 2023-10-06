@@ -184,6 +184,38 @@
                         >
                       </div>
                     </div>
+                    <div
+                      *ngIf="notification.type == 'tripLike'"
+                      class="mr-3 flex items-center"
+                    >
+                      <label class="avatar">
+                        <div class="h-10 w-10 rounded-full">
+                          <img [src]="notification.sender.profilePic" />
+                        </div>
+                      </label>
+                      <div class="ml-3">
+                        <p class="font-semibold">Trip like</p>
+                        <span class="text-xs text-texts">{{
+                          notification.content
+                        }}</span>
+                      </div>
+                    </div>
+                    <div
+                      *ngIf="notification.type == 'guideLike'"
+                      class="mr-3 flex items-center"
+                    >
+                      <label class="avatar">
+                        <div class="h-10 w-10 rounded-full">
+                          <img [src]="notification.sender.profilePic" />
+                        </div>
+                      </label>
+                      <div class="ml-3">
+                        <p class="font-semibold">Guide like</p>
+                        <span class="text-xs text-texts">{{
+                          notification.content
+                        }}</span>
+                      </div>
+                    </div>
                   </li>
                 </ng-container>
               </ul>

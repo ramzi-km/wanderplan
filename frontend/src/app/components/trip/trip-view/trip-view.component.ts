@@ -16,6 +16,7 @@ import mapboxgl from 'mapbox-gl';
 import { Subject, take, takeUntil } from 'rxjs';
 import { ItineraryPlace, Place, Trip } from 'src/app/interfaces/trip.interface';
 import { User } from 'src/app/interfaces/user.model';
+import { NotificationService } from 'src/app/services/notification/notification.service';
 import { TripService } from 'src/app/services/trip/trip.service';
 import { environment } from 'src/environments/environment';
 import * as userSelectors from '../../../store/user/user.selectors';
@@ -79,6 +80,7 @@ export class TripViewComponent implements OnInit, OnDestroy, AfterViewInit {
     private elementRef: ElementRef,
     private sanitizer: DomSanitizer,
     private store: Store,
+    private notificationService: NotificationService,
   ) {
     mapboxgl.accessToken = environment.MAPBOX_TOKEN;
   }
@@ -244,6 +246,11 @@ export class TripViewComponent implements OnInit, OnDestroy, AfterViewInit {
             next: (res) => {
               this.trip.likes = res.likes;
               this.trip.likesCount = res.likesCount;
+              const data = {
+                notification: res.notification,
+                receiverId: this.trip.admin?._id!,
+              };
+              this.notificationService.sendNotification(data);
             },
             error: (errMessage) => {
               console.log(errMessage);
