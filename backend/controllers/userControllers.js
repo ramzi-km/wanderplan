@@ -497,6 +497,7 @@ export async function getAllTripsAndGuides(req, res) {
                 { name: new RegExp(search, 'i') },
                 { 'place.name': new RegExp(search, 'i') },
             ],
+            visibility: 'public',
             unList: false,
         })
 
