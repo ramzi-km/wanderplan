@@ -42,6 +42,7 @@ var userSchema = new Schema(
         },
         mobile: {
             type: String,
+            default:'unknown'
         },
         password: {
             type: String,

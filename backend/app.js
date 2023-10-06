@@ -1,4 +1,4 @@
-import MongoStore from 'connect-mongo'
+// import MongoStore from 'connect-mongo'
 import cookieparser from 'cookie-parser'
 import cors from 'cors'
 import 'dotenv/config.js'
@@ -45,7 +45,6 @@ app.use(
             sameSite: 'none',
             secure: true,
         },
-        store: MongoStore.create({ mongoUrl: process.env.DB_URI }),
     })
 )
 app.use(express.json({ limit: '10mb' }))

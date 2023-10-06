@@ -3,15 +3,24 @@
   <div
     class="container mx-auto mb-8 flex w-full flex-col items-center justify-center md:w-3/5"
   >
-    <h1 class="mt-5 p-5 text-3xl font-bold">All notifications</h1>
+    <h1 class="mt-5 p-5 text-3xl font-bold underline">All notifications</h1>
     <a
+      *ngIf="notifications[0]"
       class="link-hover ml-auto px-5 font-medium sm:px-0"
       (click)="markAllNotifRead()"
       >Mark all as read</a
     >
+    <div *ngIf="!notifications[0]" class="items-center flex py-20 md:py-5 flex-col">
+      <div class="w-1/2">
+        <img class="w-full" src="../../../assets/images/Notify-amico.png" />
+      </div>
+      <h1 class="text-center text-3xl font-bold text-textp">
+        No notifications yet
+      </h1>
+    </div>
 
     <ul
-      *ngIf="user"
+      *ngIf="user && notifications[0]"
       class="min-h-screen w-full overflow-auto rounded-lg bg-base-100 px-5 sm:px-0"
     >
       <li
@@ -88,11 +97,13 @@
             <p class="font-semibold">Trip like</p>
             <span class="text-xs text-texts">{{ notification.content }}</span>
           </div>
-          <a
-            (click)="markNotifRead(notification)"
-            class="link-hover absolute bottom-0.5 right-5 text-sm font-medium text-textg"
-            >Mark as read</a
-          >
+          <div class="ml-auto flex flex-col items-end justify-end">
+            <a
+              (click)="markNotifRead(notification)"
+              class="link-hover ml-2 whitespace-nowrap text-xs font-medium text-textg sm:text-sm"
+              >Mark as read</a
+            >
+          </div>
         </div>
         <div
           *ngIf="notification.type == 'guideLike'"
@@ -107,11 +118,13 @@
             <p class="font-semibold">Guide like</p>
             <span class="text-xs text-texts">{{ notification.content }}</span>
           </div>
-          <a
-            (click)="markNotifRead(notification)"
-            class="link-hover absolute bottom-0.5 right-5 text-sm font-medium text-textg"
-            >Mark as read</a
-          >
+          <div class="ml-auto flex flex-col items-end justify-end">
+            <a
+              (click)="markNotifRead(notification)"
+              class="link-hover ml-2 whitespace-nowrap text-xs font-medium text-textg sm:text-sm"
+              >Mark as read</a
+            >
+          </div>
         </div>
       </li>
     </ul>
