@@ -7,7 +7,6 @@ import { ErrorEventService } from './services/error-event.service';
 import { NotificationService } from './services/notification/notification.service';
 import * as userActions from './store/user/user.actions';
 import * as userSelectors from './store/user/user.selectors';
-// import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-root',
@@ -41,6 +40,7 @@ export class AppComponent implements OnInit {
     this.notificationService.leaveNotifications(data);
   }
   newNotification(notification: Notification) {
+    this.store.dispatch(userActions.addNotification({ notification }));
     if (notification.type == 'tripInvite') {
       this.messageService.add({
         severity: 'info',
@@ -57,11 +57,9 @@ export class AppComponent implements OnInit {
         detail: notification.content,
       });
     }
-    this.store.dispatch(userActions.addNotification({ notification }));
   }
 
   ngOnInit(): void {
-    // initFlowbite();
     if (localStorage.getItem('theme')) {
       this.theme = localStorage.getItem('theme')!;
       if (this.theme == 'dark') {
@@ -82,9 +80,11 @@ export class AppComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.user = res;
+          if (res?._id) {
+            this.joinNotifications(res);
+          }
         },
       });
-    this.joinNotifications(this.user);
     this.notificationService
       .getNotification()
       .pipe(takeUntil(this.ngUnsubscribe$))

@@ -3,7 +3,7 @@ import cookieparser from 'cookie-parser'
 import cors from 'cors'
 import 'dotenv/config.js'
 import express from 'express'
-import session from 'express-session'
+// import session from 'express-session'
 import http from 'http'
 import logger from 'morgan'
 import path from 'path'
@@ -36,18 +36,18 @@ connectDb()
 app.use(express.urlencoded({ extended: true }))
 app.use(logger('dev'))
 app.use(cookieparser())
-app.use(
-    session({
-        secret: process.env.SESSION_SECRET_KEY,
-        resave: false,
-        saveUninitialized: true,
-        cookie: {
-            sameSite: 'none',
-            secure: true,
-        },
-    })
-)
-app.use(express.json({ limit: '10mb' }))
+// app.use(
+//     session({
+//         secret: process.env.SESSION_SECRET_KEY,
+//         resave: false,
+//         saveUninitialized: true,
+//         cookie: {
+//             sameSite: 'none',
+//             secure: true,
+//         },
+//     })
+// )
+app.use(express.json({ limit: '50mb' }))
 app.use(express.static(path.join(path.resolve(), 'public')))
 app.use(cors({ origin: [process.env.CLIENT_URL], credentials: true }))
 

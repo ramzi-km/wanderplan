@@ -10,7 +10,10 @@
       (click)="markAllNotifRead()"
       >Mark all as read</a
     >
-    <div *ngIf="!notifications[0]" class="items-center flex py-20 md:py-5 flex-col">
+    <div
+      *ngIf="!notifications[0]"
+      class="flex flex-col items-center py-20 md:py-5"
+    >
       <div class="w-1/2">
         <img class="w-full" src="../../../assets/images/Notify-amico.png" />
       </div>
@@ -96,6 +99,10 @@
           <div class="ml-3">
             <p class="font-semibold">Trip like</p>
             <span class="text-xs text-texts">{{ notification.content }}</span>
+            <br />
+            <span class="text-xs text-textg sm:text-sm">{{
+              notification.timestamp! | timeAgo
+            }}</span>
           </div>
           <div class="ml-auto flex flex-col items-end justify-end">
             <a
@@ -117,9 +124,14 @@
           <div class="ml-3">
             <p class="font-semibold">Guide like</p>
             <span class="text-xs text-texts">{{ notification.content }}</span>
+            <br />
+            <span class="text-xs text-textg sm:text-sm">{{
+              notification.timestamp! | timeAgo
+            }}</span>
           </div>
           <div class="ml-auto flex flex-col items-end justify-end">
             <a
+            *ngIf="!notification.read"
               (click)="markNotifRead(notification)"
               class="link-hover ml-2 whitespace-nowrap text-xs font-medium text-textg sm:text-sm"
               >Mark as read</a

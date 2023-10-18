@@ -126,7 +126,7 @@ export async function signupVerify(req, res) {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'none',
-                maxAge: 3 * 24 * 1000 * 60 * 60, // 3 day
+                maxAge: 3 * 24 * 1000 * 60 * 60,
             })
             return res.status(200).json({ user: result })
         } else {

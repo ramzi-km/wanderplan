@@ -24,22 +24,12 @@ export class NavComponent implements OnInit, OnDestroy {
     private userAuthService: UserAuthService,
     private store: Store,
     private userService: UserService,
-  ) {
-    this.user$ = this.store.select(UserSelector.selectUser);
-    this.unreadNotifications$ = this.user$.pipe(
-      map((user) => {
-        if (user && user.notifications) {
-          return user.notifications.some((notification) => !notification.read);
-        }
-        return false;
-      }),
-    );
-  }
+  ) {}
   private ngUnsubscribe = new Subject<void>();
 
-  user$: Observable<User>;
+  user$!: Observable<User>;
   isLoggedIn$ = this.store.select(UserSelector.selectIsLoggedIn);
-  unreadNotifications$: Observable<boolean>;
+  unreadNotifications$!: Observable<boolean>;
   clearAllNotif = false;
   acceptIvitationLoading = {
     value: false,
@@ -58,6 +48,17 @@ export class NavComponent implements OnInit, OnDestroy {
     if (localStorage.getItem('theme')) {
       this.theme = localStorage.getItem('theme')!;
     }
+
+    this.user$ = this.store.select(UserSelector.selectUser);
+
+    this.unreadNotifications$ = this.user$.pipe(
+      map((user) => {
+        if (user && user.notifications) {
+          return user.notifications.some((notification) => !notification.read);
+        }
+        return false;
+      }),
+    );
   }
 
   toggleDarkMode() {
@@ -159,19 +160,21 @@ export class NavComponent implements OnInit, OnDestroy {
 
   markAllNotifRead() {
     this.clearAllNotif = true;
-    this.userService
-      .markAllNotifRead()
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe({
-        next: (res) => {
-          this.store.dispatch(UserActions.getUserSuccess({ user: res.user }));
-          this.clearAllNotif = false;
-        },
-        error: (errMessage) => {
-          console.log(errMessage);
-          this.clearAllNotif = false;
-        },
-      });
+    setTimeout(() => {
+      this.userService
+        .markAllNotifRead()
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe({
+          next: (res) => {
+            this.store.dispatch(UserActions.getUserSuccess({ user: res.user }));
+            this.clearAllNotif = false;
+          },
+          error: (errMessage) => {
+            console.log(errMessage);
+            this.clearAllNotif = false;
+          },
+        });
+    }, 500);
   }
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
