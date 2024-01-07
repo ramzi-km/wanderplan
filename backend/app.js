@@ -17,10 +17,13 @@ const PORT = process.env.PORT || 8000
 //socket.io
 const server = http.createServer(app)
 
-// eslint-disable-next-line no-unused-vars
 const io = new Server(server, {
     cors: {
-        origin: process.env.CLIENT_URL,
+        origin: [
+            process.env.CLIENT_URL_1,
+            process.env.CLIENT_URL_2,
+            process.env.CLIENT_URL_3,
+        ],
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         credentials: true,
     },
@@ -49,7 +52,16 @@ app.use(cookieparser())
 // )
 app.use(express.json({ limit: '50mb' }))
 app.use(express.static(path.join(path.resolve(), 'public')))
-app.use(cors({ origin: [process.env.CLIENT_URL], credentials: true }))
+app.use(
+    cors({
+        origin: [
+            process.env.CLIENT_URL_1,
+            process.env.CLIENT_URL_2,
+            process.env.CLIENT_URL_3,
+        ],
+        credentials: true,
+    })
+)
 
 //listening
 server.listen(PORT, () => {

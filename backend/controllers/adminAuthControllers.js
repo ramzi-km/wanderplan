@@ -37,6 +37,7 @@ export async function postAdminLogin(req, res) {
         res.status(500).send({ message: 'Internal server error' })
     }
 }
+
 export async function postAdminLogout(req, res) {
     try {
         res.cookie('adminToken', '', {
