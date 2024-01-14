@@ -2,7 +2,7 @@
   <main class="flex justify-center pt-10 md:pt-20">
     <section
       id="login"
-      class="w-3/4 rounded-lg bg-secondary py-10 shadow-[0px_5px_15px_-3px_rgba(3,175,2,0.2)]"
+      class="w-5/6 rounded-lg bg-secondary py-10 shadow-[0px_5px_15px_-3px_rgba(3,175,2,0.2)] md:w-3/4"
     >
       <div class="flex w-full flex-col md:flex-row">
         <div class="ml-14 hidden flex-col md:flex">
@@ -18,7 +18,7 @@
           >
         </div>
         <div class="flex min-w-[50%] items-center justify-center">
-          <div class="flex min-w-[65%] flex-col">
+          <div class="flex min-w-[75%] flex-col">
             <h1 class="p-3 text-center text-4xl font-bold text-textp">Login</h1>
             <form
               [formGroup]="loginForm"
@@ -145,7 +145,7 @@
                 </div>
                 <div class="divider">OR</div>
 
-                <div class="form-control mt-6 flex items-center justify-center">
+                <div class="mt-6 flex w-full items-center justify-center">
                   <!-- <button
                     type="button"
                     class="btn btn-success btn-outline text-textp"
@@ -162,8 +162,25 @@
                     type="standard"
                     size="large"
                     theme="filled_blue"
+                    class="hidden lg:block"
                   >
                   </asl-google-signin-button>
+                  <asl-google-signin-button
+                    shape="pill"
+                    type="icon"
+                    size="large"
+                    theme="filled_blue"
+                    class="lg:hidden"
+                  >
+                  </asl-google-signin-button>
+                  <div class="divider divider-horizontal"></div>
+                  <button
+                  (click)="demoLogin()"
+                    type="button"
+                    class="btn btn-success btn-outline btn-sm text-textp lg:btn-md"
+                  >
+                    Demo login
+                  </button>
                 </div>
               </div>
             </form>

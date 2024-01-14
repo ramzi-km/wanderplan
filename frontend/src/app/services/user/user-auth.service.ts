@@ -19,6 +19,12 @@ export class UserAuthService {
   userLogin(user: User) {
     return this.http.post<{ user: User }>(`${this.baseUrl}/login`, user);
   }
+  demoLogin() {
+    return this.http.post<{ user: User }>(`${this.baseUrl}/demoLogin`, {});
+  }
+  googleLogin(body: { token: string }) {
+    return this.http.post<{ user: User }>(`${this.baseUrl}/googleLogin`, body);
+  }
   getUser() {
     return this.http.get<{ user: User }>(`${this.baseUrl}/user`);
   }
@@ -48,9 +54,5 @@ export class UserAuthService {
   }
   userLogout() {
     return this.http.post<{ message: string }>(`${this.baseUrl}/logout`, {});
-  }
-
-  googleLogin(body: { token: string }) {
-    return this.http.post<{ user: User }>(`${this.baseUrl}/googleLogin`, body);
   }
 }

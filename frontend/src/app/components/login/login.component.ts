@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
+import { EMPTY, Subject, delay, switchMap, takeUntil } from 'rxjs';
 import { UserAuthService } from 'src/app/services/user/user-auth.service';
 import { noSpace } from 'src/app/validators/noSpace.validators';
 import * as UserActions from '../../store/user/user.actions';
@@ -116,6 +116,25 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
     });
+  }
+  demoLogin() {
+    if (!this.loading) {
+      this.loading = true;
+      setTimeout(() => {
+        this.userAuthService.demoLogin().subscribe({
+          next: (res) => {
+            this.errMessage = null;
+            this.loading = false;
+            this.store.dispatch(UserActions.userLogin({ user: res.user }));
+            this.router.navigate(['/home']);
+          },
+          error: (errMessage: string) => {
+            this.errMessage = errMessage;
+            this.loading = false;
+          },
+        });
+      }, 500);
+    }
   }
   showEmailModal() {
     if (this.emailSent) {

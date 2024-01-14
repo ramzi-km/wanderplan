@@ -264,7 +264,7 @@ export async function resetForgotPassword(req, res) {
         }
         const forgotPassOtp = forgotPassUser.forgotPassOtp
         if (forgotPassOtp) {
-            console.log(forgotPassOtp.verified);
+            console.log(forgotPassOtp.verified)
             if (forgotPassOtp.verified + 5 * 60 * 1000 > Date.now()) {
                 const passwordHash = await bcrypt.hash(password, 10)
                 await userModel.findOneAndUpdate(
@@ -360,7 +360,44 @@ export async function postLogin(req, res) {
         res.status(500).json({ message: 'internal server error' })
     }
 }
-
+export async function postDemoLogin(req, res) {
+    try {
+        const userEmail = 'ramzikm5@gmail.com'
+        const user = await userModel.findOne({ email: userEmail })
+        const secret = process.env.JWT_SECRET_KEY
+        const token = jwt.sign({ _id: user._id }, secret)
+        res.cookie('userToken', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 3 * 24 * 1000 * 60 * 60, // 3 day
+        })
+        const resUser = await userModel
+            .findOne({
+                email: user.email,
+            })
+            .select('-password')
+            .populate({
+                path: 'notifications',
+                populate: [
+                    {
+                        path: 'sender',
+                        model: 'User',
+                        select: 'name profilePic username _id',
+                    },
+                    {
+                        path: 'trip',
+                        model: 'Trip',
+                        select: 'name _id',
+                    },
+                ],
+            })
+            .exec()
+        return res.json({ user: resUser })
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' })
+    }
+}
 export async function postGoogleLogin(req, res) {
     try {
         const token = req.body.token
