@@ -5,7 +5,7 @@ Wanderplan is a comprehensive web application designed to streamline the process
 
 ## Live Demo
 
-Check out Wanderplan in action [here](https://wander-plan.netlify.app/).
+Check out Wanderplan in action [here](https://wanderplan.online/).
 
 
 
